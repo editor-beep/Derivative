@@ -1045,6 +1045,8 @@ const RootPuzzle = ({
     (w) => !required.includes(w) && (puzzle.targets || []).includes(w)
   );
 
+  const root = getRoot(puzzle); // ✅ FIXED
+
   return (
     <div
       style={{
@@ -1058,16 +1060,24 @@ const RootPuzzle = ({
     >
       <SystemMesh intensity={1} />
 
-      {/* 🔥 ROOT GRAPH INSERTED HERE */}
-      <RootGraph
-        root={puzzle.root}
-        required={puzzle.required || []}
-        found={found}
-        bonus={(puzzle.targets || []).filter(
-          (w) => !puzzle.required?.includes(w)
-        )}
-      />
+      {/* 🔥 ROOT GRAPH (NOW VISIBLE + CORRECT ROOT) */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 0.5,
+          opacity: 0.9, // 🔥 boost visibility
+        }}
+      >
+        <RootGraph
+          root={root}
+          required={required}
+          found={found}
+          bonus={bonusFound}
+        />
+      </div>
 
+      {/* UI LAYER */}
       <div style={{ position: "relative", zIndex: 1 }}>
         {!revealed && (
           <div style={{ marginBottom: "1.1rem" }}>
@@ -1077,7 +1087,7 @@ const RootPuzzle = ({
                 value={input}
                 onChange={(e) => setInput(e.target.value.toLowerCase())}
                 onKeyDown={(e) => e.key === "Enter" && submit()}
-                placeholder={`build a word using "${puzzle.root}"…`}
+                placeholder={`build a word using "${root}"…`}
                 style={{
                   ...S.input,
                   border: `1px solid ${shake ? COLORS.red : COLORS.blackLine}`,
@@ -1173,7 +1183,7 @@ const RootPuzzle = ({
                   boxShadow: `0 0 16px ${COLORS.cyanGlow}`,
                 }}
               >
-                {w}{" "}
+                {w}
                 <span style={{ color: COLORS.cyanDim, fontSize: "0.58rem" }}>
                   related
                 </span>
