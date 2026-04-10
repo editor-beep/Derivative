@@ -2,7 +2,7 @@
   "name": "workspace",
   "version": "1.0.0",
   "description": "Etymology English Game",
-  "main": "index.js",
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "expo": "^55.0.14",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"
   },
