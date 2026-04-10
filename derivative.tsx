@@ -47,6 +47,7 @@ const PUZZLES = [
 const getPuzzleForDate = d => PUZZLES.find(p => p.date === d) || null;
 const getTodayStr = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
 const STORAGE_KEY = "derivative_v3";
+const SPLASH_IMAGE = "https://github.com/user-attachments/assets/e6f5403b-5958-4d0e-8be4-439beb2b7a79";
 const load = () => { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}"); } catch { return {}; } };
 const save = d => { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); } catch {} };
 
@@ -577,7 +578,7 @@ export default function Derivative() {
         .arch-link{color:#3a2e14;font-family:var(--font-mono,monospace);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;border:none;background:transparent;padding:0;transition:color 0.2s;}
         .arch-link:hover{color:#c8922a;}
       `}</style>
-      <div style={{position:"absolute",top:0,left:0,width:"100%",height:"100%",backgroundImage:"url(https://github.com/user-attachments/assets/e6f5403b-5958-4d0e-8be4-439beb2b7a79)",backgroundSize:"cover",backgroundPosition:"center",opacity:0.22,zIndex:0}}/>
+      <div style={{position:"absolute",top:0,left:0,width:"100%",height:"100%",backgroundImage:`url(${SPLASH_IMAGE})`,backgroundSize:"cover",backgroundPosition:"center",opacity:0.22,zIndex:0}}/>
       <div style={{position:"absolute",top:0,left:0,width:"100%",height:"100%",background:"linear-gradient(to bottom, #0d0b08aa 0%, #0d0b08 100%)",zIndex:0}}/>
       <Starfield/>
       <div style={{position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
