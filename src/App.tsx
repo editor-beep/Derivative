@@ -431,7 +431,7 @@ export default function Derivative() {
   const [progress, setProgress] = useState(load());
   const [revealed, setRevealed] = useState(false);
   const [puzzleState, setPuzzleState] = useState({});
-  const [shareMsg, setShareMsg] = useState(null);
+  const [shareMsg, setShareMsg] = useState<string | null>(null);
   const today = getTodayStr();
 
   const getProgress = (dateStr) => progress[dateStr] || {};
