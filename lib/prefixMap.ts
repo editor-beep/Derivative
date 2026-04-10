@@ -1,0 +1,16 @@
+export const PREFIX_MAP: Record<string, string> = {
+  inter: "between",
+  dis: "apart",
+  ab: "away",
+  ex: "out",
+  e: "out",
+  sub: "under",
+  con: "together",
+  com: "together",
+  de: "down",
+  re: "back",
+  trans: "across",
+  in: "into",
+  im: "into",
+  ad: "toward",
+};
