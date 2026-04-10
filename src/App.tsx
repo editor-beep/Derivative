@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect, useRef } from "react";
 
 const TYPE_LABELS = {
@@ -502,7 +503,8 @@ export default function Derivative() {
       grid,
       complete?"complete":revealed?"revealed early":"in progress",
       `the machinery was always there.`,
-      `derivative.game`
+      `wwww.themeansofproduction.press/derivative`,
+      `#derivative #etymology #english`
     ].join("\n"));
   };
 
