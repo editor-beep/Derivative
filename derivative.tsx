@@ -5,8 +5,8 @@ const TYPE_LABELS = {
   SEMANTIC:"SEMANTIC DRIFT",COLLISION:"COLLISION",PIE:"DEEP ROOT"
 };
 const TYPE_COLORS = {
-  ROOT:"#7c5cbf",SUPPLETIVE:"#9b4f96",GRIMM:"#4f6bb5",
-  SEMANTIC:"#b5564f",COLLISION:"#9b7c4f",PIE:"#4f4f9b"
+  ROOT:"#c8922a",SUPPLETIVE:"#b87820",GRIMM:"#4ecfcf",
+  SEMANTIC:"#d4732a",COLLISION:"#8ab8b8",PIE:"#e8b84b"
 };
 
 // ── PUZZLE DATA (inlined for artifact preview; in production import from puzzles.js) ──
@@ -52,10 +52,10 @@ const save = d => { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); 
 
 const S = {
   mono: { fontFamily:"var(--font-mono,monospace)" },
-  btn: { background:"transparent", border:"1px solid #3a2a6a", color:"#a78bfa", padding:"0.45rem 1rem", fontFamily:"var(--font-mono,monospace)", fontSize:"0.7rem", letterSpacing:"0.1em", textTransform:"uppercase", cursor:"pointer", borderRadius:"2px" },
-  btnSm: { background:"transparent", border:"1px solid #2a1f50", color:"#7c5cbf", padding:"0.3rem 0.6rem", fontFamily:"var(--font-mono,monospace)", fontSize:"0.62rem", letterSpacing:"0.1em", textTransform:"uppercase", cursor:"pointer", borderRadius:"2px" },
-  btnPrimary: { background:"#7c5cbf", border:"1px solid #7c5cbf", color:"#fff", padding:"0.45rem 1rem", fontFamily:"var(--font-mono,monospace)", fontSize:"0.7rem", letterSpacing:"0.1em", textTransform:"uppercase", cursor:"pointer", borderRadius:"2px" },
-  input: { background:"#090714", border:"1px solid #2a1f50", borderRadius:"2px", color:"#e2d9f3", fontFamily:"var(--font-mono,monospace)", fontSize:"0.85rem", padding:"0.45rem 0.65rem", outline:"none", letterSpacing:"0.04em", width:"100%", boxSizing:"border-box" },
+  btn: { background:"transparent", border:"1px solid #3a2e14", color:"#c8922a", padding:"0.45rem 1rem", fontFamily:"var(--font-mono,monospace)", fontSize:"0.7rem", letterSpacing:"0.1em", textTransform:"uppercase", cursor:"pointer", borderRadius:"2px" },
+  btnSm: { background:"transparent", border:"1px solid #2a2010", color:"#7a5618", padding:"0.3rem 0.6rem", fontFamily:"var(--font-mono,monospace)", fontSize:"0.62rem", letterSpacing:"0.1em", textTransform:"uppercase", cursor:"pointer", borderRadius:"2px" },
+  btnPrimary: { background:"#c8922a", border:"1px solid #c8922a", color:"#0d0b08", padding:"0.45rem 1rem", fontFamily:"var(--font-mono,monospace)", fontSize:"0.7rem", letterSpacing:"0.1em", textTransform:"uppercase", cursor:"pointer", borderRadius:"2px" },
+  input: { background:"#0d0b08", border:"1px solid #2a2010", borderRadius:"2px", color:"#d4c4a0", fontFamily:"var(--font-mono,monospace)", fontSize:"0.85rem", padding:"0.45rem 0.65rem", outline:"none", letterSpacing:"0.04em", width:"100%", boxSizing:"border-box" },
 };
 
 // ── STARFIELD ──────────────────────────────────────────────────────────────
@@ -65,10 +65,10 @@ const Starfield = () => (
     const ctx=el.getContext("2d");
     const resize=()=>{el.width=el.offsetWidth;el.height=el.offsetHeight;};
     resize();
-    const stars=Array.from({length:160},()=>({x:Math.random()*el.width,y:Math.random()*el.height,r:Math.random()*1.1+0.1,o:Math.random()*0.5+0.1,s:Math.random()*0.4+0.1,d:Math.random()>0.5?1:-1}));
+    const stars=Array.from({length:160},()=>({x:Math.random()*el.width,y:Math.random()*el.height,r:Math.random()*1.1+0.1,o:Math.random()*0.5+0.1,s:Math.random()*0.4+0.1,d:Math.random()>0.5?1:-1,cyan:Math.random()>0.75}));
     const draw=()=>{
       ctx.clearRect(0,0,el.width,el.height);
-      stars.forEach(s=>{s.o+=0.003*s.s*s.d;if(s.o>0.7||s.o<0.08)s.d*=-1;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(180,160,255,${s.o})`;ctx.fill();});
+      stars.forEach(s=>{s.o+=0.003*s.s*s.d;if(s.o>0.7||s.o<0.08)s.d*=-1;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=s.cyan?`rgba(78,207,207,${s.o})`:`rgba(200,146,42,${s.o})`;ctx.fill();});
       requestAnimationFrame(draw);
     };
     draw(); window.addEventListener("resize",resize);
@@ -77,21 +77,21 @@ const Starfield = () => (
 
 // ── TYPE BADGE ─────────────────────────────────────────────────────────────
 const TypeBadge = ({type}) => {
-  const tc = TYPE_COLORS[type]||"#7c5cbf";
+  const tc = TYPE_COLORS[type]||"#c8922a";
   return <div style={{display:"inline-block",background:tc+"18",border:`1px solid ${tc}44`,borderRadius:"2px",padding:"0.15rem 0.5rem",...S.mono,fontSize:"0.58rem",color:tc,letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:"0.5rem"}}>{TYPE_LABELS[type]||type}</div>;
 };
 
 // ── REVEAL CARD ────────────────────────────────────────────────────────────
 const RevealCard = ({puzzle, onShare}) => (
-  <div style={{borderTop:"1px solid #1a1230",paddingTop:"1.25rem",marginTop:"0.75rem"}}>
-    <div style={{...S.mono,fontSize:"0.58rem",color:TYPE_COLORS[puzzle.type]||"#7c5cbf",letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:"0.65rem"}}>— revealed —</div>
-    <div style={{fontSize:"0.98rem",color:"#e2d9f3",fontWeight:500,lineHeight:1.55,marginBottom:"0.65rem"}}>{puzzle.reveal.headline}</div>
-    <div style={{fontSize:"0.82rem",color:"#9d8bb5",lineHeight:1.85,marginBottom:"1rem"}}>{puzzle.reveal.body}</div>
+  <div style={{borderTop:"1px solid #2a2010",paddingTop:"1.25rem",marginTop:"0.75rem"}}>
+    <div style={{...S.mono,fontSize:"0.58rem",color:TYPE_COLORS[puzzle.type]||"#c8922a",letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:"0.65rem"}}>— revealed —</div>
+    <div style={{fontSize:"0.98rem",color:"#d4c4a0",fontWeight:500,lineHeight:1.55,marginBottom:"0.65rem"}}>{puzzle.reveal.headline}</div>
+    <div style={{fontSize:"0.82rem",color:"#8a7868",lineHeight:1.85,marginBottom:"1rem"}}>{puzzle.reveal.body}</div>
     <div style={{display:"flex",flexDirection:"column",gap:"5px",marginBottom:"1rem"}}>
       {puzzle.reveal.connections.map(([w,d],i)=>(
         <div key={i} style={{display:"flex",gap:"1rem",fontSize:"0.74rem",...S.mono}}>
-          <span style={{color:"#7c5cbf",minWidth:"130px",flexShrink:0}}>{w}</span>
-          <span style={{color:"#5a4a72"}}>{d}</span>
+          <span style={{color:"#c8922a",minWidth:"130px",flexShrink:0}}>{w}</span>
+          <span style={{color:"#5a4a38"}}>{d}</span>
         </div>
       ))}
     </div>
@@ -104,9 +104,9 @@ const ShareCard = ({msg}) => {
   const [copied, setCopied] = useState(false);
   const copy = () => { navigator.clipboard.writeText(msg).catch(()=>{}); setCopied(true); setTimeout(()=>setCopied(false),2000); };
   return (
-    <div style={{marginTop:"1rem",background:"#090714",border:"1px solid #1e1630",borderRadius:"2px",padding:"1rem"}}>
-      <pre style={{...S.mono,fontSize:"0.72rem",color:"#9d8bb5",margin:0,whiteSpace:"pre-wrap",lineHeight:1.75}}>{msg}</pre>
-      <button style={{...S.btnSm,marginTop:"0.75rem"}} onClick={copy}>{copied?"copied":"copy to clipboard"}</button>
+    <div style={{marginTop:"1rem",background:"#0d0b08",border:"1px solid #3a2e14",borderRadius:"2px",padding:"1rem 1.1rem"}}>
+      <pre style={{...S.mono,fontSize:"0.74rem",color:"#c8a050",margin:0,whiteSpace:"pre-wrap",lineHeight:1.9}}>{msg}</pre>
+      <button style={{...S.btnSm,marginTop:"0.75rem"}} onClick={copy}>{copied?"copied ✓":"copy to clipboard"}</button>
     </div>
   );
 };
@@ -117,9 +117,9 @@ const PuzzleHeader = ({puzzle, selDate}) => {
   return (
     <div style={{marginBottom:"1.25rem"}}>
       <TypeBadge type={puzzle.type}/>
-      <div style={{...S.mono,fontSize:"1.35rem",color:"#e2d9f3",letterSpacing:"0.07em",marginBottom:"0.2rem"}}>{puzzle.root}</div>
-      <div style={{fontSize:"0.8rem",color:"#7c6b9a",fontStyle:"italic",marginBottom:"0.2rem"}}>{puzzle.lang} · {puzzle.meaning}</div>
-      {puzzle.prompt && <div style={{fontSize:"0.77rem",color:"#5a4a72",borderLeft:"2px solid #2a1f40",paddingLeft:"0.7rem",marginTop:"0.6rem",lineHeight:1.65}}>{puzzle.prompt}</div>}
+      <div style={{...S.mono,fontSize:"1.35rem",color:"#d4c4a0",letterSpacing:"0.07em",marginBottom:"0.2rem"}}>{puzzle.root}</div>
+      <div style={{fontSize:"0.8rem",color:"#7a6858",fontStyle:"italic",marginBottom:"0.2rem"}}>{puzzle.lang} · {puzzle.meaning}</div>
+      {puzzle.prompt && <div style={{fontSize:"0.77rem",color:"#5a4a38",borderLeft:"2px solid #3a2e14",paddingLeft:"0.7rem",marginTop:"0.6rem",lineHeight:1.65}}>{puzzle.prompt}</div>}
     </div>
   );
 };
@@ -160,24 +160,24 @@ const RootPuzzle = ({puzzle, found, onWord, revealed}) => {
           <div style={{display:"flex",gap:"8px",marginBottom:"0.4rem"}}>
             <input ref={ref} value={input} onChange={e=>setInput(e.target.value.toLowerCase())} onKeyDown={e=>e.key==="Enter"&&submit()}
               placeholder={`build a word using "${puzzle.root}"…`}
-              style={{...S.input, border:`1px solid ${shake?"#8b3a3a":"#2a1f50"}`, animation:shake?"shake 0.4s ease":"none", flex:1}}/>
+              style={{...S.input, border:`1px solid ${shake?"#8b3a3a":"#2a2010"}`, animation:shake?"shake 0.4s ease":"none", flex:1}}/>
             <button style={S.btnPrimary} onClick={submit}>enter</button>
           </div>
-          {flash && <div style={{...S.mono,fontSize:"0.65rem",color:flash.ok?(flash.bonus?"#5a9b6a":"#a78bfa"):"#8b3a3a",letterSpacing:"0.1em",textTransform:"uppercase"}}>{flash.msg}</div>}
+          {flash && <div style={{...S.mono,fontSize:"0.65rem",color:flash.ok?(flash.bonus?"#4ecfcf":"#c8922a"):"#8b3a3a",letterSpacing:"0.1em",textTransform:"uppercase"}}>{flash.msg}</div>}
         </div>
       )}
-      <div style={{...S.mono,fontSize:"0.58rem",color:"#3a2a5a",letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:"0.45rem"}}>
+      <div style={{...S.mono,fontSize:"0.58rem",color:"#3a2e1c",letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:"0.45rem"}}>
         {reqFound.length}/{puzzle.required.length} found{bonusFound.length>0?` · +${bonusFound.length} related`:""}
       </div>
       <div style={{display:"flex",flexWrap:"wrap",gap:"6px",marginBottom:"0.5rem"}}>
         {puzzle.required.map(w=>{
           const f=found.includes(w);
-          return <div key={w} style={{...S.mono,fontSize:"0.78rem",padding:"0.28rem 0.6rem",borderRadius:"2px",background:f?"#2d1f4a":"#090714",border:f?"1px solid #7c5cbf":"1px solid #151025",color:f?"#c4b5fd":"#1e1630",transition:"all 0.25s"}}>{f?w:"·".repeat(Math.max(3,w.length))}</div>;
+          return <div key={w} style={{...S.mono,fontSize:"0.78rem",padding:"0.28rem 0.6rem",borderRadius:"2px",background:f?"#2a1e08":"#0d0b08",border:f?"1px solid #c8922a":"1px solid #181508",color:f?"#e8b84b":"#1e1808",transition:"all 0.25s"}}>{f?w:"·".repeat(Math.max(3,w.length))}</div>;
         })}
       </div>
       {bonusFound.length>0 && (
         <div style={{display:"flex",flexWrap:"wrap",gap:"5px"}}>
-          {bonusFound.map(w=><div key={w} style={{...S.mono,fontSize:"0.7rem",padding:"0.22rem 0.5rem",borderRadius:"2px",background:"#111a13",border:"1px solid #1e3a22",color:"#5a9b6a"}}>{w} <span style={{color:"#2a5a30",fontSize:"0.58rem"}}>related</span></div>)}
+          {bonusFound.map(w=><div key={w} style={{...S.mono,fontSize:"0.7rem",padding:"0.22rem 0.5rem",borderRadius:"2px",background:"#0a1414",border:"1px solid #1a3a3a",color:"#4ecfcf"}}>{w} <span style={{color:"#2a5858",fontSize:"0.58rem"}}>related</span></div>)}
         </div>
       )}
     </div>
@@ -224,18 +224,18 @@ const SortPuzzle = ({puzzle, state, onState, revealed}) => {
 
   return (
     <div>
-      <div style={{...S.mono,fontSize:"0.58rem",color:"#3a2a5a",letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:"0.75rem"}}>
+      <div style={{...S.mono,fontSize:"0.58rem",color:"#3a2e1c",letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:"0.75rem"}}>
         {correctCount}/{totalRequired} assigned correctly
       </div>
 
       {/* Word pool */}
       {!revealed && unassigned.length > 0 && (
         <div style={{marginBottom:"1rem"}}>
-          <div style={{...S.mono,fontSize:"0.58rem",color:"#3a2a5a",letterSpacing:"0.12em",textTransform:"uppercase",marginBottom:"0.4rem"}}>word pool</div>
+          <div style={{...S.mono,fontSize:"0.58rem",color:"#3a2e1c",letterSpacing:"0.12em",textTransform:"uppercase",marginBottom:"0.4rem"}}>word pool</div>
           <div style={{display:"flex",flexWrap:"wrap",gap:"6px"}}>
             {unassigned.map(w=>(
               <div key={w} draggable onDragStart={()=>setDragWord(w)}
-                style={{...S.mono,fontSize:"0.8rem",padding:"0.3rem 0.65rem",borderRadius:"2px",background:"#12102a",border:"1px solid #2a2050",color:"#a78bfa",cursor:"grab",userSelect:"none"}}>
+                style={{...S.mono,fontSize:"0.8rem",padding:"0.3rem 0.65rem",borderRadius:"2px",background:"#141208",border:"1px solid #2a2010",color:"#c8922a",cursor:"grab",userSelect:"none"}}>
                 {w}
               </div>
             ))}
@@ -253,8 +253,8 @@ const SortPuzzle = ({puzzle, state, onState, revealed}) => {
               onDragOver={e=>{e.preventDefault();}}
               onDrop={e=>{e.preventDefault();if(dragWord){assign(dragWord,grp.id);setDragWord(null);}}}
               onClick={()=>setActiveGroup(isActive?null:grp.id)}
-              style={{background:isActive?"#1a1535":"#0e0c20",border:`1px solid ${isActive?"#7c5cbf":"#1e1a35"}`,borderRadius:"3px",padding:"0.65rem 0.75rem",cursor:"pointer",transition:"all 0.15s"}}>
-              <div style={{...S.mono,fontSize:"0.65rem",color:isActive?"#a78bfa":"#5a4a72",letterSpacing:"0.1em",marginBottom:grpWords.length>0?"0.5rem":"0"}}>{grp.label}</div>
+              style={{background:isActive?"#1a1608":"#100e08",border:`1px solid ${isActive?"#c8922a":"#1e1808"}`,borderRadius:"3px",padding:"0.65rem 0.75rem",cursor:"pointer",transition:"all 0.15s"}}>
+              <div style={{...S.mono,fontSize:"0.65rem",color:isActive?"#e8b84b":"#5a4a38",letterSpacing:"0.1em",marginBottom:grpWords.length>0?"0.5rem":"0"}}>{grp.label}</div>
               {grpWords.length > 0 && (
                 <div style={{display:"flex",flexWrap:"wrap",gap:"5px"}}>
                   {grpWords.map(w=>{
@@ -264,9 +264,9 @@ const SortPuzzle = ({puzzle, state, onState, revealed}) => {
                     return (
                       <div key={w} onClick={e=>{e.stopPropagation();if(!revealed)unassign(w);}}
                         style={{...S.mono,fontSize:"0.75rem",padding:"0.22rem 0.55rem",borderRadius:"2px",
-                          background: revealed?(correct||related?"#2d1f4a":"#2a1215"):wrong&&revealed?"#2a1215":"#1e1a35",
-                          border: revealed?(correct?"1px solid #7c5cbf":related?"1px solid #5a9b6a":"1px solid #8b3a3a"):"1px solid #3a3060",
-                          color: revealed?(correct?"#c4b5fd":related?"#5a9b6a":"#8b3a3a"):"#9d8bb5",
+                          background: revealed?(correct||related?"#2a1e08":"#2a1212"):wrong&&revealed?"#2a1212":"#1e1808",
+                          border: revealed?(correct?"1px solid #c8922a":related?"1px solid #4ecfcf":"1px solid #8b3a3a"):"1px solid #3a2e14",
+                          color: revealed?(correct?"#e8b84b":related?"#4ecfcf":"#8b3a3a"):"#9a8868",
                           cursor:revealed?"default":"pointer"}}>
                         {w}
                       </div>
@@ -287,12 +287,12 @@ const SortPuzzle = ({puzzle, state, onState, revealed}) => {
       </div>
 
       {flash && (
-        <div style={{...S.mono,fontSize:"0.65rem",letterSpacing:"0.1em",textTransform:"uppercase",color:flash.notInPool?"#8b3a3a":flash.correct?(flash.bonus?"#5a9b6a":"#a78bfa"):"#8b3a3a",marginBottom:"0.5rem"}}>
+        <div style={{...S.mono,fontSize:"0.65rem",letterSpacing:"0.1em",textTransform:"uppercase",color:flash.notInPool?"#8b3a3a":flash.correct?(flash.bonus?"#4ecfcf":"#c8922a"):"#8b3a3a",marginBottom:"0.5rem"}}>
           {flash.notInPool?"not in the pool":flash.correct?(flash.bonus?"related":"correct"):"wrong group"}
         </div>
       )}
 
-      {!revealed && <div style={{...S.mono,fontSize:"0.6rem",color:"#3a2a5a",marginTop:"0.25rem"}}>drag words into a group, or click a group then type</div>}
+      {!revealed && <div style={{...S.mono,fontSize:"0.6rem",color:"#3a2e1c",marginTop:"0.25rem"}}>drag words into a group, or click a group then type</div>}
     </div>
   );
 };
@@ -320,18 +320,18 @@ const GrimmPuzzle = ({puzzle, state, onState, revealed}) => {
 
   return (
     <div>
-      <div style={{...S.mono,fontSize:"0.58rem",color:"#3a2a5a",letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:"0.75rem"}}>{correct}/{total} found</div>
+      <div style={{...S.mono,fontSize:"0.58rem",color:"#3a2e1c",letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:"0.75rem"}}>{correct}/{total} found</div>
       <div style={{display:"flex",flexDirection:"column",gap:"10px"}}>
         {puzzle.pairs.map((pair,idx)=>{
           const solved = !!answers[idx] || revealed;
           const fb = feedback[idx];
           return (
-            <div key={idx} style={{display:"flex",alignItems:"center",gap:"10px",background:"#0e0c20",border:"1px solid #1e1a35",borderRadius:"3px",padding:"0.6rem 0.75rem"}}>
-              <div style={{flex:"0 0 220px",...S.mono,fontSize:"0.78rem",color:"#6a5a8a",lineHeight:1.4}}>{pair.source}</div>
-              <div style={{...S.mono,fontSize:"0.65rem",color:"#3a2a5a",flexShrink:0}}>→</div>
+            <div key={idx} style={{display:"flex",alignItems:"center",gap:"10px",background:"#100e08",border:"1px solid #1e1808",borderRadius:"3px",padding:"0.6rem 0.75rem"}}>
+              <div style={{flex:"0 0 220px",...S.mono,fontSize:"0.78rem",color:"#6a5a48",lineHeight:1.4}}>{pair.source}</div>
+              <div style={{...S.mono,fontSize:"0.65rem",color:"#3a2e1c",flexShrink:0}}>→</div>
               {solved ? (
-                <div style={{...S.mono,fontSize:"0.85rem",color:"#c4b5fd",flex:1}}>{pair.target}
-                  {pair.note&&<span style={{color:"#5a4a72",fontSize:"0.62rem",marginLeft:"0.5rem"}}>{pair.note}</span>}
+                <div style={{...S.mono,fontSize:"0.85rem",color:"#e8b84b",flex:1}}>{pair.target}
+                  {pair.note&&<span style={{color:"#5a4a38",fontSize:"0.62rem",marginLeft:"0.5rem"}}>{pair.note}</span>}
                 </div>
               ) : (
                 <div style={{display:"flex",gap:"6px",flex:1}}>
@@ -339,11 +339,11 @@ const GrimmPuzzle = ({puzzle, state, onState, revealed}) => {
                     onKeyDown={e=>e.key==="Enter"&&submit(idx)}
                     placeholder="english word…"
                     style={{...S.input,flex:1,padding:"0.3rem 0.55rem",fontSize:"0.78rem",
-                      border:`1px solid ${fb==="wrong"?"#8b3a3a":"#2a1f50"}`}}/>
+                      border:`1px solid ${fb==="wrong"?"#8b3a3a":"#2a2010"}`}}/>
                   <button style={{...S.btnPrimary,padding:"0.3rem 0.55rem",fontSize:"0.62rem"}} onClick={()=>submit(idx)}>→</button>
                 </div>
               )}
-              {fb&&!solved&&<div style={{...S.mono,fontSize:"0.6rem",color:fb==="correct"?"#a78bfa":"#8b3a3a",letterSpacing:"0.1em",textTransform:"uppercase",flexShrink:0}}>{fb}</div>}
+              {fb&&!solved&&<div style={{...S.mono,fontSize:"0.6rem",color:fb==="correct"?"#c8922a":"#8b3a3a",letterSpacing:"0.1em",textTransform:"uppercase",flexShrink:0}}>{fb}</div>}
             </div>
           );
         })}
@@ -379,8 +379,8 @@ const SemanticPuzzle = ({puzzle, state, onState, revealed}) => {
   let blankIdx = 0;
   return (
     <div>
-      <div style={{...S.mono,fontSize:"0.72rem",color:"#7c5cbf",letterSpacing:"0.08em",marginBottom:"0.9rem",fontStyle:"italic"}}>"{puzzle.word}"</div>
-      <div style={{...S.mono,fontSize:"0.58rem",color:"#3a2a5a",letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:"0.75rem"}}>{correct}/{blanks.length} filled</div>
+      <div style={{...S.mono,fontSize:"0.72rem",color:"#c8922a",letterSpacing:"0.08em",marginBottom:"0.9rem",fontStyle:"italic"}}>"{puzzle.word}"</div>
+      <div style={{...S.mono,fontSize:"0.58rem",color:"#3a2e1c",letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:"0.75rem"}}>{correct}/{blanks.length} filled</div>
       <div style={{display:"flex",flexDirection:"column",gap:"0"}}>
         {puzzle.timeline.map((item, idx)=>{
           const isBlank = item.blank;
@@ -391,12 +391,12 @@ const SemanticPuzzle = ({puzzle, state, onState, revealed}) => {
           return (
             <div key={idx} style={{display:"flex",gap:"0",alignItems:"stretch"}}>
               <div style={{display:"flex",flexDirection:"column",alignItems:"center",flexShrink:0,width:"20px"}}>
-                <div style={{width:"2px",flex:1,background:idx===0?"transparent":"#2a1f50"}}/>
-                <div style={{width:"8px",height:"8px",borderRadius:"50%",background:solved||!isBlank?"#7c5cbf":"#2a1f50",flexShrink:0,border:"1px solid #7c5cbf"}}/>
-                <div style={{width:"2px",flex:1,background:isLast?"transparent":"#2a1f50"}}/>
+                <div style={{width:"2px",flex:1,background:idx===0?"transparent":"#2a2010"}}/>
+                <div style={{width:"8px",height:"8px",borderRadius:"50%",background:solved||!isBlank?"#c8922a":"#2a2010",flexShrink:0,border:"1px solid #c8922a"}}/>
+                <div style={{width:"2px",flex:1,background:isLast?"transparent":"#2a2010"}}/>
               </div>
               <div style={{paddingLeft:"0.75rem",paddingTop:"0.15rem",paddingBottom:"0.75rem",flex:1}}>
-                <div style={{...S.mono,fontSize:"0.62rem",color:"#5a4a72",letterSpacing:"0.1em",textTransform:"uppercase",marginBottom:"0.2rem"}}>{item.era}</div>
+                <div style={{...S.mono,fontSize:"0.62rem",color:"#5a4a38",letterSpacing:"0.1em",textTransform:"uppercase",marginBottom:"0.2rem"}}>{item.era}</div>
                 {isBlank&&!solved ? (
                   <div>
                     <div style={{display:"flex",gap:"6px"}}>
@@ -404,13 +404,13 @@ const SemanticPuzzle = ({puzzle, state, onState, revealed}) => {
                         onKeyDown={e=>e.key==="Enter"&&submit(myBlankIdx,item.era,item.meaning)}
                         placeholder="what did it mean here?"
                         style={{...S.input,flex:1,padding:"0.3rem 0.55rem",fontSize:"0.78rem",
-                          border:`1px solid ${fb==="wrong"?"#8b3a3a":"#2a1f50"}`}}/>
+                          border:`1px solid ${fb==="wrong"?"#8b3a3a":"#2a2010"}`}}/>
                       <button style={{...S.btnPrimary,padding:"0.3rem 0.6rem",fontSize:"0.62rem"}} onClick={()=>submit(myBlankIdx,item.era,item.meaning)}>→</button>
                     </div>
-                    {fb&&<div style={{...S.mono,fontSize:"0.6rem",color:fb==="correct"?"#a78bfa":"#8b3a3a",letterSpacing:"0.08em",textTransform:"uppercase",marginTop:"0.25rem"}}>{fb}</div>}
+                    {fb&&<div style={{...S.mono,fontSize:"0.6rem",color:fb==="correct"?"#c8922a":"#8b3a3a",letterSpacing:"0.08em",textTransform:"uppercase",marginTop:"0.25rem"}}>{fb}</div>}
                   </div>
                 ) : (
-                  <div style={{fontSize:"0.82rem",color:isBlank?"#c4b5fd":"#9d8bb5",lineHeight:1.5}}>{item.meaning}</div>
+                  <div style={{fontSize:"0.82rem",color:isBlank?"#e8b84b":"#9a8868",lineHeight:1.5}}>{item.meaning}</div>
                 )}
               </div>
             </div>
@@ -482,28 +482,69 @@ export default function Derivative() {
 
   const buildShare = () => {
     if(!puzzle) return;
-    const dateLabel = new Date(selDate+"T12:00:00").toLocaleDateString("en-US",{month:"long",day:"numeric"});
-    const complete = isComplete();
-    let grid = "";
-    if(puzzle.type==="ROOT") {
-      grid = puzzle.required.map(w=>(puzzleState.found||[]).includes(w)?"🟪":"⬛").join("");
-    } else if(["SUPPLETIVE","PIE","COLLISION"].includes(puzzle.type)) {
-      const assigned = puzzleState.assigned||{};
-      grid = puzzle.groups.flatMap(g=>g.accepts.map(w=>assigned[w]===g.id?"🟪":"⬛")).join("");
-    } else if(puzzle.type==="GRIMM") {
-      grid = puzzle.pairs.map((_,i)=>puzzleState.answers?.[i]?"🟪":"⬛").join("");
-    } else if(puzzle.type==="SEMANTIC") {
-      const blanks = puzzle.timeline.filter(t=>t.blank);
-      grid = blanks.map((_,i)=>puzzleState.answers?.[i]?"🟪":"⬛").join("");
+
+    const toRoman = n => {
+      const v=[[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];
+      let r=''; for(const [val,s] of v){while(n>=val){r+=s;n-=val;}} return r;
+    };
+    const wrap = (text, w) => {
+      const words=text.split(' '); let lines=[]; let cur='';
+      for(const word of words){ if((cur+' '+word).trim().length>w){if(cur)lines.push(cur);cur=word;}else{cur=(cur+' '+word).trim();} }
+      if(cur)lines.push(cur); return lines.join('\n');
+    };
+
+    const [year,month,day]=selDate.split('-').map(Number);
+    const dateRoman=`${toRoman(day)} · ${toRoman(month)} · ${toRoman(year)}`;
+    const sep='────────────────────';
+    const complete=isComplete();
+    const typeLabel=TYPE_LABELS[puzzle.type]||puzzle.type;
+
+    let chain='';
+    let scoreStr='';
+
+    if(puzzle.type==='ROOT') {
+      const found=puzzleState.found||[];
+      chain=puzzle.required.map(w=>found.includes(w)?'◈':'◇').join('─');
+      const n=found.filter(w=>puzzle.required.includes(w)).length;
+      scoreStr=`${n} of ${puzzle.required.length} found`;
+    } else if(['SUPPLETIVE','PIE','COLLISION'].includes(puzzle.type)) {
+      const assigned=puzzleState.assigned||{};
+      chain=puzzle.groups.map(g=>{
+        const tag=g.label.replace(/[()]/g,'').split(' ')[0].slice(0,8).padEnd(8);
+        const nodes=g.accepts.map(w=>assigned[w]===g.id?'◈':'◇').join('');
+        return `${tag} ${nodes}`;
+      }).join('\n');
+      const total=puzzle.groups.flatMap(g=>g.accepts).length;
+      const correct=puzzle.groups.flatMap(g=>g.accepts).filter(w=>puzzle.groups.find(gr=>gr.id===assigned[w])?.accepts.includes(w)).length;
+      scoreStr=`${correct} of ${total} · ${puzzle.groups.length} branches`;
+    } else if(puzzle.type==='GRIMM') {
+      const answers=puzzleState.answers||{};
+      chain=puzzle.pairs.map((_,i)=>answers[i]?'◈':'◇').join(' ─ ');
+      scoreStr=`${Object.keys(answers).length} of ${puzzle.pairs.length} found`;
+    } else if(puzzle.type==='SEMANTIC') {
+      const answers=puzzleState.answers||{};
+      const blanks=puzzle.timeline.filter(t=>t.blank);
+      chain=blanks.map((_,i)=>answers[i]?'◈':'◇').join(' ─ ');
+      scoreStr=`${blanks.filter((_,i)=>answers[i]).length} of ${blanks.length} filled`;
     }
+
+    const status=complete?'complete':revealed?'revealed':'in progress';
+    const headline=wrap(puzzle.reveal.headline.replace(/[""]/g,'"'),42);
+
     setShareMsg([
-      `DERIVATIVE — ${dateLabel}`,
-      `${TYPE_LABELS[puzzle.type]||puzzle.type}`,
-      grid,
-      complete?"complete":revealed?"revealed early":"in progress",
-      `the machinery was always there.`,
-      `derivative.game`
-    ].join("\n"));
+      '◈ DERIVATIVE ◈',
+      dateRoman,
+      sep,
+      `${typeLabel} · ${puzzle.root}`,
+      `${puzzle.lang}`,
+      sep,
+      chain,
+      `${scoreStr} · ${status}`,
+      sep,
+      headline,
+      sep,
+      'derivative.game',
+    ].join('\n'));
   };
 
   const statusFor = (dateStr) => {
@@ -518,7 +559,7 @@ export default function Derivative() {
     return "unplayed";
   };
 
-  const bgStyle = {minHeight:"520px",background:"#07050f",position:"relative",overflow:"hidden"};
+  const bgStyle = {minHeight:"520px",background:"#0d0b08",position:"relative",overflow:"hidden"};
 
   // ── SPLASH ────────────────────────────────────────────────────────────────
   if(view==="splash") return (
@@ -529,27 +570,27 @@ export default function Derivative() {
         @keyframes glitch2{0%,100%{clip-path:inset(50% 0 30% 0);transform:translate(3px,0)}25%{clip-path:inset(80% 0 5% 0);transform:translate(-3px,0)}50%{clip-path:inset(20% 0 60% 0);transform:translate(2px,0)}75%{clip-path:inset(5% 0 90% 0);transform:translate(-2px,0)}}
         .deriv-title{position:relative;cursor:pointer;display:inline-block;}
         .deriv-title::before,.deriv-title::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;pointer-events:none;}
-        .deriv-title::before{color:#f0abfc;text-shadow:-2px 0 #7c5cbf;}
-        .deriv-title::after{color:#818cf8;text-shadow:2px 0 #a78bfa;}
+        .deriv-title::before{color:#f0d070;text-shadow:-2px 0 #c8922a;}
+        .deriv-title::after{color:#4ecfcf;text-shadow:2px 0 #e8b84b;}
         .deriv-title:hover::before{opacity:0.8;animation:glitch1 0.35s steps(1) infinite;}
         .deriv-title:hover::after{opacity:0.8;animation:glitch2 0.35s steps(1) infinite;}
-        .arch-link{color:#3a2a5a;font-family:var(--font-mono,monospace);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;border:none;background:transparent;padding:0;transition:color 0.2s;}
-        .arch-link:hover{color:#7c5cbf;}
+        .arch-link{color:#3a2e14;font-family:var(--font-mono,monospace);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;border:none;background:transparent;padding:0;transition:color 0.2s;}
+        .arch-link:hover{color:#c8922a;}
       `}</style>
-      <div style={{position:"absolute",top:0,left:0,width:"100%",height:"100%",backgroundImage:"url(https://www.themeansofproduction.press/derivativeimage)",backgroundSize:"cover",backgroundPosition:"center",opacity:0.18,zIndex:0}}/>
-      <div style={{position:"absolute",top:0,left:0,width:"100%",height:"100%",background:"linear-gradient(to bottom, #07050faa 0%, #07050f 100%)",zIndex:0}}/>
+      <div style={{position:"absolute",top:0,left:0,width:"100%",height:"100%",backgroundImage:"url(https://github.com/user-attachments/assets/e6f5403b-5958-4d0e-8be4-439beb2b7a79)",backgroundSize:"cover",backgroundPosition:"center",opacity:0.22,zIndex:0}}/>
+      <div style={{position:"absolute",top:0,left:0,width:"100%",height:"100%",background:"linear-gradient(to bottom, #0d0b08aa 0%, #0d0b08 100%)",zIndex:0}}/>
       <Starfield/>
       <div style={{position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
-        <div style={{maxWidth:"440px",lineHeight:1.9,color:"#9d8bb5",fontSize:"0.88rem",marginBottom:"2rem"}}>
+        <div style={{maxWidth:"440px",lineHeight:1.9,color:"#8a7868",fontSize:"0.88rem",marginBottom:"2rem"}}>
           <p>I want to play a game.</p>
           <p>The game is called English.</p>
           <p>You have been playing it since before you could walk.<br/>You did not know you were playing.<br/>You did not know there were rules.<br/>You did not know the rules were made of older, broken rules.</p>
           <p>You did not know that <em>went</em> is a corpse wearing the wrong name. That <em>nice</em> meant ignorant. That <em>person</em> is a mask. That <em>be</em> and <em>am</em> and <em>was</em> have never, in any language, belonged together.</p>
           <p>You have been fluent your whole life in a language you have never truly known.</p>
-          <p style={{color:"#7c5cbf",fontSize:"0.8rem",letterSpacing:"0.07em"}}>Do you want to play a game?</p>
+          <p style={{color:"#c8922a",fontSize:"0.8rem",letterSpacing:"0.07em"}}>Do you want to play a game?</p>
         </div>
         <div className="deriv-title" data-text="DERIVATIVE" onClick={()=>openPuzzle(today)}
-          style={{...S.mono,fontSize:"2.4rem",fontWeight:400,color:"#a78bfa",letterSpacing:"0.22em",textTransform:"uppercase",marginBottom:"1.5rem",userSelect:"none"}}>
+          style={{...S.mono,fontSize:"2.4rem",fontWeight:400,color:"#e8b84b",letterSpacing:"0.22em",textTransform:"uppercase",marginBottom:"1.5rem",userSelect:"none"}}>
           DERIVATIVE
         </div>
         <button className="arch-link" onClick={()=>setView("archive")}>archive</button>
@@ -564,11 +605,11 @@ export default function Derivative() {
       <div style={{position:"relative",zIndex:1}}>
         <div style={{display:"flex",alignItems:"center",gap:"1rem",marginBottom:"1.5rem"}}>
           <button style={S.btnSm} onClick={()=>setView("splash")}>← back</button>
-          <span style={{...S.mono,color:"#a78bfa",fontSize:"0.75rem",letterSpacing:"0.14em",textTransform:"uppercase"}}>Archive — January 2026</span>
+          <span style={{...S.mono,color:"#c8922a",fontSize:"0.75rem",letterSpacing:"0.14em",textTransform:"uppercase"}}>Archive — January 2026</span>
         </div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:"6px",maxWidth:"420px"}}>
           {["S","M","T","W","T","F","S"].map((d,i)=>(
-            <div key={i} style={{textAlign:"center",...S.mono,fontSize:"0.6rem",color:"#7a6a9a",letterSpacing:"0.1em",paddingBottom:"4px"}}>{d}</div>
+            <div key={i} style={{textAlign:"center",...S.mono,fontSize:"0.6rem",color:"#7a6858",letterSpacing:"0.1em",paddingBottom:"4px"}}>{d}</div>
           ))}
           {[...Array(4)].map((_,i)=><div key={"p"+i}/>)}
           {PUZZLES.map(p=>{
@@ -577,18 +618,18 @@ export default function Derivative() {
             const isToday=p.date===today;
             return (
               <button key={p.date} onClick={()=>openPuzzle(p.date)} style={{
-                background:st==="complete"?"#3d2f6a":st==="partial"?"#2a1f50":"#12102a",
-                border:isToday?"1px solid #c4b5fd":st==="complete"?"1px solid #7c5cbf":st==="partial"?"1px solid #3a2a6a":"1px solid #2a2550",
-                color:st==="complete"?"#e2d9f3":st==="partial"?"#a78bfa":isToday?"#c4b5fd":"#6a5a8a",
+                background:st==="complete"?"#2a1e08":st==="partial"?"#1e1808":"#141208",
+                border:isToday?"1px solid #e8b84b":st==="complete"?"1px solid #c8922a":st==="partial"?"1px solid #3a2e14":"1px solid #282010",
+                color:st==="complete"?"#d4c4a0":st==="partial"?"#c8922a":isToday?"#e8b84b":"#6a5a48",
                 borderRadius:"3px",padding:"0.45rem 0",...S.mono,fontSize:"0.78rem",cursor:"pointer",textAlign:"center",fontWeight:isToday?500:400
               }}>
-                {day}{st==="complete"&&<span style={{display:"block",fontSize:"0.35rem",color:"#c4b5fd"}}>●</span>}
+                {day}{st==="complete"&&<span style={{display:"block",fontSize:"0.35rem",color:"#e8b84b"}}>●</span>}
               </button>
             );
           })}
         </div>
         <div style={{marginTop:"1.25rem",display:"flex",gap:"1.25rem"}}>
-          {[["unplayed","#6a5a8a"],["partial","#a78bfa"],["complete","#e2d9f3"]].map(([l,c])=>(
+          {[["unplayed","#6a5a48"],["partial","#c8922a"],["complete","#d4c4a0"]].map(([l,c])=>(
             <span key={l} style={{...S.mono,fontSize:"0.6rem",color:c,letterSpacing:"0.08em"}}>{l}</span>
           ))}
         </div>
@@ -609,7 +650,7 @@ export default function Derivative() {
         <div style={{position:"relative",zIndex:1}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"1.25rem"}}>
             <button style={S.btnSm} onClick={()=>setView("splash")}>← back</button>
-            <span style={{...S.mono,fontSize:"0.6rem",color:"#4a3a66",letterSpacing:"0.12em",textTransform:"uppercase"}}>{dateLabel}</span>
+            <span style={{...S.mono,fontSize:"0.6rem",color:"#4a3a28",letterSpacing:"0.12em",textTransform:"uppercase"}}>{dateLabel}</span>
             <button style={S.btnSm} onClick={()=>setView("archive")}>archive</button>
           </div>
 
