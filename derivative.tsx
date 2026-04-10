@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { generateDailyPuzzle } from "./puzzle-engine/generator";
+import { generateDailyPuzzle } from "./generator";
 import RootGraph from "./components/RootGraph";
 
 type PuzzleType =
