@@ -1,23 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { generateDailyPuzzle } from "./generator";
 import RootGraph from "./components/RootGraph";
-
-type PuzzleType =
-  | "ROOT"
-  | "SUPPLETIVE"
-  | "GRIMM"
-  | "SEMANTIC"
-  | "COLLISION"
-  | "PIE"
-  | "DECEPTION"
-  | "FALSE_FAMILY"
-  | "PHANTOM_ROOT";
-
-type Reveal = {
-  headline: string;
-  body: string;
-  connections: [string, string][];
-};
+import type { PuzzleType, Reveal } from "./types";
 
 type PuzzleGroup = {
   id: string;

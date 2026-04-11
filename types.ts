@@ -6,11 +6,10 @@ export type PuzzleType =
   | "SUPPLETIVE"
   | "GRIMM"
   | "COLLISION"
+  | "PIE"
   | "DECEPTION"
   | "FALSE_FAMILY"
-  | "PHANTOM_ROOT"
-  | "SHIFT"
-  | "TIMELINE";
+  | "PHANTOM_ROOT";
 
 export interface LinguisticInsight {
   id: string;
