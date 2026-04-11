@@ -1,5 +1,6 @@
 // generator.ts
 
+import { hashString } from "./seed";
 import { generateInsight } from "./insightEngine";
 import { synthesizePuzzle } from "./puzzleSynthesizer";
 import { generateReveal } from "./revealEngine";
