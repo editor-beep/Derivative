@@ -309,6 +309,175 @@ const FALSE_FAMILY_POOL = [
   },
 ];
 
+// ── IDIOM DATA ────────────────────────────────────────────────────────────────
+
+const IDIOM_POOL = [
+  {
+    phrase: "nothing new under the sun",
+    origin: "Hebrew Bible",
+    lang: "Ecclesiastes → Latin Vulgate → English",
+    fragments: ["nothing", "new", "under", "the", "sun"],
+    tension: "An ancient theological claim about cyclical time — not progress — dressed as modern resignation",
+    revealHeadline: "biblical repetition disguised as inevitability",
+    revealBody: "From Ecclesiastes 1:9. What reads as world-weariness is a cosmological argument: time is circular, not linear. Progress is an illusion. The phrase carries a complete model of history inside six words."
+  },
+  {
+    phrase: "time is money",
+    origin: "Benjamin Franklin",
+    lang: "18th-century capitalist metaphor → cliché",
+    fragments: ["time", "is", "money"],
+    tension: "A conceptual metaphor that hardwired capitalist value into the English language itself",
+    revealHeadline: "capitalism embedded in the grammar of time",
+    revealBody: "Franklin's 1748 'Advice to a Young Tradesman' didn't invent the idea — it crystallized it. Once time IS money, it can be spent, saved, wasted, or stolen. The metaphor restructures how English speakers experience duration."
+  },
+  {
+    phrase: "bite the bullet",
+    origin: "battlefield surgery",
+    lang: "19th-century military → general English",
+    fragments: ["bite", "the", "bullet"],
+    tension: "A phrase born from pre-anesthetic surgery — endurance through literal agony — now used for minor inconveniences",
+    revealHeadline: "surgical agony compressed into casual advice",
+    revealBody: "Soldiers bit a bullet or leather strap during field surgery to endure pain without anesthetic. The idiom carries an entire pre-modern medical world. When we say it about filling out forms, we are invoking that world."
+  },
+  {
+    phrase: "burning the midnight oil",
+    origin: "pre-electric lamp work",
+    lang: "17th-century English → common idiom",
+    fragments: ["burning", "the", "midnight", "oil"],
+    tension: "An idiom that makes no literal sense in the electric age — it preserves the memory of candle and lamp work",
+    revealHeadline: "fossil of pre-electric labor",
+    revealBody: "Oil lamps were the only light source for night work before electricity. The phrase dates to Francis Quarles (1635). Every time it is used, it conjures a vanished economy of light, scarcity, and physical effort."
+  },
+  {
+    phrase: "break a leg",
+    origin: "theater superstition",
+    lang: "early 20th-century stage slang",
+    fragments: ["break", "a", "leg"],
+    tension: "Theater's inverted blessing — say the opposite of what you mean to fool the jealous spirits",
+    revealHeadline: "apotropaic magic disguised as encouragement",
+    revealBody: "Wishing good luck was considered dangerous — it could attract bad luck. So actors said the opposite. The phrase reveals a surviving layer of folk magic inside modern secular speech, operating below conscious awareness."
+  },
+  {
+    phrase: "the whole nine yards",
+    origin: "disputed — WWII ammunition belts",
+    lang: "mid-20th-century American English",
+    fragments: ["the", "whole", "nine", "yards"],
+    tension: "One of the most hotly contested idioms in English — nobody knows where the nine yards came from",
+    revealHeadline: "completeness encoded in an unknown unit",
+    revealBody: "The most cited origin: WWII fighter pilots received 27 feet (nine yards) of ammunition belt — firing it all meant total commitment. Other theories cite coal, concrete, kilts, burial shrouds. The phrase survives despite — or because of — its opacity."
+  },
+  {
+    phrase: "let the cat out of the bag",
+    origin: "medieval market fraud",
+    lang: "18th-century English",
+    fragments: ["let", "the", "cat", "out", "of", "the", "bag"],
+    tension: "A market scam where a cat was substituted for a piglet — revealing the trick became the idiom for revelation",
+    revealHeadline: "a medieval con trick frozen into language",
+    revealBody: "Unscrupulous traders would substitute a cat for a piglet in a sealed bag. If the buyer opened the bag — let the cat out — the deception was exposed. The phrase preserves a specific pre-industrial fraud."
+  },
+];
+
+// ── BORROWED DATA ─────────────────────────────────────────────────────────────
+
+const BORROWED_POOL = [
+  {
+    root: "Arabic extraction",
+    lang: "Arabic → English",
+    meaning: "Arabic loan words",
+    groups: [
+      {
+        id: "arabic", label: "Arabic stream (al- prefix pattern)",
+        accepts: ["algebra", "algorithm", "alcohol", "cipher"],
+        related: ["zero", "coffee"]
+      },
+      {
+        id: "hindi", label: "Hindi / Sanskrit stream",
+        accepts: ["bungalow", "shampoo", "jungle", "thug"],
+        related: ["avatar", "pundit"]
+      },
+      {
+        id: "nahuatl", label: "Nahuatl stream (Aztec)",
+        accepts: ["chocolate", "tomato", "avocado"],
+        related: ["coyote", "chili"]
+      }
+    ],
+    pool: ["algebra", "algorithm", "alcohol", "cipher", "bungalow", "shampoo", "jungle", "thug", "chocolate", "tomato", "avocado"],
+    tension: "Every word here is an extraction — English absorbing vocabulary from cultures it encountered through trade, conquest, and colonization"
+  },
+  {
+    root: "colonized language flows",
+    lang: "Global → English",
+    meaning: "post-colonial borrowing",
+    groups: [
+      {
+        id: "french", label: "Norman French conquest layer",
+        accepts: ["beef", "pork", "mutton", "venison"],
+        related: ["veal", "poultry"]
+      },
+      {
+        id: "old_english", label: "Old English farming layer",
+        accepts: ["cow", "pig", "sheep", "deer"],
+        related: ["ox", "fowl"]
+      },
+      {
+        id: "latin", label: "Latin ecclesiastical layer",
+        accepts: ["scripture", "angel", "altar", "martyr"],
+        related: ["saint", "bishop"]
+      }
+    ],
+    pool: ["beef", "pork", "mutton", "venison", "cow", "pig", "sheep", "deer", "scripture", "angel", "altar", "martyr"],
+    tension: "The Norman conquest split English vocabulary in two: Old English named the living animals, French named the meat — the language of the farmer vs. the language of the lord"
+  },
+  {
+    root: "sinister / gauche / left",
+    lang: "Latin + French + English",
+    meaning: "left-handedness as stigma",
+    groups: [
+      {
+        id: "stigma", label: "Words that encode left = wrong",
+        accepts: ["sinister", "gauche", "awkward"],
+        related: ["clumsy", "left-handed"]
+      },
+      {
+        id: "origin", label: "Neutral / directional origin words",
+        accepts: ["left", "port", "larboard"],
+        related: ["leeward", "starboard"]
+      },
+      {
+        id: "right", label: "Words that encode right = correct",
+        accepts: ["right", "dexterous", "adroit"],
+        related: ["correct", "proper"]
+      }
+    ],
+    pool: ["sinister", "gauche", "awkward", "left", "port", "larboard", "right", "dexterous", "adroit"],
+    tension: "Latin 'sinister' meant simply 'left' — the ideological drift to 'evil' happened as left-handedness was stigmatized across European cultures. The language records the prejudice."
+  },
+  {
+    root: "body-as-machine metaphors",
+    lang: "Industrial English",
+    meaning: "mechanical body language",
+    groups: [
+      {
+        id: "body_to_machine", label: "Body words applied to machines",
+        accepts: ["arm", "leg", "neck", "shoulder"],
+        related: ["foot", "rib"]
+      },
+      {
+        id: "machine_to_body", label: "Machine words applied to bodies",
+        accepts: ["running", "firing", "pumping", "drive"],
+        related: ["pressure", "tension"]
+      },
+      {
+        id: "shared", label: "Words that moved both directions",
+        accepts: ["joint", "valve", "channel", "system"],
+        related: ["network", "trunk"]
+      }
+    ],
+    pool: ["arm", "leg", "neck", "shoulder", "running", "firing", "pumping", "drive", "joint", "valve", "channel", "system"],
+    tension: "The Industrial Revolution didn't just use machine metaphors for bodies — it worked both ways. We now speak of the body's 'systems' and 'drive' as if it were built, not born."
+  },
+];
+
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 
 function pick<T>(arr: T[], r: () => number): T {
@@ -401,6 +570,42 @@ function buildFalseFamilyInsight(r: () => number): LinguisticInsight {
   };
 }
 
+function buildIdiomInsight(r: () => number): LinguisticInsight {
+  const d = pick(IDIOM_POOL, r);
+  // Shuffle fragments deterministically using the rng
+  const shuffled = [...d.fragments].sort(() => r() - 0.5);
+  return {
+    id: `idiom-${d.phrase.slice(0, 12).replace(/\s/g, "-")}`,
+    type: "IDIOM",
+    root: d.phrase,
+    language: d.lang,
+    words: d.fragments,
+    meaning: d.origin,
+    tension: d.tension,
+    data: {
+      phrase: d.phrase,
+      fragments: shuffled,
+      origin: d.origin,
+      revealHeadline: d.revealHeadline,
+      revealBody: d.revealBody
+    }
+  };
+}
+
+function buildBorrowedInsight(r: () => number): LinguisticInsight {
+  const d = pick(BORROWED_POOL, r);
+  return {
+    id: `borrowed-${d.root.slice(0, 14).replace(/\s/g, "-")}`,
+    type: "BORROWED",
+    root: d.root,
+    language: d.lang,
+    words: d.pool,
+    meaning: d.meaning,
+    tension: d.tension,
+    data: { groups: d.groups, pool: d.pool }
+  };
+}
+
 // ── EXPORT ────────────────────────────────────────────────────────────────────
 
 export function generateInsight(seed: number): LinguisticInsight {
@@ -412,7 +617,9 @@ export function generateInsight(seed: number): LinguisticInsight {
     buildSemanticShiftInsight,
     buildCollisionInsight,
     buildDeceptionInsight,
-    buildFalseFamilyInsight
+    buildFalseFamilyInsight,
+    buildIdiomInsight,
+    buildBorrowedInsight,
   ];
 
   const chosen = builders[Math.floor(r() * builders.length)];

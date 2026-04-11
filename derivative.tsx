@@ -36,6 +36,8 @@ type Puzzle = {
   pairs?: PuzzlePair[];
   timeline?: PuzzleTimelineItem[];
   word?: string;
+  fragments?: string[];
+  answer?: string;
   reveal: Reveal;
   meta?: {
     root?: string;
@@ -56,7 +58,11 @@ type AnswerState = {
   answers?: Record<number, string>;
 };
 
-type PuzzleState = RootState & SortState & AnswerState;
+type IdiomState = {
+  sequence?: string[];
+};
+
+type PuzzleState = RootState & SortState & AnswerState & IdiomState;
 
 const TYPE_LABELS: Record<string, string> = {
   ROOT: "ROOT",
@@ -68,6 +74,8 @@ const TYPE_LABELS: Record<string, string> = {
   DECEPTION: "HIDDEN STRUCTURE",
   FALSE_FAMILY: "FALSE FAMILY",
   PHANTOM_ROOT: "INFERRED ROOT",
+  IDIOM: "IDIOM SYSTEM",
+  BORROWED: "BORROWED LAYER",
 };
 
 const TYPE_SUBLABELS: Record<string, string> = {
@@ -80,6 +88,8 @@ const TYPE_SUBLABELS: Record<string, string> = {
   DECEPTION: "hidden structure",
   FALSE_FAMILY: "etymological imposture",
   PHANTOM_ROOT: "reverse inference",
+  IDIOM: "fossilized ideology",
+  BORROWED: "colonial lexicon",
 };
 
 const COLORS = {
@@ -121,6 +131,8 @@ const TYPE_COLORS: Record<string, string> = {
   DECEPTION: "#d66a37",
   FALSE_FAMILY: "#8f73db",
   PHANTOM_ROOT: "#5bcf94",
+  IDIOM: "#c46eb0",
+  BORROWED: "#7ab87a",
 };
 
 const STORAGE_KEY = "derivative_v4";
@@ -336,6 +348,27 @@ const IconPhantomRoot = ({ color }: { color: string }) => (
   </IconBase>
 );
 
+const IconIdiom = ({ color }: { color: string }) => (
+  <IconBase color={color}>
+    <path d="M4 8h16" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
+    <path d="M4 12h10" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
+    <path d="M4 16h13" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
+    <circle cx="18" cy="12" r="2.2" fill="none" stroke={color} strokeWidth="1.2" />
+    <circle cx="18" cy="12" r="0.8" fill={color} />
+  </IconBase>
+);
+
+const IconBorrowed = ({ color }: { color: string }) => (
+  <IconBase color={color}>
+    <circle cx="6" cy="8" r="2.5" fill="none" stroke={color} strokeWidth="1.2" />
+    <circle cx="18" cy="8" r="2.5" fill="none" stroke={color} strokeWidth="1.2" />
+    <circle cx="12" cy="17" r="2.5" fill="none" stroke={color} strokeWidth="1.2" />
+    <path d="M8.2 9.2L10.2 15.2" stroke={color} strokeWidth="1.1" strokeDasharray="1.5 1.5" />
+    <path d="M15.8 9.2L13.8 15.2" stroke={color} strokeWidth="1.1" strokeDasharray="1.5 1.5" />
+    <path d="M8.4 7.6L15.6 7.6" stroke={color} strokeWidth="1.1" strokeDasharray="1.5 1.5" />
+  </IconBase>
+);
+
 const TYPE_ICONS: Record<string, ({ color }: { color: string }) => JSX.Element> = {
   ROOT: IconRoot,
   SUPPLETIVE: IconSuppletive,
@@ -346,6 +379,8 @@ const TYPE_ICONS: Record<string, ({ color }: { color: string }) => JSX.Element> 
   DECEPTION: IconDeception,
   FALSE_FAMILY: IconFalseFamily,
   PHANTOM_ROOT: IconPhantomRoot,
+  IDIOM: IconIdiom,
+  BORROWED: IconBorrowed,
 };
 
 const GlobalFX = () => (
@@ -1823,6 +1858,251 @@ const SemanticPuzzle = ({
   );
 };
 
+const IdiomPuzzle = ({
+  puzzle,
+  state,
+  onState,
+  revealed,
+}: {
+  puzzle: Puzzle;
+  state: PuzzleState;
+  onState: (s: PuzzleState) => void;
+  revealed: boolean;
+}) => {
+  const sequence = state?.sequence || [];
+  const fragments = puzzle.fragments || [];
+  const answer = puzzle.answer || "";
+  const answerWords = answer.split(" ");
+
+  const available = fragments.filter((f) => !sequence.includes(f) || sequence.filter((s) => s === f).length < fragments.filter((x) => x === f).length);
+
+  // deduplicate available: count occurrences
+  const fragCounts = fragments.reduce<Record<string, number>>((acc, f) => {
+    acc[f] = (acc[f] || 0) + 1;
+    return acc;
+  }, {});
+  const seqCounts = sequence.reduce<Record<string, number>>((acc, f) => {
+    acc[f] = (acc[f] || 0) + 1;
+    return acc;
+  }, {});
+  const availableFrags = Object.entries(fragCounts).flatMap(([word, count]) => {
+    const used = seqCounts[word] || 0;
+    return Array(Math.max(0, count - used)).fill(word);
+  });
+
+  const isCorrect = sequence.join(" ") === answer;
+  const isComplete = isCorrect || revealed;
+
+  const addFragment = (word: string) => {
+    if (isComplete) return;
+    onState({ ...state, sequence: [...sequence, word] });
+  };
+
+  const removeLastOrWord = (word: string) => {
+    if (isComplete) return;
+    const idx = [...sequence].lastIndexOf(word);
+    if (idx === -1) return;
+    const next = [...sequence];
+    next.splice(idx, 1);
+    onState({ ...state, sequence: next });
+  };
+
+  const clearAll = () => {
+    onState({ ...state, sequence: [] });
+  };
+
+  const color = TYPE_COLORS["IDIOM"];
+
+  return (
+    <div
+      style={{
+        position: "relative",
+        border: `1px solid ${COLORS.blackLine}`,
+        borderRadius: "4px",
+        padding: "1rem",
+        background: `linear-gradient(180deg, ${COLORS.surface2}, ${COLORS.surface})`,
+        overflow: "hidden",
+      }}
+    >
+      <SystemMesh intensity={0.85} />
+
+      <div style={{ position: "relative", zIndex: 1 }}>
+        {/* Origin label */}
+        {puzzle.word && (
+          <div
+            style={{
+              ...S.mono,
+              fontSize: "0.62rem",
+              color: COLORS.textMuted,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              marginBottom: "0.75rem",
+            }}
+          >
+            origin — {puzzle.word}
+          </div>
+        )}
+
+        {/* Assembled phrase display */}
+        <div
+          style={{
+            minHeight: "3rem",
+            marginBottom: "1rem",
+            padding: "0.65rem 0.75rem",
+            background: isCorrect
+              ? `rgba(196,110,176,0.08)`
+              : "rgba(78,207,207,0.04)",
+            border: `1px solid ${isCorrect ? color + "55" : COLORS.blackLine}`,
+            borderRadius: "3px",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "6px",
+            alignItems: "center",
+            boxShadow: isCorrect ? `0 0 24px ${color}22` : "none",
+            transition: "all 0.3s ease",
+          }}
+        >
+          {sequence.length === 0 && !revealed ? (
+            <span
+              style={{
+                ...S.mono,
+                fontSize: "0.72rem",
+                color: COLORS.textFaint,
+                letterSpacing: "0.08em",
+                fontStyle: "italic",
+              }}
+            >
+              tap fragments to reconstruct…
+            </span>
+          ) : (
+            (revealed && sequence.length === 0 ? answerWords : sequence).map((word, i) => (
+              <span
+                key={i}
+                onClick={() => !revealed && removeLastOrWord(word)}
+                style={{
+                  ...S.mono,
+                  fontSize: "0.88rem",
+                  color: revealed
+                    ? isCorrect || sequence.join(" ") === answer
+                      ? color
+                      : COLORS.textSecondary
+                    : COLORS.textPrimary,
+                  cursor: revealed ? "default" : "pointer",
+                  padding: "0.1rem 0.05rem",
+                  borderBottom: revealed ? "none" : `1px solid ${COLORS.goldDark}`,
+                  transition: "color 0.2s ease",
+                }}
+              >
+                {word}
+                {i < sequence.length - 1 || (revealed && i < answerWords.length - 1) ? "\u00a0" : ""}
+              </span>
+            ))
+          )}
+        </div>
+
+        {/* Correct flash */}
+        {isCorrect && !revealed && (
+          <div
+            style={{
+              ...S.mono,
+              fontSize: "0.6rem",
+              color,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              marginBottom: "0.65rem",
+              animation: "textGlow 2s ease-in-out infinite",
+            }}
+          >
+            expression reconstructed ◈
+          </div>
+        )}
+
+        {/* Revealed answer */}
+        {revealed && (
+          <div
+            style={{
+              ...S.mono,
+              fontSize: "0.7rem",
+              color: COLORS.textSecondary,
+              letterSpacing: "0.06em",
+              marginBottom: "0.75rem",
+              fontStyle: "italic",
+            }}
+          >
+            "{answer}"
+          </div>
+        )}
+
+        {/* Fragment tiles */}
+        {!isComplete && availableFrags.length > 0 && (
+          <div>
+            <div
+              style={{
+                ...S.mono,
+                fontSize: "0.56rem",
+                color: COLORS.textFaint,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                marginBottom: "0.45rem",
+              }}
+            >
+              fragments
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "7px", marginBottom: "0.75rem" }}>
+              {availableFrags.map((word, i) => (
+                <div
+                  key={`${word}-${i}`}
+                  onClick={() => addFragment(word)}
+                  style={{
+                    ...S.mono,
+                    fontSize: "0.82rem",
+                    padding: "0.32rem 0.72rem",
+                    borderRadius: "2px",
+                    background: `${color}12`,
+                    border: `1px solid ${color}44`,
+                    color,
+                    cursor: "pointer",
+                    userSelect: "none",
+                    transition: "all 0.12s ease",
+                    boxShadow: `0 0 10px ${color}10`,
+                  }}
+                >
+                  {word}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Controls */}
+        {!revealed && sequence.length > 0 && !isCorrect && (
+          <button
+            className="deriv-btn"
+            style={{ ...S.btnSm, fontSize: "0.58rem" }}
+            onClick={clearAll}
+          >
+            clear →
+          </button>
+        )}
+
+        {/* Progress counter */}
+        <div
+          style={{
+            ...S.mono,
+            fontSize: "0.56rem",
+            color: COLORS.textFaint,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            marginTop: "0.5rem",
+          }}
+        >
+          {sequence.length}/{answerWords.length} placed
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function Derivative() {
   const [view, setView] = useState<"splash" | "archive" | "game">("splash");
   const [selDate, setSelDate] = useState<string | null>(null);
@@ -1892,11 +2172,16 @@ export default function Derivative() {
       return blanks.every((_, i) => puzzleState.answers?.[i]);
     }
 
-    if (["SUPPLETIVE", "PIE", "COLLISION", "DECEPTION", "FALSE_FAMILY", "PHANTOM_ROOT"].includes(puzzle.type)) {
+    if (["SUPPLETIVE", "PIE", "COLLISION", "DECEPTION", "FALSE_FAMILY", "PHANTOM_ROOT", "BORROWED"].includes(puzzle.type)) {
       const assigned = puzzleState.assigned || {};
       return (puzzle.groups || []).every((g) =>
         g.accepts.every((w) => assigned[w] === g.id)
       );
+    }
+
+    if (puzzle.type === "IDIOM") {
+      const sequence = puzzleState.sequence || [];
+      return sequence.join(" ") === (puzzle.answer || "");
     }
 
     return false;
@@ -1963,7 +2248,7 @@ export default function Derivative() {
       chain = (puzzle.required || []).map((w) => (found.includes(w) ? "◈" : "◇")).join("─");
       const n = found.filter((w) => (puzzle.required || []).includes(w)).length;
       scoreStr = `${n} of ${(puzzle.required || []).length} found`;
-    } else if (["SUPPLETIVE", "PIE", "COLLISION", "DECEPTION", "FALSE_FAMILY", "PHANTOM_ROOT"].includes(puzzle.type)) {
+    } else if (["SUPPLETIVE", "PIE", "COLLISION", "DECEPTION", "FALSE_FAMILY", "PHANTOM_ROOT", "BORROWED"].includes(puzzle.type)) {
       const assigned = puzzleState.assigned || {};
       chain = (puzzle.groups || [])
         .map((g) => {
@@ -1989,6 +2274,11 @@ export default function Derivative() {
       const blanks = (puzzle.timeline || []).filter((t) => t.blank);
       chain = blanks.map((_, i) => (answers[i] ? "◈" : "◇")).join(" ─ ");
       scoreStr = `${blanks.filter((_, i) => answers[i]).length} of ${blanks.length} filled`;
+    } else if (puzzle.type === "IDIOM") {
+      const sequence = puzzleState.sequence || [];
+      const answerWords = (puzzle.answer || "").split(" ");
+      chain = answerWords.map((_, i) => (sequence[i] === answerWords[i] ? "◈" : "◇")).join(" ─ ");
+      scoreStr = `${sequence.length} of ${answerWords.length} placed`;
     }
 
     const status = complete ? "complete" : revealed ? "revealed" : "in progress";
@@ -2021,12 +2311,13 @@ export default function Derivative() {
     const s = p.state;
     if (puz.type === "ROOT" && (s.found || []).length > 0) return "partial";
     if (
-      ["SUPPLETIVE", "PIE", "COLLISION", "DECEPTION", "FALSE_FAMILY", "PHANTOM_ROOT"].includes(puz.type) &&
+      ["SUPPLETIVE", "PIE", "COLLISION", "DECEPTION", "FALSE_FAMILY", "PHANTOM_ROOT", "BORROWED"].includes(puz.type) &&
       Object.keys(s.assigned || {}).length > 0
     )
       return "partial";
     if (puz.type === "GRIMM" && Object.keys(s.answers || {}).length > 0) return "partial";
     if (puz.type === "SEMANTIC" && Object.keys(s.answers || {}).length > 0) return "partial";
+    if (puz.type === "IDIOM" && (s.sequence || []).length > 0) return "partial";
     return "unplayed";
   };
 
@@ -2280,6 +2571,7 @@ export default function Derivative() {
       "DECEPTION",
       "FALSE_FAMILY",
       "PHANTOM_ROOT",
+      "BORROWED",
     ].includes(puzzle.type);
 
     return (
@@ -2354,6 +2646,15 @@ export default function Derivative() {
 
           {puzzle.type === "SEMANTIC" && (
             <SemanticPuzzle
+              puzzle={puzzle}
+              state={puzzleState}
+              onState={handlePuzzleState}
+              revealed={revealed}
+            />
+          )}
+
+          {puzzle.type === "IDIOM" && (
+            <IdiomPuzzle
               puzzle={puzzle}
               state={puzzleState}
               onState={handlePuzzleState}
