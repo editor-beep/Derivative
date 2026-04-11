@@ -8,6 +8,28 @@ function getPrefix(word: string, root: string): string | null {
   return word.slice(0, idx);
 }
 
+/* ── ORBIT COLLISION DETECTION ───────────────────────────────── */
+const CHAR_WIDTH_PX = 5;    // monospace 8px ≈ 5px per glyph
+const MIN_NODE_GAP = 6;     // px clearance between adjacent label edges
+const MIN_ORBIT_RADIUS = 110;
+const MAX_ORBIT_RADIUS = 145; // keeps nodes inside 320px-tall SVG at center y=160
+const NODE_RADIUS = 10;
+
+function computeOrbitRadius(words: string[]): number {
+  if (words.length <= 1) return MIN_ORBIT_RADIUS;
+  const n = words.length;
+  let needed = MIN_ORBIT_RADIUS;
+  for (let i = 0; i < n; i++) {
+    const a = words[i];
+    const b = words[(i + 1) % n];
+    const halfA = Math.max(NODE_RADIUS, (a.length * CHAR_WIDTH_PX) / 2);
+    const halfB = Math.max(NODE_RADIUS, (b.length * CHAR_WIDTH_PX) / 2);
+    const r = (halfA + halfB + MIN_NODE_GAP) / (2 * Math.sin(Math.PI / n));
+    if (r > needed) needed = r;
+  }
+  return Math.min(needed, MAX_ORBIT_RADIUS);
+}
+
 export default function RootGraph({
   root,
   required,
@@ -23,7 +45,7 @@ export default function RootGraph({
 
   const centerX = 260;
   const centerY = 160;
-  const radius = 110;
+  const radius = computeOrbitRadius(words);
 
   return (
     <div style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
@@ -164,7 +186,7 @@ export default function RootGraph({
               <circle
                 cx={x}
                 cy={y}
-                r={10}
+                r={NODE_RADIUS}
                 fill={isFound ? "rgba(200,146,42,0.2)" : "#0d0b08"}
                 stroke={isFound ? "#c8922a" : "#2a2010"}
               />
