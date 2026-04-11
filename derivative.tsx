@@ -2104,7 +2104,10 @@ const IdiomPuzzle = ({
 };
 
 export default function Derivative() {
-  const [view, setView] = useState<"splash" | "archive" | "game">("splash");
+  const isFirstTime = !load()._hasPlayed;
+  const [view, setView] = useState<"splash" | "ready" | "archive" | "game">(
+    isFirstTime ? "splash" : "ready"
+  );
   const [selDate, setSelDate] = useState<string | null>(null);
   const [puzzle, setPuzzle] = useState<Puzzle | null>(null);
   const [progress, setProgress] = useState<Record<string, any>>(load());
@@ -2126,6 +2129,8 @@ export default function Derivative() {
     setRevealed(saved.revealed || false);
     setPuzzleState(saved.state || {});
     setShareMsg(null);
+    const data = load();
+    if (!data._hasPlayed) save({ ...data, _hasPlayed: true });
     setView("game");
   };
 
@@ -2337,7 +2342,8 @@ export default function Derivative() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          padding: "3rem 2rem",
+          minHeight: "100dvh",
+          padding: "4rem 2rem 3rem",
           textAlign: "center",
         }}
       >
@@ -2352,7 +2358,7 @@ export default function Derivative() {
             backgroundImage: `url(${SPLASH_IMAGE})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
-            opacity: 0.22,
+            opacity: 0.15,
             zIndex: 0,
           }}
         />
@@ -2364,27 +2370,55 @@ export default function Derivative() {
             width: "100%",
             height: "100%",
             background:
-              "linear-gradient(to bottom, rgba(7,6,5,0.48) 0%, rgba(7,6,5,0.82) 100%)",
+              "linear-gradient(to bottom, rgba(7,6,5,0.55) 0%, rgba(7,6,5,0.88) 60%, rgba(7,6,5,0.98) 100%)",
             zIndex: 0,
           }}
         />
         <Starfield />
         <AmbientOverlays />
 
-        <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", maxWidth: "500px", width: "100%" }}>
+          {/* Wordmark as masthead */}
+          <div
+            className="deriv-title"
+            data-text="DERIVATIVE"
+            style={{
+              ...S.mono,
+              fontSize: "2.2rem",
+              fontWeight: 400,
+              color: COLORS.gold,
+              letterSpacing: "0.22em",
+              textTransform: "uppercase",
+              marginBottom: "2.2rem",
+              userSelect: "none",
+            }}
+          >
+            DERIVATIVE
+          </div>
+
+          {/* Separator */}
           <div
             style={{
-              maxWidth: "470px",
-              lineHeight: 1.9,
+              width: "40px",
+              height: "1px",
+              background: COLORS.goldLine,
+              marginBottom: "2.2rem",
+            }}
+          />
+
+          {/* Narrative */}
+          <div
+            style={{
+              lineHeight: 2,
               color: COLORS.textSecondary,
-              fontSize: "0.9rem",
-              marginBottom: "2rem",
+              fontSize: "0.88rem",
+              marginBottom: "0",
               textShadow: "0 0 12px rgba(0,0,0,0.32)",
             }}
           >
-            <p>I want to play a game.</p>
-            <p>The game is called English.</p>
-            <p>
+            <p style={{ margin: "0 0 0.6rem" }}>I want to play a game.</p>
+            <p style={{ margin: "0 0 0.6rem" }}>The game is called English.</p>
+            <p style={{ margin: "0 0 1.4rem" }}>
               You have been playing it since before you could walk.
               <br />
               You did not know you were playing.
@@ -2393,33 +2427,186 @@ export default function Derivative() {
               <br />
               You did not know the rules were made of older, broken rules.
             </p>
-            <p>
+            <p style={{ margin: "0 0 1.4rem" }}>
               You did not know that <em>went</em> is a corpse wearing the wrong name.
-              That <em>nice</em> meant ignorant. That <em>person</em> is a mask. That <em>be</em> and <em>am</em> and <em>was</em> have never, in any language, belonged together.
+              That <em>nice</em> meant ignorant. That <em>person</em> is a mask. That{" "}
+              <em>be</em> and <em>am</em> and <em>was</em> have never, in any language, belonged together.
             </p>
-            <p>You have been fluent your whole life in a language you have never truly known.</p>
-            <p style={{ color: COLORS.gold, fontSize: "0.82rem", letterSpacing: "0.07em" }}>
-              Do you want to play a game?
+            <p style={{ margin: "0 0 2rem" }}>
+              You have been fluent your whole life in a language you have never truly known.
             </p>
           </div>
 
+          {/* Final beat */}
+          <p
+            style={{
+              ...S.mono,
+              color: COLORS.gold,
+              fontSize: "0.8rem",
+              letterSpacing: "0.1em",
+              margin: "0 0 2.4rem",
+              textTransform: "uppercase",
+            }}
+          >
+            Do you want to play a game?
+          </p>
+
+          {/* CTA */}
+          <button
+            className="deriv-btn"
+            style={{ ...S.btnPrimary, marginBottom: "1.6rem", padding: "0.6rem 2.2rem" }}
+            onClick={() => openPuzzle(today)}
+          >
+            enter →
+          </button>
+
+          <button className="arch-link" onClick={() => setView("archive")}>
+            archive
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (view === "ready") {
+    const todayPuzzle = getPuzzleForDate(today);
+    const todayStatus = statusFor(today);
+    const typeLabel = todayPuzzle ? (TYPE_LABELS[todayPuzzle.type] || todayPuzzle.type) : "";
+    const subLabel = todayPuzzle ? (TYPE_SUBLABELS[todayPuzzle.type] || "") : "";
+    const typeColor = todayPuzzle ? (TYPE_COLORS[todayPuzzle.type] || COLORS.gold) : COLORS.gold;
+    const TypeIcon = todayPuzzle ? TYPE_ICONS[todayPuzzle.type] : null;
+
+    const statusDot = todayStatus === "complete"
+      ? { symbol: "◈", color: COLORS.gold, label: "complete" }
+      : todayStatus === "partial"
+      ? { symbol: "◑", color: COLORS.goldDim, label: "in progress" }
+      : { symbol: "◇", color: COLORS.textMuted, label: "not yet played" };
+
+    return (
+      <div
+        style={{
+          ...bgStyle,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100dvh",
+          padding: "3rem 2rem",
+          textAlign: "center",
+        }}
+      >
+        <GlobalFX />
+        <Starfield />
+        <AmbientOverlays />
+
+        <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: "0" }}>
+          {/* Wordmark */}
           <div
             className="deriv-title"
             data-text="DERIVATIVE"
             onClick={() => openPuzzle(today)}
             style={{
               ...S.mono,
-              fontSize: "2.55rem",
+              fontSize: "2.2rem",
               fontWeight: 400,
               color: COLORS.gold,
               letterSpacing: "0.22em",
               textTransform: "uppercase",
-              marginBottom: "1.55rem",
+              marginBottom: "2.8rem",
               userSelect: "none",
+              cursor: "pointer",
             }}
           >
             DERIVATIVE
           </div>
+
+          {/* Today's puzzle type card */}
+          {todayPuzzle && (
+            <div
+              onClick={() => openPuzzle(today)}
+              style={{
+                border: `1px solid ${typeColor}28`,
+                background: `${typeColor}08`,
+                borderRadius: "3px",
+                padding: "1.4rem 2rem",
+                marginBottom: "1.2rem",
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "0.65rem",
+                minWidth: "240px",
+                maxWidth: "340px",
+                transition: "background 0.18s ease, border-color 0.18s ease",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "0.55rem" }}>
+                {TypeIcon && <TypeIcon color={typeColor} />}
+                <span
+                  style={{
+                    ...S.mono,
+                    fontSize: "0.7rem",
+                    letterSpacing: "0.14em",
+                    color: typeColor,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {typeLabel}
+                </span>
+              </div>
+              <span
+                style={{
+                  ...S.mono,
+                  fontSize: "0.6rem",
+                  letterSpacing: "0.1em",
+                  color: COLORS.textMuted,
+                  textTransform: "uppercase",
+                }}
+              >
+                {subLabel}
+              </span>
+            </div>
+          )}
+
+          {/* Status + date row */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.7rem",
+              marginBottom: "2.2rem",
+            }}
+          >
+            <span
+              style={{
+                ...S.mono,
+                fontSize: "0.78rem",
+                color: statusDot.color,
+              }}
+            >
+              {statusDot.symbol}
+            </span>
+            <span
+              style={{
+                ...S.mono,
+                fontSize: "0.6rem",
+                letterSpacing: "0.1em",
+                color: COLORS.textMuted,
+                textTransform: "uppercase",
+              }}
+            >
+              {statusDot.label}
+            </span>
+          </div>
+
+          {/* Play CTA */}
+          <button
+            className="deriv-btn"
+            style={{ ...S.btnPrimary, marginBottom: "1.4rem", padding: "0.55rem 1.8rem" }}
+            onClick={() => openPuzzle(today)}
+          >
+            play today →
+          </button>
 
           <button className="arch-link" onClick={() => setView("archive")}>
             archive
@@ -2443,7 +2630,7 @@ export default function Derivative() {
 
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1.5rem" }}>
-            <button className="deriv-btn" style={S.btnSm} onClick={() => setView("splash")}>
+            <button className="deriv-btn" style={S.btnSm} onClick={() => setView(isFirstTime ? "splash" : "ready")}>
               ← back
             </button>
             <span
@@ -2596,7 +2783,7 @@ export default function Derivative() {
               marginBottom: "1.25rem",
             }}
           >
-            <button className="deriv-btn" style={S.btnSm} onClick={() => setView("splash")}>
+            <button className="deriv-btn" style={S.btnSm} onClick={() => setView(isFirstTime ? "splash" : "ready")}>
               ← back
             </button>
             <span
