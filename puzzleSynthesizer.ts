@@ -67,6 +67,32 @@ function buildTimelinePuzzle(insight: LinguisticInsight, date: string): Puzzle {
   };
 }
 
+function buildIdiomPuzzle(insight: LinguisticInsight, date: string): Puzzle {
+  const { phrase, fragments, origin } = insight.data as {
+    phrase: string;
+    fragments: string[];
+    origin: string;
+  };
+  return {
+    date,
+    type: "IDIOM",
+    prompt: `Reconstruct the expression`,
+    fragments,
+    answer: phrase,
+    word: origin,
+    meta: {
+      root: phrase,
+      lang: insight.language,
+      meaning: origin,
+    },
+    reveal: { headline: "", body: "", connections: [] },
+  };
+}
+
+function buildBorrowedPuzzle(insight: LinguisticInsight, date: string): Puzzle {
+  return buildSortPuzzle(insight, date);
+}
+
 export function synthesizePuzzle(insight: LinguisticInsight, date: string): Puzzle {
   switch (insight.type) {
     case "DECEPTION":
@@ -77,6 +103,12 @@ export function synthesizePuzzle(insight: LinguisticInsight, date: string): Puzz
 
     case "SEMANTIC":
       return buildTimelinePuzzle(insight, date);
+
+    case "IDIOM":
+      return buildIdiomPuzzle(insight, date);
+
+    case "BORROWED":
+      return buildBorrowedPuzzle(insight, date);
 
     case "SUPPLETIVE":
     case "COLLISION":

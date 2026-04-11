@@ -9,7 +9,9 @@ export type PuzzleType =
   | "PIE"
   | "DECEPTION"
   | "FALSE_FAMILY"
-  | "PHANTOM_ROOT";
+  | "PHANTOM_ROOT"
+  | "IDIOM"
+  | "BORROWED";
 
 export interface LinguisticInsight {
   id: string;
@@ -41,6 +43,11 @@ export interface Puzzle {
   groups?: any[];
   pairs?: any[];
   timeline?: any[];
+
+  // IDIOM-specific
+  fragments?: string[];
+  answer?: string;
+  word?: string;
 
   meta: {
     root?: string;

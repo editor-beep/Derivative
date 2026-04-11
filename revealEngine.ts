@@ -39,6 +39,37 @@ function falseFamilyReveal(insight: LinguisticInsight): Reveal {
   };
 }
 
+function idiomReveal(insight: LinguisticInsight): Reveal {
+  const { phrase, origin, revealHeadline, revealBody } = insight.data as {
+    phrase: string;
+    origin: string;
+    revealHeadline: string;
+    revealBody: string;
+  };
+  const words = phrase.split(" ");
+  return {
+    headline: revealHeadline,
+    body: revealBody,
+    connections: [
+      [phrase, origin],
+      [words[0], insight.language || "unknown"],
+      [insight.tension.slice(0, 40) + "…", "fossilized ideology"],
+    ] as [string, string][],
+  };
+}
+
+function borrowedReveal(insight: LinguisticInsight): Reveal {
+  const root = insight.root || "";
+  const words = insight.words;
+  return {
+    headline: `BORROWED — ${root}`,
+    body: insight.tension,
+    connections: words
+      .slice(0, 4)
+      .map((w, i) => [w, words[(i + 2) % words.length]] as [string, string]),
+  };
+}
+
 export function generateReveal(insight: LinguisticInsight): Reveal {
   switch (insight.type) {
     case "DECEPTION":
@@ -46,6 +77,12 @@ export function generateReveal(insight: LinguisticInsight): Reveal {
 
     case "FALSE_FAMILY":
       return falseFamilyReveal(insight);
+
+    case "IDIOM":
+      return idiomReveal(insight);
+
+    case "BORROWED":
+      return borrowedReveal(insight);
 
     default:
       return defaultReveal(insight);
