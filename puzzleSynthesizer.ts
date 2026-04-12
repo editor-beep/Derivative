@@ -1,12 +1,21 @@
 // puzzleSynthesizer.ts
 
-import { LinguisticInsight, Puzzle } from "./types";
+import { LinguisticInsight, LensId, Puzzle } from "./types";
+
+function lensId(insight: LinguisticInsight): LensId {
+  return insight.lens?.id ?? "DEFAULT";
+}
+
+function lensLabel(insight: LinguisticInsight): string | undefined {
+  return insight.lens?.label;
+}
 
 function buildRootPuzzle(insight: LinguisticInsight, date: string): Puzzle {
   const { targets, required } = insight.data as { targets: string[]; required: string[] };
   return {
     date,
     type: "ROOT",
+    lensId: lensId(insight),
     prompt: `Find words derived from the ${insight.language} root "${insight.root}" (${insight.meaning})`,
     targets,
     required,
@@ -15,6 +24,7 @@ function buildRootPuzzle(insight: LinguisticInsight, date: string): Puzzle {
       root: insight.root,
       lang: insight.language,
       meaning: insight.meaning,
+      lensLabel: lensLabel(insight),
     },
     reveal: { headline: "", body: "", connections: [] },
   };
@@ -28,6 +38,7 @@ function buildSortPuzzle(insight: LinguisticInsight, date: string): Puzzle {
   return {
     date,
     type: insight.type,
+    lensId: lensId(insight),
     prompt: insight.tension,
     groups,
     pool,
@@ -35,6 +46,7 @@ function buildSortPuzzle(insight: LinguisticInsight, date: string): Puzzle {
       root: insight.root,
       lang: insight.language,
       meaning: insight.meaning,
+      lensLabel: lensLabel(insight),
     },
     reveal: { headline: "", body: "", connections: [] },
   };
@@ -56,12 +68,14 @@ function buildTimelinePuzzle(insight: LinguisticInsight, date: string): Puzzle {
   return {
     date,
     type: "SEMANTIC",
+    lensId: lensId(insight),
     prompt: `Trace the semantic drift of "${word}"`,
     timeline,
     meta: {
       root: insight.root,
       lang: insight.language,
       meaning: insight.meaning,
+      lensLabel: lensLabel(insight),
     },
     reveal: { headline: "", body: "", connections: [] },
   };
@@ -76,6 +90,7 @@ function buildIdiomPuzzle(insight: LinguisticInsight, date: string): Puzzle {
   return {
     date,
     type: "IDIOM",
+    lensId: lensId(insight),
     prompt: `Reconstruct the expression`,
     fragments,
     answer: phrase,
@@ -84,6 +99,7 @@ function buildIdiomPuzzle(insight: LinguisticInsight, date: string): Puzzle {
       root: phrase,
       lang: insight.language,
       meaning: origin,
+      lensLabel: lensLabel(insight),
     },
     reveal: { headline: "", body: "", connections: [] },
   };
