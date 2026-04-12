@@ -13,9 +13,29 @@ export type PuzzleType =
   | "IDIOM"
   | "BORROWED";
 
+export type LensId =
+  | "DEFAULT"
+  | "METAPHOR_DRIFT"
+  | "ETYMOLOGY_FILTER"
+  | "FALSE_TWIN"
+  | "TEMPORAL_DEPTH"
+  | "COMPOUND_HUNT"
+  | "REGISTER_SORT"
+  | "SOUND_TRACE";
+
+export interface Lens {
+  id: LensId;
+  label: string;
+  sublabel: string;
+  applicableTo: PuzzleType[];
+}
+
 export interface LinguisticInsight {
   id: string;
   type: PuzzleType;
+
+  // The lens applied to this insight — set by applyLens(), DEFAULT if absent
+  lens?: Lens;
 
   root?: string;
   language?: string;
@@ -23,16 +43,17 @@ export interface LinguisticInsight {
   words: string[];
   meaning?: string;
 
-  // The contradiction / tension
+  // The contradiction / tension — may be modified by applyLens()
   tension: string;
 
-  // raw data for building puzzles
+  // raw data for building puzzles — may be augmented by applyLens()
   data: any;
 }
 
 export interface Puzzle {
   date: string;
   type: PuzzleType;
+  lensId: LensId;
 
   prompt: string;
 
@@ -53,6 +74,7 @@ export interface Puzzle {
     root?: string;
     lang?: string;
     meaning?: string;
+    lensLabel?: string;
   };
 
   reveal: Reveal;
@@ -62,4 +84,5 @@ export interface Reveal {
   headline: string;
   body: string;
   connections: [string, string][];
+  lensNote?: string;
 }

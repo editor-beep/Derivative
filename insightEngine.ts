@@ -1,6 +1,6 @@
 // insightEngine.ts
 
-import { LinguisticInsight } from "./types";
+import { LinguisticInsight, Lens } from "./types";
 import { mulberry32 } from "./seed";
 
 // ── ROOT DATA ─────────────────────────────────────────────────────────────────
@@ -53,6 +53,148 @@ const ROOT_POOL = [
     targets: ["telephone", "microphone", "symphony", "phonetic", "euphony", "megaphone", "homophone", "cacophony", "xylophone", "saxophone"],
     required: ["telephone", "microphone", "phonetic", "symphony", "homophone"],
     tension: "Greek 'phone' (sound/voice) is often hidden under musical and technical terminology"
+  },
+  {
+    root: "tract", lang: "Latin", meaning: "draw, pull",
+    targets: ["attract", "contract", "distract", "extract", "retract", "tractor", "abstract", "subtract", "tractable", "intractable"],
+    required: ["attract", "contract", "distract", "extract", "retract"],
+    tension: "Latin 'trahere' (pull) hides in abstract words — 'abstract' literally means pulled away",
+    impostors: ["track"],
+    metaphorSplit: { literal: ["tractor", "extract"], abstract: ["abstract", "distract", "contract", "attract", "retract"] }
+  },
+  {
+    root: "rupt", lang: "Latin", meaning: "break",
+    targets: ["rupture", "interrupt", "corrupt", "erupt", "disrupt", "bankrupt", "abrupt", "irrupt"],
+    required: ["rupture", "interrupt", "corrupt", "erupt", "disrupt"],
+    tension: "Latin 'rumpere' (break) surfaces across English in both physical and social breakage",
+    impostors: ["rip"]
+  },
+  {
+    root: "press", lang: "Latin", meaning: "push, press",
+    targets: ["express", "impress", "depress", "compress", "suppress", "oppress", "repress", "pressure", "impression", "depression"],
+    required: ["express", "impress", "depress", "compress", "suppress"],
+    tension: "Latin 'premere/pressare' (press down) generates both physical and emotional vocabulary",
+    metaphorSplit: { literal: ["press", "pressure", "compress"], abstract: ["express", "impress", "depress", "suppress", "repress", "depression", "impression"] }
+  },
+  {
+    root: "cept", lang: "Latin", meaning: "take, seize",
+    targets: ["accept", "except", "intercept", "concept", "perceive", "receive", "deceive", "capable", "capture", "captive"],
+    required: ["accept", "except", "intercept", "concept", "perceive"],
+    tension: "Latin 'capere' bifurcates into -cept and -ceive forms — the same root in Latin and French dress",
+    entryPaths: { accept: "direct_latin", except: "direct_latin", intercept: "direct_latin", concept: "direct_latin", perceive: "via_french", receive: "via_french", deceive: "via_french", capable: "direct_latin", capture: "direct_latin", captive: "direct_latin" }
+  },
+  {
+    root: "lect", lang: "Latin", meaning: "choose, read",
+    targets: ["collect", "select", "elect", "neglect", "lecture", "legible", "legend", "eligible", "intellectual", "diligent"],
+    required: ["collect", "select", "elect", "lecture", "legible"],
+    tension: "Latin 'legere' (choose, read) produces both selection vocabulary and reading vocabulary"
+  },
+  {
+    root: "pos", lang: "Latin", meaning: "put, place",
+    targets: ["compose", "impose", "expose", "propose", "deposit", "postpone", "position", "positive", "component", "opponent"],
+    required: ["compose", "impose", "expose", "propose", "deposit"],
+    tension: "Latin 'ponere' (place) splits into -pose and -pon- forms — the same root in two tense stems"
+  },
+  {
+    root: "grad", lang: "Latin", meaning: "step, go",
+    targets: ["graduate", "grade", "progress", "congress", "regress", "digress", "aggressive", "transgress", "gradual", "ingredient"],
+    required: ["graduate", "progress", "congress", "regress", "aggressive"],
+    tension: "Latin 'gradi' (to step) generates both academic progression and political assembly"
+  },
+  {
+    root: "voc", lang: "Latin", meaning: "call, voice",
+    targets: ["invoke", "provoke", "revoke", "evoke", "vocal", "vocation", "vocabulary", "advocate", "convoke", "equivocate"],
+    required: ["invoke", "provoke", "revoke", "vocal", "vocation"],
+    tension: "Latin 'vocare' (to call) generates both speech vocabulary and professional identity words"
+  },
+  {
+    root: "terr", lang: "Latin", meaning: "earth, land",
+    targets: ["territory", "terrain", "terrestrial", "terrarium", "inter", "subterranean", "Mediterranean"],
+    required: ["territory", "terrain", "terrestrial", "inter", "subterranean"],
+    tension: "Latin 'terra' (earth) connects burial, geography, and place — a root that literally grounds everything",
+    impostors: ["terror"]
+  },
+  {
+    root: "mal", lang: "Latin", meaning: "bad, ill",
+    targets: ["malice", "malfunction", "malnutrition", "malevolent", "malign", "malformed", "malpractice", "malady", "malcontent"],
+    required: ["malice", "malfunction", "malevolent", "malign", "malady"],
+    tension: "Latin 'malus' (bad) is a prolific prefix — 'mal-' still forms new English compounds today"
+  },
+  {
+    root: "bene", lang: "Latin", meaning: "good, well",
+    targets: ["benefit", "benevolent", "benediction", "benefactor", "bonus", "bounty", "debonair", "boon"],
+    required: ["benefit", "benevolent", "benediction", "benefactor", "bonus"],
+    tension: "Latin 'bonus/bene' enters English twice: learned 'bene-' compounds and eroded French 'bon-' forms",
+    entryPaths: { benefit: "direct_latin", benevolent: "direct_latin", benediction: "direct_latin", benefactor: "direct_latin", bonus: "direct_latin", bounty: "via_french", debonair: "via_french", boon: "via_french" }
+  },
+  {
+    root: "cred", lang: "Latin", meaning: "believe, trust",
+    targets: ["credit", "credible", "incredible", "creed", "credential", "discredit", "accredit", "credulous", "miscreant"],
+    required: ["credit", "credible", "creed", "credential", "credulous"],
+    tension: "Latin 'credere' (believe, trust) underlies both financial and theological vocabulary"
+  },
+  {
+    root: "flu", lang: "Latin", meaning: "flow",
+    targets: ["fluid", "fluent", "influence", "influx", "affluent", "fluctuate", "superfluous", "flux"],
+    required: ["fluid", "fluent", "influence", "influx", "affluent"],
+    tension: "Latin 'fluere' (flow) generates both literal flow words and metaphorical influence vocabulary",
+    metaphorSplit: { literal: ["fluid", "flux", "fluctuate"], abstract: ["fluent", "influence", "affluent", "superfluous"] }
+  },
+  {
+    root: "log", lang: "Greek", meaning: "word, reason",
+    targets: ["logic", "dialogue", "prologue", "epilogue", "monologue", "catalogue", "analogy", "apology", "neologism", "eulogy"],
+    required: ["logic", "dialogue", "prologue", "epilogue", "analogy"],
+    tension: "Greek 'logos' (word, reason) enters English via learned borrowing and French -logue erosion"
+  },
+  {
+    root: "path", lang: "Greek", meaning: "feeling, suffering",
+    targets: ["sympathy", "empathy", "apathy", "antipathy", "pathology", "telepathy", "sociopath", "pathos"],
+    required: ["sympathy", "empathy", "apathy", "pathology", "pathos"],
+    tension: "Greek 'pathos' (feeling) generates both emotional and medical vocabulary — suffering and sensation from one root",
+    metaphorSplit: { literal: ["pathology", "sociopath"], abstract: ["sympathy", "empathy", "apathy", "antipathy", "pathos", "telepathy"] }
+  },
+  {
+    root: "chron", lang: "Greek", meaning: "time",
+    targets: ["chronic", "chronicle", "chronology", "anachronism", "synchronize", "synchronous", "chronometer"],
+    required: ["chronic", "chronicle", "chronology", "anachronism", "synchronize"],
+    tension: "Greek 'khronos' (time) — the god literalized into academic and medical vocabulary"
+  },
+  {
+    root: "morph", lang: "Greek", meaning: "form, shape",
+    targets: ["morphology", "metamorphosis", "amorphous", "polymorphic", "morpheme", "anthropomorphic"],
+    required: ["morphology", "metamorphosis", "amorphous", "polymorphic", "morpheme"],
+    tension: "Greek 'morphe' (form) entered scientific English via German morphology in the 19th century"
+  },
+  {
+    root: "therm", lang: "Greek", meaning: "heat",
+    targets: ["thermometer", "thermal", "thermostat", "hypothermia", "thermodynamics", "geothermal"],
+    required: ["thermometer", "thermal", "thermostat", "hypothermia", "thermodynamics"],
+    tension: "Greek 'therme' (heat) produces only scientific compounds — it never naturalized into everyday English"
+  },
+  {
+    root: "bio", lang: "Greek", meaning: "life",
+    targets: ["biology", "biography", "antibiotic", "symbiosis", "biome", "biodiversity", "biopsy", "amphibian"],
+    required: ["biology", "biography", "antibiotic", "symbiosis", "biome"],
+    tension: "Greek 'bios' (life) compounds freely — every new life science adds new bio- words to English"
+  },
+  {
+    root: "photo", lang: "Greek", meaning: "light",
+    targets: ["photograph", "photosynthesis", "photon", "photogenic", "photography", "photoelectric", "photovoltaic"],
+    required: ["photograph", "photosynthesis", "photon", "photogenic", "photography"],
+    tension: "Greek 'phos/photos' (light) was already ancient when scientists borrowed it to name the photograph in 1839"
+  },
+  {
+    root: "spect", lang: "Latin", meaning: "look at, behold",
+    targets: ["inspect", "respect", "suspect", "aspect", "prospect", "retrospect", "introspect", "spectacular", "spectator", "speculate"],
+    required: ["inspect", "respect", "suspect", "aspect", "prospect"],
+    tension: "Latin 'spectare' (to watch) spawns a surveillance vocabulary — looking at, looking back, looking inward"
+  },
+  {
+    root: "fract", lang: "Latin", meaning: "break",
+    targets: ["fracture", "fragment", "fraction", "infraction", "refract", "fragile", "frail", "afraid"],
+    required: ["fracture", "fragment", "fraction", "infraction", "refract"],
+    tension: "Latin 'frangere' reaches English as 'fract-' (learned) and 'frail/afraid' (via French erosion)",
+    entryPaths: { fracture: "direct_latin", fragment: "direct_latin", fraction: "direct_latin", infraction: "direct_latin", refract: "direct_latin", fragile: "direct_latin", frail: "via_french", afraid: "via_french" }
   },
 ];
 
@@ -484,10 +626,15 @@ function pick<T>(arr: T[], r: () => number): T {
   return arr[Math.floor(r() * arr.length)];
 }
 
+// When idx is provided (override mode) select that exact entry; otherwise use RNG.
+function pickAt<T>(arr: T[], r: () => number, idx?: number): T {
+  return idx !== undefined ? arr[idx % arr.length] : pick(arr, r);
+}
+
 // ── BUILDERS ──────────────────────────────────────────────────────────────────
 
-function buildRootInsight(r: () => number): LinguisticInsight {
-  const d = pick(ROOT_POOL, r);
+function buildRootInsight(r: () => number, idx?: number): LinguisticInsight {
+  const d = pickAt(ROOT_POOL, r, idx);
   return {
     id: `root-${d.root}`,
     type: "ROOT",
@@ -496,12 +643,20 @@ function buildRootInsight(r: () => number): LinguisticInsight {
     words: d.targets,
     meaning: d.meaning,
     tension: d.tension,
-    data: { targets: d.targets, required: d.required }
+    data: {
+      targets: d.targets,
+      required: d.required,
+      metaphorSplit: (d as any).metaphorSplit,
+      entryPaths: (d as any).entryPaths,
+      impostors: (d as any).impostors,
+      eras: (d as any).eras,
+      decompositions: (d as any).decompositions,
+    }
   };
 }
 
-function buildSuppletiveInsight(r: () => number): LinguisticInsight {
-  const d = pick(SUPPLETIVE_POOL, r);
+function buildSuppletiveInsight(r: () => number, idx?: number): LinguisticInsight {
+  const d = pickAt(SUPPLETIVE_POOL, r, idx);
   return {
     id: `suppletive-${d.root}`,
     type: "SUPPLETIVE",
@@ -514,8 +669,8 @@ function buildSuppletiveInsight(r: () => number): LinguisticInsight {
   };
 }
 
-function buildSemanticShiftInsight(r: () => number): LinguisticInsight {
-  const d = pick(SEMANTIC_POOL, r);
+function buildSemanticShiftInsight(r: () => number, idx?: number): LinguisticInsight {
+  const d = pickAt(SEMANTIC_POOL, r, idx);
   return {
     id: `semantic-${d.root}`,
     type: "SEMANTIC",
@@ -528,8 +683,8 @@ function buildSemanticShiftInsight(r: () => number): LinguisticInsight {
   };
 }
 
-function buildCollisionInsight(r: () => number): LinguisticInsight {
-  const d = pick(COLLISION_POOL, r);
+function buildCollisionInsight(r: () => number, idx?: number): LinguisticInsight {
+  const d = pickAt(COLLISION_POOL, r, idx);
   return {
     id: `collision-${d.root}`,
     type: "COLLISION",
@@ -542,8 +697,8 @@ function buildCollisionInsight(r: () => number): LinguisticInsight {
   };
 }
 
-function buildDeceptionInsight(r: () => number): LinguisticInsight {
-  const d = pick(DECEPTION_POOL, r);
+function buildDeceptionInsight(r: () => number, idx?: number): LinguisticInsight {
+  const d = pickAt(DECEPTION_POOL, r, idx);
   return {
     id: `deception-${d.root}`,
     type: "DECEPTION",
@@ -556,8 +711,8 @@ function buildDeceptionInsight(r: () => number): LinguisticInsight {
   };
 }
 
-function buildFalseFamilyInsight(r: () => number): LinguisticInsight {
-  const d = pick(FALSE_FAMILY_POOL, r);
+function buildFalseFamilyInsight(r: () => number, idx?: number): LinguisticInsight {
+  const d = pickAt(FALSE_FAMILY_POOL, r, idx);
   return {
     id: `false-family-${d.root}`,
     type: "FALSE_FAMILY",
@@ -570,8 +725,8 @@ function buildFalseFamilyInsight(r: () => number): LinguisticInsight {
   };
 }
 
-function buildIdiomInsight(r: () => number): LinguisticInsight {
-  const d = pick(IDIOM_POOL, r);
+function buildIdiomInsight(r: () => number, idx?: number): LinguisticInsight {
+  const d = pickAt(IDIOM_POOL, r, idx);
   // Shuffle fragments deterministically using the rng
   const shuffled = [...d.fragments].sort(() => r() - 0.5);
   return {
@@ -592,8 +747,8 @@ function buildIdiomInsight(r: () => number): LinguisticInsight {
   };
 }
 
-function buildBorrowedInsight(r: () => number): LinguisticInsight {
-  const d = pick(BORROWED_POOL, r);
+function buildBorrowedInsight(r: () => number, idx?: number): LinguisticInsight {
+  const d = pickAt(BORROWED_POOL, r, idx);
   return {
     id: `borrowed-${d.root.slice(0, 14).replace(/\s/g, "-")}`,
     type: "BORROWED",
@@ -606,22 +761,228 @@ function buildBorrowedInsight(r: () => number): LinguisticInsight {
   };
 }
 
+// ── LENSES ────────────────────────────────────────────────────────────────────
+
+export const LENSES: Lens[] = [
+  {
+    id: "DEFAULT",
+    label: "The Root",
+    sublabel: "direct etymology",
+    applicableTo: ["ROOT","SEMANTIC","SUPPLETIVE","GRIMM","COLLISION","PIE","DECEPTION","FALSE_FAMILY","PHANTOM_ROOT","IDIOM","BORROWED"],
+  },
+  {
+    id: "METAPHOR_DRIFT",
+    label: "The Abstraction",
+    sublabel: "when roots lose their body",
+    applicableTo: ["ROOT", "BORROWED", "SEMANTIC"],
+  },
+  {
+    id: "ETYMOLOGY_FILTER",
+    label: "The Path",
+    sublabel: "French vs. Latin vs. direct",
+    applicableTo: ["ROOT", "COLLISION", "BORROWED"],
+  },
+  {
+    id: "FALSE_TWIN",
+    label: "The Impostor",
+    sublabel: "looks related, isn't",
+    applicableTo: ["ROOT", "PIE", "GRIMM"],
+  },
+  {
+    id: "TEMPORAL_DEPTH",
+    label: "The Strata",
+    sublabel: "sorting by century of entry",
+    applicableTo: ["ROOT", "PIE", "SEMANTIC"],
+  },
+  {
+    id: "COMPOUND_HUNT",
+    label: "The Buried Root",
+    sublabel: "find it hiding inside the word",
+    applicableTo: ["ROOT"],
+  },
+  {
+    id: "REGISTER_SORT",
+    label: "The Class Marker",
+    sublabel: "formal vs. everyday vs. technical",
+    applicableTo: ["BORROWED", "COLLISION", "FALSE_FAMILY"],
+  },
+  {
+    id: "SOUND_TRACE",
+    label: "The Sound Law",
+    sublabel: "apply the shift rule",
+    applicableTo: ["GRIMM", "PIE", "SUPPLETIVE"],
+  },
+];
+
+// ── LENS APPLICATION ──────────────────────────────────────────────────────────
+
+export function applyLens(
+  insight: LinguisticInsight,
+  lens: Lens,
+  r: () => number
+): LinguisticInsight {
+  if (!lens.applicableTo.includes(insight.type)) {
+    return { ...insight, lens: LENSES[0] };
+  }
+
+  const out: LinguisticInsight = { ...insight, lens, data: { ...insight.data } };
+
+  switch (lens.id) {
+    case "DEFAULT":
+      return out;
+
+    case "METAPHOR_DRIFT": {
+      if (insight.type === "ROOT" && insight.data.metaphorSplit) {
+        out.tension =
+          `The root "${insight.root}" originally meant something physical. ` +
+          insight.tension +
+          ` — but meaning doesn't stay literal.`;
+      } else if (insight.type === "SEMANTIC") {
+        out.tension = `Meaning can drift toward the abstract. ` + insight.tension;
+      }
+      return out;
+    }
+
+    case "ETYMOLOGY_FILTER": {
+      if (insight.type === "ROOT" && insight.data.entryPaths) {
+        const paths = insight.data.entryPaths as Record<string, string>;
+        const via_french = insight.words.filter(w => paths[w] === "via_french");
+        const direct = insight.words.filter(w => paths[w] === "direct_latin");
+        if (via_french.length > 0 && direct.length > 0) {
+          out.data = {
+            ...out.data,
+            groups: [
+              { id: "french", label: "Via Old French", accepts: via_french, related: [] },
+              { id: "direct", label: "Direct Latin/Greek", accepts: direct, related: [] },
+            ],
+            pool: insight.words,
+          };
+          out.tension = insight.tension + ` — but not all of them took the same route into English.`;
+        }
+      }
+      return out;
+    }
+
+    case "FALSE_TWIN": {
+      if (insight.type === "ROOT" && insight.data.impostors?.length) {
+        const impostors = insight.data.impostors as string[];
+        const impostor = impostors[Math.floor(r() * impostors.length)];
+        const pool = [...insight.words.slice(0, 5), impostor];
+        out.data = { ...out.data, pool, impostor, targets: pool, required: [impostor] };
+        out.tension =
+          `Not every word that looks like it belongs to this family does. ` +
+          `One is a false cousin — it only resembles "${insight.root}".`;
+      }
+      return out;
+    }
+
+    case "TEMPORAL_DEPTH": {
+      if (insight.type === "ROOT" && insight.data.eras) {
+        const eras = insight.data.eras as Record<string, string>;
+        const eraOrder = ["Old English", "Middle English", "Early Modern English", "Modern English"];
+        const timeline = Object.entries(eras)
+          .sort((a, b) => eraOrder.indexOf(a[1]) - eraOrder.indexOf(b[1]))
+          .map(([word, era]) => ({ era, meaning: word, blank: true }));
+        out.data = { ...out.data, timeline };
+        out.tension = insight.tension + ` — and these words arrived across a thousand years.`;
+      }
+      return out;
+    }
+
+    case "COMPOUND_HUNT": {
+      if (insight.type === "ROOT" && insight.data.decompositions) {
+        out.tension =
+          `The root "${insight.root}" (${insight.meaning}) is hiding inside each of these words. ` +
+          `Find it, and name what the prefix adds.`;
+      }
+      return out;
+    }
+
+    case "REGISTER_SORT": {
+      if (insight.data.registers) {
+        const regs = insight.data.registers as Record<string, string>;
+        const formal = insight.words.filter(w => regs[w] === "formal");
+        const everyday = insight.words.filter(w => regs[w] === "informal");
+        const technical = insight.words.filter(w => regs[w] === "technical");
+        if (formal.length > 0 || everyday.length > 0 || technical.length > 0) {
+          out.data = {
+            ...out.data,
+            groups: [
+              { id: "formal", label: "Formal / Literary", accepts: formal, related: [] },
+              { id: "everyday", label: "Everyday Speech", accepts: everyday, related: [] },
+              { id: "technical", label: "Technical / Specialist", accepts: technical, related: [] },
+            ],
+            pool: insight.words,
+          };
+          out.tension =
+            insight.tension + ` — social history is encoded in which register each word landed in.`;
+        }
+      }
+      return out;
+    }
+
+    case "SOUND_TRACE": {
+      if (insight.type === "GRIMM") {
+        out.tension = `A sound law connects these words. Apply the rule: ` + insight.tension;
+      }
+      return out;
+    }
+
+    default:
+      return out;
+  }
+}
+
+// ── FLAT COMBO TABLE ──────────────────────────────────────────────────────────
+
+// Sizes must stay in sync with BUILDERS order: ROOT, SUPPLETIVE, SEMANTIC, COLLISION, DECEPTION, FALSE_FAMILY, IDIOM, BORROWED
+const POOL_SIZES = [30, 3, 5, 3, 2, 2, 7, 4];
+
+export const POOL_FLAT_TABLE: Array<{ builderIdx: number; entryIdx: number; lensIdx: number }> =
+  (() => {
+    const result: Array<{ builderIdx: number; entryIdx: number; lensIdx: number }> = [];
+    for (let b = 0; b < POOL_SIZES.length; b++) {
+      for (let e = 0; e < POOL_SIZES[b]; e++) {
+        for (let l = 0; l < LENSES.length; l++) {
+          result.push({ builderIdx: b, entryIdx: e, lensIdx: l });
+        }
+      }
+    }
+    return result;
+  })();
+
 // ── EXPORT ────────────────────────────────────────────────────────────────────
 
-export function generateInsight(seed: number): LinguisticInsight {
+type Builder = (r: () => number, idx?: number) => LinguisticInsight;
+
+const BUILDERS: Builder[] = [
+  buildRootInsight,
+  buildSuppletiveInsight,
+  buildSemanticShiftInsight,
+  buildCollisionInsight,
+  buildDeceptionInsight,
+  buildFalseFamilyInsight,
+  buildIdiomInsight,
+  buildBorrowedInsight,
+];
+
+export function generateInsight(
+  seed: number,
+  override?: { builderIdx: number; entryIdx: number; lensIdx: number }
+): LinguisticInsight {
+  if (override) {
+    // Use a stable sub-seed for the RNG (needed for IDIOM fragment shuffle etc.)
+    // Entry selection is handled by passing entryIdx directly to the builder.
+    const r = mulberry32((seed ^ 0xFACEFEED) >>> 0);
+    const insight = BUILDERS[override.builderIdx](r, override.entryIdx);
+    return applyLens(insight, LENSES[override.lensIdx], r);
+  }
+
+  // Legacy fallback: 1-D random selection (used when generator.ts has no override)
   const r = mulberry32(seed);
-
-  const builders = [
-    buildRootInsight,
-    buildSuppletiveInsight,
-    buildSemanticShiftInsight,
-    buildCollisionInsight,
-    buildDeceptionInsight,
-    buildFalseFamilyInsight,
-    buildIdiomInsight,
-    buildBorrowedInsight,
-  ];
-
-  const chosen = builders[Math.floor(r() * builders.length)];
-  return chosen(r);
+  const chosen = BUILDERS[Math.floor(r() * BUILDERS.length)];
+  const insight = chosen(r);
+  const rLens = mulberry32((seed ^ 0xD1CE5EED) >>> 0);
+  const lens = LENSES[Math.floor(rLens() * LENSES.length)];
+  return applyLens(insight, lens, r);
 }
