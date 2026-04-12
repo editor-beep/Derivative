@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { generateDailyPuzzle } from "./generator";
 import RootGraph from "./components/RootGraph";
-import type { PuzzleType, Reveal } from "./types";
+import type { PuzzleType, LensId, Reveal } from "./types";
+import { getDifficulty, DIFFICULTY_META } from "./difficulty";
 
 type PuzzleGroup = {
   id: string;
@@ -25,6 +26,7 @@ type PuzzleTimelineItem = {
 type Puzzle = {
   date: string;
   type: PuzzleType;
+  lensId?: LensId;
   root?: string;
   lang?: string;
   meaning?: string;
@@ -366,6 +368,42 @@ const IconBorrowed = ({ color }: { color: string }) => (
     <path d="M8.2 9.2L10.2 15.2" stroke={color} strokeWidth="1.1" strokeDasharray="1.5 1.5" />
     <path d="M15.8 9.2L13.8 15.2" stroke={color} strokeWidth="1.1" strokeDasharray="1.5 1.5" />
     <path d="M8.4 7.6L15.6 7.6" stroke={color} strokeWidth="1.1" strokeDasharray="1.5 1.5" />
+  </IconBase>
+);
+
+// ── Difficulty icons ──────────────────────────────────────────────────────────
+
+const IconDifficultyEasy = ({ color }: { color: string }) => (
+  <IconBase color={color}>
+    <circle cx="12" cy="12" r="2.5" fill={color} />
+    <path d="M12 5.5v2.5M12 16v2.5M5.5 12h2.5M16 12h2.5" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
+    <path d="M7.7 7.7l1.7 1.7M14.6 14.6l1.7 1.7M16.3 7.7l-1.7 1.7M9.4 14.6l-1.7 1.7" stroke={color} strokeWidth="1" strokeLinecap="round" opacity={0.5} />
+  </IconBase>
+);
+
+const IconDifficultyMedium = ({ color }: { color: string }) => (
+  <IconBase color={color}>
+    <circle cx="9" cy="12" r="4.5" fill="none" stroke={color} strokeWidth="1.3" />
+    <circle cx="15" cy="12" r="4.5" fill="none" stroke={color} strokeWidth="1.3" />
+    <circle cx="12" cy="12" r="1.2" fill={color} />
+  </IconBase>
+);
+
+const IconDifficultyHard = ({ color }: { color: string }) => (
+  <IconBase color={color}>
+    <circle cx="10.5" cy="10.5" r="5.5" fill="none" stroke={color} strokeWidth="1.3" />
+    <path d="M14.7 14.7l4.2 4.2" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
+    <path d="M8.5 10.5h4M10.5 8.5v4" stroke={color} strokeWidth="1" strokeLinecap="round" opacity={0.7} />
+  </IconBase>
+);
+
+const IconDifficultyVeryHard = ({ color }: { color: string }) => (
+  <IconBase color={color}>
+    <path d="M5 16V9l3.5 3.5L12 6l3.5 6.5L19 9v7H5z" fill="none" stroke={color} strokeWidth="1.3" strokeLinejoin="round" />
+    <path d="M5 16h14" stroke={color} strokeWidth="1.2" />
+    <circle cx="8.5" cy="12.5" r="1" fill={color} />
+    <circle cx="12" cy="8" r="1" fill={color} />
+    <circle cx="15.5" cy="12.5" r="1" fill={color} />
   </IconBase>
 );
 
@@ -734,7 +772,60 @@ const SystemMesh = ({ intensity = 1 }: { intensity?: number }) => (
   </div>
 );
 
-const TypeBadge = ({ type }: { type: string }) => {
+const DIFFICULTY_ICONS = {
+  EASY: IconDifficultyEasy,
+  MEDIUM: IconDifficultyMedium,
+  HARD: IconDifficultyHard,
+  VERY_HARD: IconDifficultyVeryHard,
+};
+
+const DifficultyBadge = ({ puzzleType, lensId }: { puzzleType: string; lensId: LensId }) => {
+  const level = getDifficulty(puzzleType as PuzzleType, lensId);
+  const meta = DIFFICULTY_META[level];
+  const Icon = DIFFICULTY_ICONS[level];
+
+  return (
+    <div
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "0.4rem",
+        background: `${meta.color}12`,
+        border: `1px solid ${meta.color}38`,
+        borderRadius: "2px",
+        padding: "0.22rem 0.55rem",
+        marginTop: "0.3rem",
+      }}
+    >
+      <Icon color={meta.color} />
+      <div
+        style={{
+          ...S.mono,
+          fontSize: "0.58rem",
+          color: meta.color,
+          letterSpacing: "0.12em",
+          textTransform: "uppercase",
+          lineHeight: 1.1,
+        }}
+      >
+        {meta.label}
+      </div>
+      <div
+        style={{
+          ...S.mono,
+          fontSize: "0.5rem",
+          color: `${meta.color}99`,
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+        }}
+      >
+        · {meta.sublabel}
+      </div>
+    </div>
+  );
+};
+
+const TypeBadge = ({ type, lensId }: { type: string; lensId?: LensId }) => {
   const tc = TYPE_COLORS[type] || COLORS.goldDim;
   const Icon = TYPE_ICONS[type] || IconRoot;
 
@@ -780,6 +871,7 @@ const TypeBadge = ({ type }: { type: string }) => {
       >
         {TYPE_SUBLABELS[type] || "lexical system"}
       </div>
+      {lensId && <DifficultyBadge puzzleType={type} lensId={lensId} />}
     </div>
   );
 };
@@ -953,7 +1045,7 @@ const PuzzleHeader = ({
 
   return (
     <div style={{ marginBottom: "1.25rem", position: "relative" }}>
-      <TypeBadge type={puzzle.type} />
+      <TypeBadge type={puzzle.type} lensId={puzzle.lensId} />
 
       <div
         style={{
@@ -2678,6 +2770,10 @@ export default function Derivative() {
               const day = parseInt(dateStr.split("-")[2], 10);
               const st = statusFor(dateStr);
               const isToday = dateStr === today;
+              const archivePuzzle = getPuzzleForDate(dateStr);
+              const diffColor = archivePuzzle?.lensId
+                ? DIFFICULTY_META[getDifficulty(archivePuzzle.type, archivePuzzle.lensId)].color
+                : COLORS.textFaint;
               return (
                 <button
                   key={dateStr}
@@ -2696,6 +2792,7 @@ export default function Derivative() {
                       : st === "partial"
                       ? `1px solid ${COLORS.goldDark}`
                       : `1px solid ${COLORS.blackLine}`,
+                    borderBottom: `2px solid ${diffColor}`,
                     color:
                       st === "complete"
                         ? COLORS.textPrimary
@@ -2743,6 +2840,29 @@ export default function Derivative() {
                 {l}
               </span>
             ))}
+          </div>
+
+          <div style={{ marginTop: "0.85rem", display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
+            {(["EASY", "MEDIUM", "HARD", "VERY_HARD"] as const).map((level) => {
+              const m = DIFFICULTY_META[level];
+              return (
+                <span
+                  key={level}
+                  style={{
+                    ...S.mono,
+                    fontSize: "0.55rem",
+                    color: m.color,
+                    letterSpacing: "0.08em",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.3rem",
+                  }}
+                >
+                  <span style={{ display: "inline-block", width: "12px", height: "2px", background: m.color, borderRadius: "1px" }} />
+                  {m.label}
+                </span>
+              );
+            })}
           </div>
         </div>
       </div>
