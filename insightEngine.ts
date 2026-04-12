@@ -2,10 +2,18 @@
 
 import { LinguisticInsight, Lens } from "./types";
 import { mulberry32 } from "./seed";
+import { FRENCH_VISUAL_FRAUD_POOL, FRENCH_DOUBLETS_POOL, FRENCH_FALSE_FRIENDS_POOL } from "./src/data/frenchFakeouts";
+import { NORSE_CONSONANT_POOL, NORSE_BORROWED_POOL } from "./src/data/norseCollisions";
+import { MEANING_DRIFT_POOL } from "./src/data/meaningDrift";
+import { SUPPLETIVE_EXTENDED_POOL } from "./src/data/suppletiveParadigms";
+import { FOLK_ETYMOLOGY_POOL } from "./src/data/folkEtymology";
+import { ROOT_EXTENDED_POOL } from "./src/data/rootsExtended";
+import { ROOT_EXTENDED_POOL_2 } from "./src/data/rootsExtended2";
+import { MEANING_DRIFT_POOL_2 } from "./src/data/meaningDrift2";
 
 // ── ROOT DATA ─────────────────────────────────────────────────────────────────
 
-const ROOT_POOL = [
+const ROOT_POOL = [...ROOT_EXTENDED_POOL, ...ROOT_EXTENDED_POOL_2,
   {
     root: "port", lang: "Latin", meaning: "carry",
     targets: ["portable", "import", "export", "transport", "report", "deport", "support", "portage", "porter", "deportment"],
@@ -200,7 +208,7 @@ const ROOT_POOL = [
 
 // ── SUPPLETIVE DATA ───────────────────────────────────────────────────────────
 
-const SUPPLETIVE_POOL = [
+const SUPPLETIVE_POOL = [...SUPPLETIVE_EXTENDED_POOL,
   {
     root: "go / went", lang: "Old English + Proto-Germanic", meaning: "motion",
     groups: [
@@ -280,7 +288,7 @@ const GRIMM_POOL = [
 
 // ── SEMANTIC DATA ─────────────────────────────────────────────────────────────
 
-const SEMANTIC_POOL = [
+const SEMANTIC_POOL = [...MEANING_DRIFT_POOL, ...MEANING_DRIFT_POOL_2,
   {
     root: "nice", lang: "Latin → Old French → English", meaning: "semantic drift",
     timeline: [
@@ -339,7 +347,7 @@ const SEMANTIC_POOL = [
 
 // ── COLLISION DATA ────────────────────────────────────────────────────────────
 
-const COLLISION_POOL = [
+const COLLISION_POOL = [...FRENCH_DOUBLETS_POOL, ...NORSE_CONSONANT_POOL,
   {
     root: "skirt / shirt", lang: "Old Norse + Old English", meaning: "cut",
     groups: [
@@ -406,7 +414,7 @@ const PIE_POOL = [
 
 // ── DECEPTION DATA ────────────────────────────────────────────────────────────
 
-const DECEPTION_POOL = [
+const DECEPTION_POOL = [...FRENCH_VISUAL_FRAUD_POOL, ...FOLK_ETYMOLOGY_POOL,
   {
     root: "island", lang: "Old English", meaning: "false etymology insertion",
     groups: [
@@ -521,7 +529,7 @@ const IDIOM_POOL = [
 
 // ── BORROWED DATA ─────────────────────────────────────────────────────────────
 
-const BORROWED_POOL = [
+const BORROWED_POOL = [...FRENCH_FALSE_FRIENDS_POOL, ...NORSE_BORROWED_POOL,
   {
     root: "Arabic extraction",
     lang: "Arabic → English",
