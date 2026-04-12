@@ -8,10 +8,12 @@ import { MEANING_DRIFT_POOL } from "./src/data/meaningDrift";
 import { SUPPLETIVE_EXTENDED_POOL } from "./src/data/suppletiveParadigms";
 import { FOLK_ETYMOLOGY_POOL } from "./src/data/folkEtymology";
 import { ROOT_EXTENDED_POOL } from "./src/data/rootsExtended";
+import { ROOT_EXTENDED_POOL_2 } from "./src/data/rootsExtended2";
+import { MEANING_DRIFT_POOL_2 } from "./src/data/meaningDrift2";
 
 // ── ROOT DATA ─────────────────────────────────────────────────────────────────
 
-const ROOT_POOL = [...ROOT_EXTENDED_POOL,
+const ROOT_POOL = [...ROOT_EXTENDED_POOL, ...ROOT_EXTENDED_POOL_2,
   {
     root: "port", lang: "Latin", meaning: "carry",
     targets: ["portable", "import", "export", "transport", "report", "deport", "support", "portage", "porter", "deportment"],
@@ -144,7 +146,7 @@ const GRIMM_POOL = [
 
 // ── SEMANTIC DATA ─────────────────────────────────────────────────────────────
 
-const SEMANTIC_POOL = [...MEANING_DRIFT_POOL,
+const SEMANTIC_POOL = [...MEANING_DRIFT_POOL, ...MEANING_DRIFT_POOL_2,
   {
     root: "nice", lang: "Latin → Old French → English", meaning: "semantic drift",
     timeline: [
