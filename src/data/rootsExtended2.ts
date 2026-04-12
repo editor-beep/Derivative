@@ -127,14 +127,6 @@ export const ROOT_EXTENDED_POOL_2 = [
     required: ["lunar", "lunatic", "lunacy", "lunate", "lunula"],
     tension: "Latin 'luna' (moon) connects astronomical 'lunar' to the medical 'lunatic' — the belief that the moon caused madness persisted for centuries, embedding superstition permanently into the language of mental illness",
   },
-  {
-    root: "grad",
-    lang: "Latin",
-    meaning: "step, degree",
-    targets: ["grade", "gradient", "graduate", "gradual", "degrade", "upgrade", "centigrade", "ingredient", "retrograde", "aggravate"],
-    required: ["grade", "gradient", "graduate", "gradual", "retrograde"],
-    tension: "Latin 'gradus' (step/degree) connects the graduate (one who has stepped through all degrees) to the ingredient (that which steps in) to the thermometer's centigrade — progress as steps counted and measured",
-  },
   // ── POWER & ACTION ────────────────────────────────────────────────────────────
   {
     root: "potent",

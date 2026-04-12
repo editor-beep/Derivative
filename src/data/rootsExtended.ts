@@ -22,22 +22,6 @@ export const ROOT_EXTENDED_POOL = [
     tension: "Latin 'iacere' (to throw) underlies words from 'abject' (thrown down) to 'trajectory' (the path of the throw)",
   },
   {
-    root: "tract",
-    lang: "Latin",
-    meaning: "pull, drag",
-    targets: ["attract", "contract", "distract", "extract", "retract", "subtract", "tractor", "abstract", "detract", "intractable"],
-    required: ["attract", "contract", "distract", "extract", "retract"],
-    tension: "Latin 'trahere' (to pull/drag) hides inside words from 'subtract' to 'abstract' — the idea of pulling is everywhere",
-  },
-  {
-    root: "press",
-    lang: "Latin",
-    meaning: "push, press",
-    targets: ["express", "impress", "compress", "depress", "suppress", "oppress", "repress", "pressure", "imprint", "impression"],
-    required: ["express", "impress", "compress", "depress", "suppress"],
-    tension: "Latin 'premere' (to press) drives words from physical compression to emotional states — to depress, repress, oppress",
-  },
-  {
     root: "gress",
     lang: "Latin",
     meaning: "step, go",
@@ -63,28 +47,12 @@ export const ROOT_EXTENDED_POOL = [
   },
   // ── LANGUAGE & COMMUNICATION ROOTS ──────────────────────────────────────────
   {
-    root: "log",
-    lang: "Greek",
-    meaning: "word, reason, study",
-    targets: ["logic", "dialogue", "prologue", "monologue", "epilogue", "catalog", "biology", "geology", "theology", "psychology"],
-    required: ["logic", "dialogue", "prologue", "monologue", "biology"],
-    tension: "Greek 'logos' meant word, reason, and cosmic order simultaneously — it underlies both logical argument and the names of every academic discipline",
-  },
-  {
     root: "dict",
     lang: "Latin",
     meaning: "say, tell",
     targets: ["predict", "contradict", "dictate", "dictionary", "verdict", "edict", "indict", "indicate", "dedicate", "abdicate"],
     required: ["predict", "contradict", "dictate", "verdict", "indict"],
     tension: "Latin 'dicere' (to say) drives the courtroom ('verdict' = true-saying) and the grammar book ('dictionary') — all acts of authoritative speech",
-  },
-  {
-    root: "voc",
-    lang: "Latin",
-    meaning: "call, voice",
-    targets: ["vocal", "vocation", "invoke", "provoke", "revoke", "advocate", "vocabulary", "evoke", "convoke", "equivocate"],
-    required: ["vocal", "vocation", "invoke", "provoke", "advocate"],
-    tension: "Latin 'vocare' (to call) underlies both vocation (a calling) and provocation (a calling-forth of anger) — the voice that summons and the voice that challenges",
   },
   {
     root: "claim",
@@ -95,14 +63,6 @@ export const ROOT_EXTENDED_POOL = [
     tension: "Latin 'clamare' (to cry out) connects the legal 'claim' to the theatrical 'exclaim' — both are acts of loud public declaration",
   },
   {
-    root: "lect",
-    lang: "Latin",
-    meaning: "read, choose, gather",
-    targets: ["select", "collect", "elect", "neglect", "lecture", "intellect", "dialect", "eligible", "recollect", "predilection"],
-    required: ["select", "collect", "elect", "neglect", "lecture"],
-    tension: "Latin 'legere' (to read, to choose, to gather) connects the election booth to the lecture hall — both are acts of careful selection",
-  },
-  {
     root: "nounce",
     lang: "Latin",
     meaning: "announce, report",
@@ -111,30 +71,6 @@ export const ROOT_EXTENDED_POOL = [
     tension: "Latin 'nuntiare' (to announce) connects the papal nuncio (messenger) to the way you pronounce a word — all formal declarations from an authority",
   },
   // ── SCIENCE ROOTS ────────────────────────────────────────────────────────────
-  {
-    root: "bio",
-    lang: "Greek",
-    meaning: "life",
-    targets: ["biology", "biography", "antibiotic", "biome", "symbiosis", "microbiology", "biochemistry", "biodiversity", "amphibian", "bionic"],
-    required: ["biology", "biography", "antibiotic", "biome", "symbiosis"],
-    tension: "Greek 'bios' (life) built the life sciences from biography (written life) to antibiotic (against life) — the same root that creates and destroys",
-  },
-  {
-    root: "chron",
-    lang: "Greek",
-    meaning: "time",
-    targets: ["chronology", "chronic", "anachronism", "synchronize", "chronicle", "chronometer", "chronological", "anachronistic", "isochronal", "diachronic"],
-    required: ["chronology", "chronic", "anachronism", "synchronize", "chronicle"],
-    tension: "Greek 'chronos' (time as sequence) underlies the historian's chronicle, the linguist's 'diachronic,' and the medical 'chronic' — time measured, told, and endured",
-  },
-  {
-    root: "therm",
-    lang: "Greek",
-    meaning: "heat",
-    targets: ["thermometer", "thermostat", "thermal", "hypothermia", "geothermal", "thermodynamics", "endothermic", "exothermic", "thermos", "thermonuclear"],
-    required: ["thermometer", "thermostat", "thermal", "hypothermia", "geothermal"],
-    tension: "Greek 'thermos' (heat) connects the kitchen thermos to thermonuclear war — heat at every scale from a flask to a star",
-  },
   {
     root: "geo",
     lang: "Greek",
@@ -158,14 +94,6 @@ export const ROOT_EXTENDED_POOL = [
     targets: ["thermometer", "barometer", "kilometer", "diameter", "perimeter", "parameter", "symmetry", "geometry", "chronometer", "altimeter"],
     required: ["thermometer", "barometer", "kilometer", "diameter", "perimeter"],
     tension: "Greek 'metron' (measure) is the hidden backbone of science — every '-meter' instrument and every '-metry' discipline is a measurement discipline in disguise",
-  },
-  {
-    root: "path",
-    lang: "Greek",
-    meaning: "feeling, suffering, disease",
-    targets: ["empathy", "sympathy", "apathy", "antipathy", "pathology", "psychopath", "sociopath", "telepathy", "homeopathy", "osteopath"],
-    required: ["empathy", "sympathy", "apathy", "pathology", "psychopath"],
-    tension: "Greek 'pathos' (feeling/suffering) connects the emotional 'empathy' to the clinical 'pathology' — suffering as both personal experience and medical subject",
   },
   // ── BODY ROOTS ───────────────────────────────────────────────────────────────
   {
@@ -224,14 +152,6 @@ export const ROOT_EXTENDED_POOL = [
     targets: ["location", "local", "locate", "allocate", "dislocate", "relocate", "locomotive", "locus", "locale", "collocate"],
     required: ["location", "local", "locate", "allocate", "locomotive"],
     tension: "Latin 'locus' (place) connects the mathematician's locus (set of points) to the locomotive (the place-mover) — all acts of placing and displacing",
-  },
-  {
-    root: "terr",
-    lang: "Latin",
-    meaning: "earth, land",
-    targets: ["territory", "terrain", "terrarium", "terrestrial", "subterranean", "Mediterranean", "terra cotta", "terrace", "inter", "disinter"],
-    required: ["territory", "terrain", "terrestrial", "subterranean", "Mediterranean"],
-    tension: "Latin 'terra' (earth/land) connects the territory to the terracotta pot to 'inter' (put into the earth) — land as both political claim and burial ground",
   },
   {
     root: "urb",
@@ -317,14 +237,6 @@ export const ROOT_EXTENDED_POOL = [
   },
   // ── BELIEF & LAW ROOTS ───────────────────────────────────────────────────────
   {
-    root: "cred",
-    lang: "Latin",
-    meaning: "believe",
-    targets: ["credit", "credible", "incredible", "credence", "creed", "credential", "discredit", "accredit", "credulous", "miscreant"],
-    required: ["credit", "credible", "credence", "creed", "credulous"],
-    tension: "Latin 'credere' (to believe, to entrust) connects financial credit (belief that you'll repay) to the religious creed (what you believe) to the miscreant (one who believes wrongly)",
-  },
-  {
     root: "fid",
     lang: "Latin",
     meaning: "trust, faith",
@@ -380,14 +292,6 @@ export const ROOT_EXTENDED_POOL = [
     targets: ["psychology", "psychiatry", "psyche", "psychotic", "psychedelic", "psychoanalysis", "psychosomatic", "parapsychology", "psychic", "metempsychosis"],
     required: ["psychology", "psychiatry", "psyche", "psychotic", "psychedelic"],
     tension: "Greek 'psyche' (breath, soul, mind) connects the ancient soul to modern psychiatry — the same word that the Greeks used for the breath of life now names the discipline that studies mental illness",
-  },
-  {
-    root: "morph",
-    lang: "Greek",
-    meaning: "form, shape",
-    targets: ["morphology", "metamorphosis", "amorphous", "morpheme", "geomorphology", "anthropomorphic", "dimorphic", "morphine", "endomorph", "polymorphous"],
-    required: ["morphology", "metamorphosis", "amorphous", "morpheme", "anthropomorphic"],
-    tension: "Greek 'morphe' (form) connects the biologist's morphology to Morpheus (the god of dream-forms) to morphine (named after the shape-shifting dream god) — form as both structure and illusion",
   },
   // ── LIGHT, SOUND & ELEMENT ROOTS ─────────────────────────────────────────────
   {
