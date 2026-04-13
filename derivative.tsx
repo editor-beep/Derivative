@@ -1870,49 +1870,53 @@ const IdiomPuzzle = ({
   onState: (s: PuzzleState) => void;
   revealed: boolean;
 }) => {
-  const sequence = state?.sequence || [];
-  const fragments = puzzle.fragments || [];
+  const [input, setInput] = useState("");
+  const [flash, setFlash] = useState<null | { msg: string; ok: boolean }>(null);
+  const [shake, setShake] = useState(false);
+  const ref = useRef<HTMLInputElement | null>(null);
+
   const answer = puzzle.answer || "";
   const answerWords = answer.split(" ");
+  const idiomFound: number[] = state?.idiomFound || [];
 
-  const available = fragments.filter((f) => !sequence.includes(f) || sequence.filter((s) => s === f).length < fragments.filter((x) => x === f).length);
+  useEffect(() => {
+    setTimeout(() => ref.current?.focus(), 100);
+  }, []);
 
-  // deduplicate available: count occurrences
-  const fragCounts = fragments.reduce<Record<string, number>>((acc, f) => {
-    acc[f] = (acc[f] || 0) + 1;
-    return acc;
-  }, {});
-  const seqCounts = sequence.reduce<Record<string, number>>((acc, f) => {
-    acc[f] = (acc[f] || 0) + 1;
-    return acc;
-  }, {});
-  const availableFrags = Object.entries(fragCounts).flatMap(([word, count]) => {
-    const used = seqCounts[word] || 0;
-    return Array(Math.max(0, count - used)).fill(word);
-  });
-
-  const isCorrect = sequence.join(" ") === answer;
-  const isComplete = isCorrect || revealed;
-
-  const addFragment = (word: string) => {
-    if (isComplete) return;
-    onState({ ...state, sequence: [...sequence, word] });
-  };
-
-  const removeLastOrWord = (word: string) => {
-    if (isComplete) return;
-    const idx = [...sequence].lastIndexOf(word);
-    if (idx === -1) return;
-    const next = [...sequence];
-    next.splice(idx, 1);
-    onState({ ...state, sequence: next });
-  };
-
-  const clearAll = () => {
-    onState({ ...state, sequence: [] });
-  };
-
+  const isAllFound = idiomFound.length === answerWords.length;
+  const isComplete = isAllFound || revealed;
   const color = TYPE_COLORS["IDIOM"];
+
+  const submit = () => {
+    const w = input.trim().toLowerCase();
+    setInput("");
+    if (!w) return;
+
+    // All positions in the phrase that match this word
+    const allPositions = answerWords
+      .map((aw, i) => ({ lower: aw.toLowerCase(), i }))
+      .filter(({ lower }) => lower === w);
+
+    // Positions that haven't been found yet
+    const newPositions = allPositions
+      .filter(({ i }) => !idiomFound.includes(i))
+      .map(({ i }) => i);
+
+    if (newPositions.length > 0) {
+      onState({ ...state, idiomFound: [...idiomFound, ...newPositions] });
+      setFlash({ msg: newPositions.length > 1 ? `×${newPositions.length} found` : "correct", ok: true });
+    } else if (allPositions.length > 0) {
+      // All instances already found
+      setFlash({ msg: "already found", ok: false });
+      setShake(true);
+      setTimeout(() => setShake(false), 500);
+    } else {
+      setFlash({ msg: "not in this phrase", ok: false });
+      setShake(true);
+      setTimeout(() => setShake(false), 500);
+    }
+    setTimeout(() => setFlash(null), 1400);
+  };
 
   return (
     <div
@@ -1922,71 +1926,117 @@ const IdiomPuzzle = ({
         borderRadius: "4px",
         padding: "1rem",
         background: `linear-gradient(180deg, ${COLORS.surface2}, ${COLORS.surface})`,
-        overflow: "hidden",
       }}
     >
       <SystemMesh intensity={0.85} />
 
       <div style={{ position: "relative", zIndex: 1 }}>
-        {/* Assembled phrase display */}
+
+        {/* Blank word slots */}
         <div
           style={{
-            minHeight: "3rem",
-            marginBottom: "1rem",
-            padding: "0.65rem 0.75rem",
-            background: isCorrect
-              ? `rgba(196,110,176,0.08)`
-              : "rgba(78,207,207,0.04)",
-            border: `1px solid ${isCorrect ? color + "55" : COLORS.blackLine}`,
-            borderRadius: "3px",
             display: "flex",
             flexWrap: "wrap",
-            gap: "6px",
-            alignItems: "center",
-            boxShadow: isCorrect ? `0 0 24px ${color}22` : "none",
-            transition: "all 0.3s ease",
+            gap: "10px",
+            marginBottom: "1.1rem",
+            padding: "0.85rem 0.75rem",
+            background: isAllFound ? `${color}09` : "rgba(255,255,255,0.02)",
+            border: `1px solid ${isAllFound ? color + "44" : COLORS.blackLine}`,
+            borderRadius: "3px",
+            boxShadow: isAllFound ? `0 0 24px ${color}18` : "none",
+            transition: "all 0.35s ease",
           }}
         >
-          {sequence.length === 0 && !revealed ? (
-            <span
-              style={{
-                ...S.mono,
-                fontSize: "0.72rem",
-                color: COLORS.textFaint,
-                letterSpacing: "0.08em",
-                fontStyle: "italic",
-              }}
-            >
-              tap fragments to reconstruct…
-            </span>
-          ) : (
-            (revealed && sequence.length === 0 ? answerWords : sequence).map((word, i) => (
-              <span
+          {answerWords.map((word, i) => {
+            const found = idiomFound.includes(i) || revealed;
+            return (
+              <div
                 key={i}
-                onClick={() => !revealed && removeLastOrWord(word)}
                 style={{
-                  ...S.mono,
-                  fontSize: "0.88rem",
-                  color: revealed
-                    ? isCorrect || sequence.join(" ") === answer
-                      ? color
-                      : COLORS.textSecondary
-                    : COLORS.textPrimary,
-                  cursor: revealed ? "default" : "pointer",
-                  padding: "0.1rem 0.05rem",
-                  borderBottom: revealed ? "none" : `1px solid ${COLORS.goldDark}`,
-                  transition: "color 0.2s ease",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "3px",
                 }}
               >
-                {word}
-                {i < sequence.length - 1 || (revealed && i < answerWords.length - 1) ? "\u00a0" : ""}
-              </span>
-            ))
-          )}
+                <div
+                  style={{
+                    ...S.mono,
+                    fontSize: "0.9rem",
+                    letterSpacing: "0.06em",
+                    color: found
+                      ? isAllFound
+                        ? color
+                        : COLORS.textPrimary
+                      : "transparent",
+                    borderBottom: found
+                      ? `1px solid ${isAllFound ? color + "88" : COLORS.goldDark}`
+                      : `1px solid ${COLORS.textFaint}`,
+                    minWidth: `${word.length * 0.62}rem`,
+                    textAlign: "center",
+                    paddingBottom: "1px",
+                    transition: "color 0.25s ease, border-color 0.25s ease",
+                  }}
+                >
+                  {found ? word : "\u00a0".repeat(word.length)}
+                </div>
+                {!found && (
+                  <span
+                    style={{
+                      ...S.mono,
+                      fontSize: "0.5rem",
+                      color: COLORS.textFaint,
+                      letterSpacing: "0.08em",
+                    }}
+                  >
+                    {word.length}
+                  </span>
+                )}
+              </div>
+            );
+          })}
         </div>
 
-        {/* Correct flash */}
-        {isCorrect && !revealed && (
+        {/* Input row */}
+        {!isComplete && (
+          <div style={{ marginBottom: "0.65rem" }}>
+            <div style={{ display: "flex", gap: "8px", marginBottom: "0.45rem" }}>
+              <input
+                ref={ref}
+                value={input}
+                onChange={(e) => setInput(e.target.value.toLowerCase())}
+                onKeyDown={(e) => e.key === "Enter" && submit()}
+                placeholder="guess a word…"
+                style={{
+                  ...S.input,
+                  border: `1px solid ${shake ? COLORS.red : COLORS.blackLine}`,
+                  animation: shake ? "shake 0.4s ease" : "none",
+                  flex: 1,
+                  boxShadow: shake ? `0 0 0 3px ${COLORS.redGlow}` : "none",
+                }}
+              />
+              <button className="deriv-btn-primary" style={S.btnPrimary} onClick={submit}>
+                enter
+              </button>
+            </div>
+            {flash && (
+              <div
+                style={{
+                  ...S.mono,
+                  fontSize: "0.65rem",
+                  color: flash.ok ? color : COLORS.red,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                }}
+              >
+                {flash.msg}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* All-found celebration */}
+        {isAllFound && !revealed && (
           <div
             style={{
               ...S.mono,
@@ -2002,74 +2052,6 @@ const IdiomPuzzle = ({
           </div>
         )}
 
-        {/* Revealed answer */}
-        {revealed && (
-          <div
-            style={{
-              ...S.mono,
-              fontSize: "0.7rem",
-              color: COLORS.textSecondary,
-              letterSpacing: "0.06em",
-              marginBottom: "0.75rem",
-              fontStyle: "italic",
-            }}
-          >
-            "{answer}"
-          </div>
-        )}
-
-        {/* Fragment tiles */}
-        {!isComplete && availableFrags.length > 0 && (
-          <div>
-            <div
-              style={{
-                ...S.mono,
-                fontSize: "0.56rem",
-                color: COLORS.textFaint,
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                marginBottom: "0.45rem",
-              }}
-            >
-              fragments
-            </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "7px", marginBottom: "0.75rem" }}>
-              {availableFrags.map((word, i) => (
-                <div
-                  key={`${word}-${i}`}
-                  onClick={() => addFragment(word)}
-                  style={{
-                    ...S.mono,
-                    fontSize: "0.82rem",
-                    padding: "0.32rem 0.72rem",
-                    borderRadius: "2px",
-                    background: `${color}12`,
-                    border: `1px solid ${color}44`,
-                    color,
-                    cursor: "pointer",
-                    userSelect: "none",
-                    transition: "all 0.12s ease",
-                    boxShadow: `0 0 10px ${color}10`,
-                  }}
-                >
-                  {word}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Controls */}
-        {!revealed && sequence.length > 0 && !isCorrect && (
-          <button
-            className="deriv-btn"
-            style={{ ...S.btnSm, fontSize: "0.58rem" }}
-            onClick={clearAll}
-          >
-            clear →
-          </button>
-        )}
-
         {/* Progress counter */}
         <div
           style={{
@@ -2078,10 +2060,10 @@ const IdiomPuzzle = ({
             color: COLORS.textFaint,
             letterSpacing: "0.12em",
             textTransform: "uppercase",
-            marginTop: "0.5rem",
+            marginTop: "0.25rem",
           }}
         >
-          {sequence.length}/{answerWords.length} placed
+          {idiomFound.length}/{answerWords.length} words found
         </div>
       </div>
     </div>
@@ -2170,8 +2152,8 @@ export default function Derivative() {
     }
 
     if (puzzle.type === "IDIOM") {
-      const sequence = puzzleState.sequence || [];
-      return sequence.join(" ") === (puzzle.answer || "");
+      const idiomFound: number[] = puzzleState.idiomFound || [];
+      return idiomFound.length === (puzzle.answer || "").split(" ").length;
     }
 
     return false;
@@ -2265,10 +2247,10 @@ export default function Derivative() {
       chain = blanks.map((_, i) => (answers[i] ? "◈" : "◇")).join(" ─ ");
       scoreStr = `${blanks.filter((_, i) => answers[i]).length} of ${blanks.length} filled`;
     } else if (puzzle.type === "IDIOM") {
-      const sequence = puzzleState.sequence || [];
+      const idiomFound: number[] = puzzleState.idiomFound || [];
       const answerWords = (puzzle.answer || "").split(" ");
-      chain = answerWords.map((_, i) => (sequence[i] === answerWords[i] ? "◈" : "◇")).join(" ─ ");
-      scoreStr = `${sequence.length} of ${answerWords.length} placed`;
+      chain = answerWords.map((_, i) => (idiomFound.includes(i) ? "◈" : "◇")).join(" ─ ");
+      scoreStr = `${idiomFound.length} of ${answerWords.length} words found`;
     }
 
     const status = complete ? "complete" : revealed ? "revealed" : "in progress";
@@ -2307,7 +2289,7 @@ export default function Derivative() {
       return "partial";
     if (puz.type === "GRIMM" && Object.keys(s.answers || {}).length > 0) return "partial";
     if (puz.type === "SEMANTIC" && Object.keys(s.answers || {}).length > 0) return "partial";
-    if (puz.type === "IDIOM" && (s.sequence || []).length > 0) return "partial";
+    if (puz.type === "IDIOM" && (s.idiomFound || []).length > 0) return "partial";
     return "unplayed";
   };
 

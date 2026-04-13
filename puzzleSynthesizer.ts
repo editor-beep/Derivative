@@ -82,17 +82,15 @@ function buildTimelinePuzzle(insight: LinguisticInsight, date: string): Puzzle {
 }
 
 function buildIdiomPuzzle(insight: LinguisticInsight, date: string): Puzzle {
-  const { phrase, fragments, origin } = insight.data as {
+  const { phrase, origin } = insight.data as {
     phrase: string;
-    fragments: string[];
     origin: string;
   };
   return {
     date,
     type: "IDIOM",
     lensId: lensId(insight),
-    prompt: `Arrange the fragments to reconstruct the expression`,
-    fragments,
+    prompt: insight.tension,
     answer: phrase,
     word: origin,
     meta: {
