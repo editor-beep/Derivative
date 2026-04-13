@@ -4,6 +4,7 @@ import RootGraph from "./components/RootGraph";
 import type { Puzzle, PuzzleType, LensId, ProgressStore, PuzzleProgressEntry, PuzzleState } from "./types";
 import { getDifficulty, DIFFICULTY_META, type DifficultyLevel } from "./difficulty";
 import { TYPE_LABELS, TYPE_SUBLABELS, COLORS, TYPE_COLORS, STORAGE_KEY, SPLASH_IMAGE } from "./constants";
+import { getUtcDateKey } from "./src/dateUtils";
 
 const load = (): ProgressStore => {
   try {
@@ -35,12 +36,7 @@ const getPuzzleForDate = (dateStr: string): Puzzle | null => {
   }
 };
 
-const getTodayStr = () => {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
-    d.getDate()
-  ).padStart(2, "0")}`;
-};
+const getTodayStr = () => getUtcDateKey();
 
 const getMonthDates = (anchorDateStr: string) => {
   const [yearRaw, monthRaw] = anchorDateStr.split("-").map(Number);
