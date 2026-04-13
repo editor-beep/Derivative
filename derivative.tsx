@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
 import { generateDailyPuzzle } from "./generator";
 import RootGraph from "./components/RootGraph";
-import type { PuzzleType, LensId, Reveal, PuzzleGroup, PuzzlePair, PuzzleTimelineItem } from "./types";
+import type { PuzzleType, LensId, Reveal, PuzzleGroup, PuzzlePair, PuzzleTimelineItem, FalseSystemConfig } from "./types";
 import { getDifficulty, DIFFICULTY_META, type DifficultyLevel } from "./difficulty";
 import { TYPE_LABELS, TYPE_SUBLABELS, COLORS, TYPE_COLORS, STORAGE_KEY, SPLASH_IMAGE } from "./constants";
 
@@ -19,6 +19,7 @@ type Puzzle = {
   groups?: PuzzleGroup[];
   pairs?: PuzzlePair[];
   timeline?: PuzzleTimelineItem[];
+  falseSystem?: FalseSystemConfig;
   word?: string;
   fragments?: string[];
   answer?: string;
@@ -324,7 +325,7 @@ const IconDifficultyVeryHard = ({ color }: { color: string }) => (
   </IconBase>
 );
 
-const TYPE_ICONS: Record<string, ({ color }: { color: string }) => JSX.Element> = {
+const TYPE_ICONS: Record<PuzzleType, ({ color }: { color: string }) => ReactElement> = {
   ROOT: IconRoot,
   SUPPLETIVE: IconSuppletive,
   GRIMM: IconGrimm,
@@ -768,7 +769,7 @@ const DifficultyBadge = ({ puzzleType, lensId }: { puzzleType: string; lensId: L
   );
 };
 
-const TypeBadge = ({ type, lensId }: { type: string; lensId?: LensId }) => {
+const TypeBadge = ({ type, lensId }: { type: PuzzleType; lensId?: LensId }) => {
   const tc = TYPE_COLORS[type] || COLORS.goldDim;
   const Icon = TYPE_ICONS[type] || IconRoot;
 
@@ -1274,9 +1275,15 @@ const SortPuzzle = ({
   const [input, setInput] = useState("");
   const [flash, setFlash] = useState<null | { word: string; correct: boolean; bonus?: boolean; notInPool?: boolean }>(null);
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
+  const [fracture, setFracture] = useState<string | null>(null);
 
   const groups = puzzle.groups || [];
   const pool = puzzle.pool || [];
+  const falseSystem = puzzle.falseSystem;
+
+  useEffect(() => {
+    setFracture(null);
+  }, [puzzle.date, puzzle.type]);
 
   const unassigned = pool.filter((w) => !assigned[w]);
   const totalRequired = groups.flatMap((g) => g.accepts).length;
@@ -1293,6 +1300,9 @@ const SortPuzzle = ({
     const newAssigned = { ...assigned, [word]: groupId };
     onState({ ...state, assigned: newAssigned });
     setFlash({ word, correct, bonus: grp.related.includes(word) });
+    if (falseSystem?.decoys.includes(word)) {
+      setFracture(falseSystem.breakMessage);
+    }
     setTimeout(() => setFlash(null), 1200);
   };
 
@@ -1341,6 +1351,39 @@ const SortPuzzle = ({
         >
           {correctCount}/{totalRequired} assigned correctly
         </div>
+        {fracture && (
+          <div
+            className="red-shimmer"
+            style={{
+              ...S.mono,
+              fontSize: "0.62rem",
+              letterSpacing: "0.11em",
+              textTransform: "uppercase",
+              color: COLORS.red,
+              border: `1px solid ${COLORS.red}`,
+              background: "rgba(139,58,58,0.10)",
+              borderRadius: "2px",
+              padding: "0.42rem 0.5rem",
+              marginBottom: "0.7rem",
+            }}
+          >
+            {fracture}
+          </div>
+        )}
+        {revealed && fracture && falseSystem?.revealTruth && (
+          <div
+            style={{
+              fontSize: "0.74rem",
+              color: COLORS.textMuted,
+              borderLeft: `2px solid ${COLORS.goldDark}`,
+              paddingLeft: "0.65rem",
+              marginBottom: "0.7rem",
+              lineHeight: 1.5,
+            }}
+          >
+            {falseSystem.revealTruth}
+          </div>
+        )}
 
         {!revealed && unassigned.length > 0 && (
           <div style={{ marginBottom: "1rem" }}>
@@ -2244,7 +2287,7 @@ export default function Derivative() {
     const [year, month, day] = selDate.split("-").map(Number);
     const dateRoman = `${toRoman(day)} · ${toRoman(month)} · ${toRoman(year)}`;
 
-    const diffLevel = getDifficulty(puzzle.type, puzzle.lensId);
+    const diffLevel = getDifficulty(puzzle.type, puzzle.lensId ?? "DEFAULT");
     const diffIcon = DIFFICULTY_SHARE_ICONS[diffLevel] || "○";
     const typeIcon = TYPE_SHARE_ICONS[puzzle.type] || "◇";
     const iconRow = `◈  ${diffIcon}  ${typeIcon}`;
