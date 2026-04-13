@@ -339,6 +339,31 @@ const TYPE_ICONS: Record<string, ({ color }: { color: string }) => JSX.Element> 
   TOPONYM: IconToponym,
 };
 
+const TYPE_SHARE_ICONS: Record<string, string> = {
+  ROOT: "Ψ",
+  SUPPLETIVE: "≠",
+  GRIMM: "∿",
+  SEMANTIC: "→",
+  COLLISION: "✕",
+  PIE: "∴",
+  IDIOM: "❝",
+  BORROWED: "←",
+  TOPONYM: "⊙",
+  DECEPTION: "≢",
+  FALSE_FAMILY: "≁",
+  PHANTOM_ROOT: "∅",
+};
+
+const DIFFICULTY_SHARE_ICONS: Record<string, string> = {
+  EASY: "○",
+  MEDIUM: "◎",
+  HARD: "◉",
+  VERY_HARD: "●",
+};
+
+type ShareSection = { text: string; color: string; isTracker?: boolean };
+type ShareData = { plain: string; sections: ShareSection[] };
+
 const GlobalFX = () => (
   <style>{`
     @keyframes shake {
@@ -905,12 +930,12 @@ const RevealCard = ({
   );
 };
 
-const ShareCard = ({ msg }: { msg: string }) => {
+const ShareCard = ({ data }: { data: ShareData }) => {
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(msg);
+      await navigator.clipboard.writeText(data.plain);
     } catch {}
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -927,18 +952,34 @@ const ShareCard = ({ msg }: { msg: string }) => {
         boxShadow: `0 0 22px ${COLORS.goldGlow}`,
       }}
     >
-      <pre
+      <div
         style={{
           ...S.mono,
           fontSize: "0.74rem",
-          color: COLORS.gold,
           margin: 0,
-          whiteSpace: "pre-wrap",
-          lineHeight: 1.9,
+          lineHeight: 2,
         }}
       >
-        {msg}
-      </pre>
+        {data.sections.map((section, i) => (
+          <div key={i} style={{ marginBottom: i < data.sections.length - 1 ? "0.65rem" : 0 }}>
+            {section.isTracker ? (
+              section.text.split("").map((ch, j) => (
+                <span
+                  key={j}
+                  style={{
+                    color: ch === "◈" ? COLORS.gold : COLORS.goldDark,
+                    fontSize: ch === "◈" ? "0.82rem" : "0.74rem",
+                  }}
+                >
+                  {ch}
+                </span>
+              ))
+            ) : (
+              <span style={{ color: section.color, whiteSpace: "pre-wrap" }}>{section.text}</span>
+            )}
+          </div>
+        ))}
+      </div>
       <button className="deriv-btn" style={{ ...S.btnSm, marginTop: "0.75rem" }} onClick={copy}>
         {copied ? "copied ✓" : "copy to clipboard"}
       </button>
@@ -2092,7 +2133,7 @@ export default function Derivative() {
   const [progress, setProgress] = useState<Record<string, any>>(load());
   const [revealed, setRevealed] = useState(false);
   const [puzzleState, setPuzzleState] = useState<PuzzleState>({});
-  const [shareMsg, setShareMsg] = useState<string | null>(null);
+  const [shareMsg, setShareMsg] = useState<ShareData | null>(null);
 
   const today = getTodayStr();
   const archiveDates = useMemo(() => getMonthDates(today), [today]);
@@ -2200,90 +2241,60 @@ export default function Derivative() {
       return r;
     };
 
-    const wrap = (text: string, w: number) => {
-      const words = text.split(" ");
-      const lines: string[] = [];
-      let cur = "";
-      for (const word of words) {
-        if ((cur + " " + word).trim().length > w) {
-          if (cur) lines.push(cur);
-          cur = word;
-        } else {
-          cur = (cur + " " + word).trim();
-        }
-      }
-      if (cur) lines.push(cur);
-      return lines.join("\n");
-    };
-
     const [year, month, day] = selDate.split("-").map(Number);
     const dateRoman = `${toRoman(day)} · ${toRoman(month)} · ${toRoman(year)}`;
-    const sep = "────────────────────";
-    const complete = isComplete();
-    const typeLabel = TYPE_LABELS[puzzle.type] || puzzle.type;
-    const root = getRoot(puzzle);
-    const lang = getLang(puzzle);
 
-    let chain = "";
-    let scoreStr = "";
+    const diffLevel = getDifficulty(puzzle.type as any, puzzle.lensId as any);
+    const diffIcon = DIFFICULTY_SHARE_ICONS[diffLevel] || "○";
+    const typeIcon = TYPE_SHARE_ICONS[puzzle.type] || "◇";
+    const iconRow = `◈  ${diffIcon}  ${typeIcon}`;
 
+    let tracker = "";
     if (puzzle.type === "ROOT") {
       const found = puzzleState.found || [];
-      chain = (puzzle.required || []).map((w) => (found.includes(w) ? "◈" : "◇")).join("─");
-      const n = found.filter((w) => (puzzle.required || []).includes(w)).length;
-      scoreStr = `${n} of ${(puzzle.required || []).length} found`;
+      tracker = (puzzle.required || []).map((w) => (found.includes(w) ? "◈" : "◇")).join("");
     } else if (["SUPPLETIVE", "PIE", "COLLISION", "DECEPTION", "FALSE_FAMILY", "PHANTOM_ROOT", "BORROWED", "TOPONYM"].includes(puzzle.type)) {
       const assigned = puzzleState.assigned || {};
-      chain = (puzzle.groups || [])
-        .map((g) => {
-          const tag = g.label.replace(/[()]/g, "").split(" ")[0].slice(0, 8).padEnd(8);
-          const nodes = g.accepts.map((w) => (assigned[w] === g.id ? "◈" : "◇")).join("");
-          return `${tag} ${nodes}`;
-        })
-        .join("\n");
-
-      const total = (puzzle.groups || []).flatMap((g) => g.accepts).length;
-      const correct = (puzzle.groups || [])
-        .flatMap((g) => g.accepts)
-        .filter((w) => (puzzle.groups || []).find((gr) => gr.id === assigned[w])?.accepts.includes(w))
-        .length;
-
-      scoreStr = `${correct} of ${total} · ${(puzzle.groups || []).length} branches`;
+      tracker = (puzzle.groups || [])
+        .flatMap((g) => g.accepts.map((w) => (assigned[w] === g.id ? "◈" : "◇")))
+        .join("");
     } else if (puzzle.type === "GRIMM") {
       const answers = puzzleState.answers || {};
-      chain = (puzzle.pairs || []).map((_, i) => (answers[i] ? "◈" : "◇")).join(" ─ ");
-      scoreStr = `${Object.keys(answers).length} of ${(puzzle.pairs || []).length} found`;
+      tracker = (puzzle.pairs || []).map((_, i) => (answers[i] ? "◈" : "◇")).join("");
     } else if (puzzle.type === "SEMANTIC") {
       const answers = puzzleState.answers || {};
       const blanks = (puzzle.timeline || []).filter((t) => t.blank);
-      chain = blanks.map((_, i) => (answers[i] ? "◈" : "◇")).join(" ─ ");
-      scoreStr = `${blanks.filter((_, i) => answers[i]).length} of ${blanks.length} filled`;
+      tracker = blanks.map((_, i) => (answers[i] ? "◈" : "◇")).join("");
     } else if (puzzle.type === "IDIOM") {
       const idiomFound: number[] = puzzleState.idiomFound || [];
       const answerWords = (puzzle.answer || "").split(" ");
-      chain = answerWords.map((_, i) => (idiomFound.includes(i) ? "◈" : "◇")).join(" ─ ");
-      scoreStr = `${idiomFound.length} of ${answerWords.length} words found`;
+      tracker = answerWords.map((_, i) => (idiomFound.includes(i) ? "◈" : "◇")).join("");
     }
 
-    const status = complete ? "complete" : revealed ? "revealed" : "in progress";
-    const headline = wrap(puzzle.reveal.headline.replace(/[""]/g, '"'), 42);
+    const url = "www.themeansofproduction.press/derivative";
 
-    setShareMsg(
-      [
-        "◈ DERIVATIVE ◈",
-        dateRoman,
-        sep,
-        `${typeLabel} · ${root}`,
-        `${lang}`,
-        sep,
-        chain,
-        `${scoreStr} · ${status}`,
-        sep,
-        headline,
-        sep,
-        "derivative.game",
-      ].join("\n")
-    );
+    const sections: ShareSection[] = [
+      { text: "◈ DERIVATIVE ◈\nThe Game of the Lingua Imperii", color: COLORS.gold },
+      { text: dateRoman, color: "#5ecece" },
+      { text: iconRow, color: COLORS.gold },
+      { text: tracker, color: COLORS.gold, isTracker: true },
+      { text: url, color: COLORS.goldDim },
+    ];
+
+    const plain = [
+      "◈ DERIVATIVE ◈",
+      "The Game of the Lingua Imperii",
+      "",
+      dateRoman,
+      "",
+      iconRow,
+      "",
+      tracker,
+      "",
+      url,
+    ].join("\n");
+
+    setShareMsg({ plain, sections });
   };
 
   const statusFor = (dateStr: string) => {
@@ -2868,7 +2879,7 @@ export default function Derivative() {
           )}
 
           {(revealed || complete) && <RevealCard puzzle={puzzle} onShare={buildShare} />}
-          {shareMsg && <ShareCard msg={shareMsg} />}
+          {shareMsg && <ShareCard data={shareMsg} />}
         </div>
       </div>
     );
