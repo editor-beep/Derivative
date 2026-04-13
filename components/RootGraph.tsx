@@ -1,5 +1,5 @@
 import React from "react";
-import { PREFIX_MAP } from "../lib/prefixMap";
+import { PREFIX_DATA } from "../lib/prefixMap";
 
 /* ── PREFIX PARSER ───────────────────────────────────────── */
 function getPrefix(word: string, root: string): string | null {
@@ -137,7 +137,7 @@ export default function RootGraph({
 
           const isFound = found.includes(word);
           const prefix = getPrefix(word, root);
-          const meaning = prefix ? PREFIX_MAP[prefix] : null;
+          const meaning = prefix ? (PREFIX_DATA as Record<string, { meaning: string }>)[prefix]?.meaning ?? null : null;
 
           return (
             <g key={word}>
