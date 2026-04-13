@@ -11,6 +11,8 @@ A daily etymology puzzle game built with React + TypeScript + Vite. The runtime 
 - `revealEngine.ts` — insight → reveal conversion.
 - `src/data/puzzleManifest.ts` — static manifest schedule.
 - `src/data/*` pools — source datasets (e.g. `roots.ts`, `meaningDrift.ts`, `suppletiveParadigms.ts`, `norseCollisions.ts`, `folkEtymology.ts`, `loanwordExtraction.ts`, `toponyms.ts`).
+  - **`src/data/roots.ts`** is the single source of truth for ROOT puzzle entries (182 entries after merge). It exports `ROOT_POOL` through a dedup-by-(root+lang) and sort-by-(lang, root) pipeline. The now-deleted `rootsExtended.ts` and `rootsExtended2.ts` have been fully merged in; do not recreate them.
+  - **`src/data/academicRootTable.ts`** exports `ACADEMIC_ROOT_TABLE` — a separate reference table with schema (`lemma`, `language`, `coreMeaning`, `morphologyOrigin`, `eraInEnglish`, `usageNote`). This is NOT puzzle data and must NOT be merged into `ROOT_POOL`.
 - `src/main.tsx` — React entry point.
 
 ## How daily puzzle is generated

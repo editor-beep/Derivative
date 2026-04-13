@@ -1,13 +1,14 @@
 import { applyDatasetProvenance } from "./sources";
 // src/data/roots.ts
-// Consolidated root pool — single source of truth combining all entries from:
-//   • src/data/rootsExtended.ts  (ROOT_EXTENDED_POOL)
-//   • src/data/rootsExtended2.ts (ROOT_EXTENDED_POOL_2)
-//   • insightEngine.ts inline entries (port, spec, duct, scrib, mit, vert, graph, phon, and duplicates)
-// New entries are also added for roots from the extended CSV dataset.
-// Entries are sorted alphabetically by root key within each language section.
+// THE single source of truth for all ROOT puzzle entries.
+// Combines:
+//   • original core entries
+//   • all entries from the now-deleted rootsExtended.ts and rootsExtended2.ts
+// At export time, entries are deduplicated by (root + lang) and sorted
+// alphabetically by language family then by root key.
+// Do NOT edit rootsExtended.ts or rootsExtended2.ts — they have been deprecated.
 
-export const ROOT_POOL = [
+const _ROOT_POOL_RAW = [
 
   // ── LATIN ROOTS ──────────────────────────────────────────────────────────────
 
@@ -1302,7 +1303,222 @@ export const ROOT_POOL = [
     required: ["window", "windowsill", "windowpane", "windowed", "bay window"],
     tension: "Old Norse 'vindauga' (wind-eye, from 'vindr' = wind + 'auga' = eye) replaced Old English 'eagþyrel' (eye-hole) — the same concept, differently compounded, and the Norse version won. 'Window' shows the blending of Norse and Saxon domestic architecture in the 11th-century Danelaw. The compound logic is identical; the political result was total Norse replacement of the Saxon term",
   },
+
+
+  // ── NEW GREEK ROOTS (from rootsExtended2) ───────────────────────────────────
+
+  {
+    root: "anti",
+    lang: "Greek",
+    meaning: "against, opposite",
+    targets: ["antidote", "antipathy", "antibiotic", "antivirus", "antagonist", "antithesis", "antipodes", "antiseptic", "antonym", "anticlimax"],
+    required: ["antidote", "antibiotic", "antagonist", "antithesis", "antonym"],
+    tension: "Greek 'anti' (against) creates opposition at every scale — from medicine to drama.",
+  },
+  {
+    root: "astro",
+    lang: "Greek",
+    meaning: "star",
+    targets: ["astronomy", "astronaut", "asteroid", "disaster", "astrology", "astrophysics", "astronomical", "asterisk", "astral", "astrolabe"],
+    required: ["astronomy", "astronaut", "asteroid", "disaster", "astrology"],
+    tension: "Greek 'aster' (star) links the astronomer's science to the astrologer's fate to 'disaster' (bad star).",
+  },
+  {
+    root: "auto",
+    lang: "Greek",
+    meaning: "self",
+    targets: ["automatic", "autobiography", "autonomy", "autopilot", "automobile", "autograph", "autistic", "autopsy", "autocrat", "automation"],
+    required: ["automatic", "autobiography", "autonomy", "automobile", "autograph"],
+    tension: "Greek 'autos' (self) powers everything from self-driving cars to self-writing life stories.",
+  },
+  {
+    root: "chrom",
+    lang: "Greek",
+    meaning: "color",
+    targets: ["chromosome", "chromatic", "monochrome", "polychrome", "chromatography", "achromatic", "chroma", "chromaticity", "dichromatic", "trichromatic"],
+    required: ["chromosome", "monochrome", "polychrome", "chromatography", "achromatic"],
+    tension: "Greek 'chroma' (color) colors both genetics and art — color as the visible code of life.",
+  },
+  {
+    root: "macro",
+    lang: "Greek",
+    meaning: "large",
+    targets: ["macro", "macroscopic", "macrocosm", "macroeconomics", "macrobiotic", "macrophage", "macrostructure"],
+    required: ["macroscopic", "macrocosm", "macroeconomics", "macrobiotic", "macrophage"],
+    tension: "Greek 'makros' (large) balances 'micro' — the large-scale view that reveals hidden patterns.",
+  },
+  {
+    root: "micro",
+    lang: "Greek",
+    meaning: "small",
+    targets: ["microscope", "microphone", "microchip", "microorganism", "microwave", "microbe", "microfilm", "microsurgery", "microcosm", "microeconomics"],
+    required: ["microscope", "microphone", "microchip", "microorganism", "microcosm"],
+    tension: "Greek 'mikros' (small) gave us the tools to see and manipulate the invisible.",
+  },
+  {
+    root: "pan",
+    lang: "Greek",
+    meaning: "all, every",
+    targets: ["panorama", "pandemic", "panacea", "pantheon", "panoply", "panpsychism", "pandemonium", "pancake", "pan-American"],
+    required: ["panorama", "pandemic", "panacea", "pantheon", "panoply"],
+    tension: "Greek 'pan' (all) creates totalities from 'pandemic' to 'panorama'.",
+  },
+  {
+    root: "phile",
+    lang: "Greek",
+    meaning: "love, friend of",
+    targets: ["philosophy", "bibliophile", "audiophile", "Anglophile", "necrophilia", "philanthrope", "hemophilia", "philharmonic"],
+    required: ["philosophy", "bibliophile", "audiophile", "philanthrope", "philharmonic"],
+    tension: "Greek 'philos' (loving) contrasts with 'phobia' — the lover versus the fearer.",
+  },
+  {
+    root: "phobia",
+    lang: "Greek",
+    meaning: "fear",
+    targets: ["claustrophobia", "arachnophobia", "hydrophobia", "xenophobia", "agoraphobia", "technophobia", "nyctophobia", "phobia"],
+    required: ["claustrophobia", "arachnophobia", "xenophobia", "agoraphobia", "hydrophobia"],
+    tension: "Greek 'phobos' (fear) turned clinical — named terrors rooted in ancient dread.",
+  },
+  {
+    root: "poly",
+    lang: "Greek",
+    meaning: "many",
+    targets: ["polygon", "polytheism", "polyglot", "polysyllabic", "polyester", "polymath", "polynomial", "polyp", "polyphony"],
+    required: ["polygon", "polytheism", "polyglot", "polymath", "polyphony"],
+    tension: "Greek 'polys' (many) celebrates multiplicity — from many gods to many-voiced music.",
+  },
+
+  // ── NEW LATIN ROOTS (from rootsExtended2) ───────────────────────────────────
+
+  {
+    root: "anni/enn",
+    lang: "Latin",
+    meaning: "year",
+    targets: ["annual", "anniversary", "perennial", "biennial", "centennial", "millennium", "annuity", "superannuated"],
+    required: ["annual", "anniversary", "perennial", "biennial", "centennial"],
+    tension: "Latin 'annus' (year) measures time in cycles — from the annual flower to perennial truth.",
+  },
+  {
+    root: "circum",
+    lang: "Latin",
+    meaning: "around",
+    targets: ["circumference", "circumnavigate", "circumvent", "circumspect", "circumstance", "circuit", "circulate"],
+    required: ["circumference", "circumnavigate", "circumvent", "circumspect", "circumstance"],
+    tension: "Latin 'circum' (around) creates both careful watching and clever evasion.",
+  },
+  {
+    root: "magn",
+    lang: "Latin",
+    meaning: "great, large",
+    targets: ["magnify", "magnitude", "magnificent", "magnate", "magnum", "magnanimous", "magnolia"],
+    required: ["magnify", "magnitude", "magnificent", "magnanimous", "magnate"],
+    tension: "Latin 'magnus' (great) links physical size to moral greatness.",
+  },
+  {
+    root: "omni",
+    lang: "Latin",
+    meaning: "all",
+    targets: ["omnipotent", "omniscient", "omnivorous", "omnipresent", "omnibus", "omnidirectional"],
+    required: ["omnipotent", "omniscient", "omnivorous", "omnipresent", "omnibus"],
+    tension: "Latin 'omnis' (all) creates divine attributes and everyday catch-alls.",
+  },
+  {
+    root: "re",
+    lang: "Latin",
+    meaning: "again, back",
+    targets: ["return", "repeat", "rebuild", "review", "revolve", "react", "remember"],
+    required: ["return", "repeat", "rebuild", "review", "react"],
+    tension: "Latin 're' creates endless cycles — constantly returning and repeating.",
+  },
+  {
+    root: "sub",
+    lang: "Latin",
+    meaning: "under, below",
+    targets: ["subway", "submarine", "subtle", "subtract", "subconscious", "subordinate"],
+    required: ["subway", "submarine", "subtle", "subconscious", "subordinate"],
+    tension: "Latin 'sub' (under) hides things just beneath the surface.",
+  },
+
+  // ── NEW OLD ENGLISH ROOTS (from rootsExtended2) ─────────────────────────────
+
+  {
+    root: "hand",
+    lang: "Old English",
+    meaning: "hand",
+    targets: ["hand", "handle", "handsome", "handy", "handicap", "handiwork", "beforehand"],
+    required: ["hand", "handle", "handy", "handsome", "handicap"],
+    tension: "Old English 'hand' gives us directness — holding something in your hands feels real.",
+  },
+  {
+    root: "heorte",
+    lang: "Old English",
+    meaning: "heart",
+    targets: ["heart", "hearty", "heartfelt", "heartbreak", "courage", "cordial"],
+    required: ["heart", "heartfelt", "heartbreak", "hearty", "courage"],
+    tension: "Old English 'heorte' carries emotional weight that Latin 'cardi' medicalizes.",
+  },
+  {
+    root: "modor",
+    lang: "Old English",
+    meaning: "mother",
+    targets: ["mother", "maternal", "motherhood", "mothership", "motherly"],
+    required: ["mother", "motherhood", "motherly", "maternal"],
+    tension: "Old English 'modor' feels warmer and more human than clinical Latin 'mater'.",
+  },
+  {
+    root: "stan",
+    lang: "Old English",
+    meaning: "stone",
+    targets: ["stone", "stand", "understand", "standstill", "landmark", "milestone", "headstone"],
+    required: ["stone", "stand", "understand", "milestone", "headstone"],
+    tension: "Old English 'stan' grounds both literal stones and the idea of standing firm.",
+  },
+
+  // ── NEW OLD NORSE ROOTS (from rootsExtended2) ───────────────────────────────
+
+  {
+    root: "get",
+    lang: "Old Norse",
+    meaning: "get, obtain",
+    targets: ["get", "forget", "together", "beget", "getaway"],
+    required: ["get", "forget", "together", "beget", "getaway"],
+    tension: "Old Norse 'geta' is simple yet powers some of the most common verbs in English.",
+  },
+  {
+    root: "skin",
+    lang: "Old Norse",
+    meaning: "skin",
+    targets: ["skin", "skinny", "skintight", "skinflint", "rabbit skin"],
+    required: ["skin", "skinny", "skintight", "skinflint"],
+    tension: "Old Norse 'skinn' was a Viking loanword that literally got under our skin.",
+  },
 ];
 
-// Provenance annotations
+// ── EXPORT: deduplicated and sorted ───────────────────────────────────────────
+// Deduplication key: root + lang (same root form in different languages is kept).
+// Sort order: Latin → Latin/Greek → Greek → Old English → Old Norse, then
+// alphabetically by root within each language family.
+
+const _LANG_ORDER: Record<string, number> = {
+  "Latin": 0,
+  "Latin/Greek": 1,
+  "Greek": 2,
+  "Old English": 3,
+  "Old Norse": 4,
+};
+
+const _dedupSeen = new Set<string>();
+export const ROOT_POOL = _ROOT_POOL_RAW
+  .filter(e => {
+    const k = `${e.root}|${e.lang}`;
+    if (_dedupSeen.has(k)) return false;
+    _dedupSeen.add(k);
+    return true;
+  })
+  .sort((a, b) => {
+    const langDiff = (_LANG_ORDER[a.lang] ?? 99) - (_LANG_ORDER[b.lang] ?? 99);
+    if (langDiff !== 0) return langDiff;
+    return a.root.localeCompare(b.root);
+  });
+
 applyDatasetProvenance(ROOT_POOL, "roots_core");
