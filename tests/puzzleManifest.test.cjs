@@ -6,6 +6,7 @@ const {
   PUZZLE_MANIFEST_START_DATE,
   getPuzzleManifestEntry,
 } = require("../.test-dist/src/data/puzzleManifest.js");
+const { getUtcDateKey } = require("../.test-dist/src/dateUtils.js");
 
 test("manifest size metadata matches manifest array", () => {
   assert.equal(PUZZLE_MANIFEST.length, PUZZLE_MANIFEST_DAYS);
@@ -27,4 +28,14 @@ test("manifest returns null for invalid or out-of-range dates", () => {
   assert.equal(getPuzzleManifestEntry("not-a-date"), null);
   assert.equal(getPuzzleManifestEntry("2025-12-31"), null);
   assert.equal(getPuzzleManifestEntry("2036-01-01"), null);
+});
+
+test("manifest lookup follows UTC date key at midnight boundary", () => {
+  const justBefore = getUtcDateKey(new Date("2026-01-01T23:59:59.999Z"));
+  const atMidnight = getUtcDateKey(new Date("2026-01-02T00:00:00.000Z"));
+
+  assert.equal(justBefore, "2026-01-01");
+  assert.equal(atMidnight, "2026-01-02");
+  assert.equal(getPuzzleManifestEntry(justBefore)?.date, "2026-01-01");
+  assert.equal(getPuzzleManifestEntry(atMidnight)?.date, "2026-01-02");
 });
