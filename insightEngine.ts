@@ -1,6 +1,6 @@
 // insightEngine.ts
 
-import { FalseSystemConfig, LinguisticInsight, Lens } from "./types";
+import { FalseSystemConfig, LinguisticInsight, Lens, RootInsightFragment } from "./types";
 import { mulberry32 } from "./seed";
 import {
   ROOT_POOL,
@@ -23,6 +23,15 @@ type SuppletiveEntry = {
   tension: string;
   falseSystem?: FalseSystemConfig;
 };
+
+type RootPoolEntry = {
+  root: string;
+  lang: string;
+  meaning: string;
+  targets: string[];
+  required: string[];
+  tension: string;
+} & RootInsightFragment;
 
 const SUPPLETIVE_POOL: SuppletiveEntry[] = [...SUPPLETIVE_EXTENDED_POOL,
   {
@@ -462,18 +471,27 @@ const BORROWED_POOL = [...FRENCH_FALSE_FRIENDS_POOL, ...NORSE_BORROWED_POOL, ...
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 
 function pick<T>(arr: T[], r: () => number): T {
-  return arr[Math.floor(r() * arr.length)];
+  const item = arr[Math.floor(r() * arr.length)];
+  if (item === undefined) {
+    throw new Error("Attempted to pick from an empty array.");
+  }
+  return item;
 }
 
 // When idx is provided (override mode) select that exact entry; otherwise use RNG.
 function pickAt<T>(arr: T[], r: () => number, idx?: number): T {
-  return idx !== undefined ? arr[idx % arr.length] : pick(arr, r);
+  if (idx === undefined) return pick(arr, r);
+  const item = arr[idx % arr.length];
+  if (item === undefined) {
+    throw new Error("Attempted to pickAt from an empty array.");
+  }
+  return item;
 }
 
 // ── BUILDERS ──────────────────────────────────────────────────────────────────
 
 function buildRootInsight(r: () => number, idx?: number): LinguisticInsight {
-  const d = pickAt(ROOT_POOL, r, idx);
+  const d = pickAt(ROOT_POOL, r, idx) as RootPoolEntry;
   return {
     id: `root-${d.root}`,
     type: "ROOT",
@@ -485,11 +503,11 @@ function buildRootInsight(r: () => number, idx?: number): LinguisticInsight {
     data: {
       targets: d.targets,
       required: d.required,
-      metaphorSplit: (d as any).metaphorSplit,
-      entryPaths: (d as any).entryPaths,
-      impostors: (d as any).impostors,
-      eras: (d as any).eras,
-      decompositions: (d as any).decompositions,
+      metaphorSplit: d.metaphorSplit,
+      entryPaths: d.entryPaths,
+      impostors: d.impostors,
+      eras: d.eras,
+      decompositions: d.decompositions,
     }
   };
 }
@@ -832,9 +850,12 @@ export const POOL_FLAT_TABLE: Array<{ builderIdx: number; entryIdx: number; lens
     const result: Array<{ builderIdx: number; entryIdx: number; lensIdx: number }> = [];
     for (let b = 0; b < PUZZLE_SOURCES.length; b++) {
       const source = PUZZLE_SOURCES[b];
+      if (!source) continue;
       for (let e = 0; e < source.entryCount; e++) {
         for (let l = 0; l < LENSES.length; l++) {
-          if (source.lensRule(LENSES[l])) {
+          const lens = LENSES[l];
+          if (!lens) continue;
+          if (source.lensRule(lens)) {
             result.push({ builderIdx: b, entryIdx: e, lensIdx: l });
           }
         }
@@ -853,15 +874,26 @@ export function generateInsight(
     // Use a stable sub-seed for the RNG (needed for IDIOM fragment shuffle etc.)
     // Entry selection is handled by passing entryIdx directly to the builder.
     const r = mulberry32((seed ^ 0xFACEFEED) >>> 0);
-    const insight = PUZZLE_SOURCES[override.builderIdx].builder(r, override.entryIdx);
-    return applyLens(insight, LENSES[override.lensIdx], r);
+    const source = PUZZLE_SOURCES[override.builderIdx];
+    const lens = LENSES[override.lensIdx];
+    if (!source || !lens) {
+      throw new Error("Invalid override indices for puzzle generation.");
+    }
+    const insight = source.builder(r, override.entryIdx);
+    return applyLens(insight, lens, r);
   }
 
   // Legacy fallback: 1-D random selection (used when generator.ts has no override)
   const r = mulberry32(seed);
   const chosen = PUZZLE_SOURCES[Math.floor(r() * PUZZLE_SOURCES.length)];
+  if (!chosen) {
+    throw new Error("No puzzle sources configured.");
+  }
   const insight = chosen.builder(r);
   const rLens = mulberry32((seed ^ 0xD1CE5EED) >>> 0);
   const lens = LENSES[Math.floor(rLens() * LENSES.length)];
+  if (!lens) {
+    throw new Error("No lenses configured.");
+  }
   return applyLens(insight, lens, r);
 }

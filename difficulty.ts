@@ -68,5 +68,5 @@ const LEVELS: DifficultyLevel[] = ["EASY", "MEDIUM", "HARD", "VERY_HARD"];
 export function getDifficulty(type: PuzzleType, lensId: LensId): DifficultyLevel {
   const base = TYPE_BASE[type] ?? 0;
   const bump = COMPLEX_LENSES.has(lensId) ? 1 : 0;
-  return LEVELS[Math.min(base + bump, 3)];
+  return LEVELS[Math.min(base + bump, 3)] ?? "VERY_HARD";
 }

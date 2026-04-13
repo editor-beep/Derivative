@@ -1,71 +1,28 @@
 import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
 import { generateDailyPuzzle } from "./generator";
 import RootGraph from "./components/RootGraph";
-import type { PuzzleType, LensId, Reveal, PuzzleGroup, PuzzlePair, PuzzleTimelineItem, FalseSystemConfig } from "./types";
+import type { Puzzle, PuzzleType, LensId, ProgressStore, PuzzleProgressEntry, PuzzleState } from "./types";
 import { getDifficulty, DIFFICULTY_META, type DifficultyLevel } from "./difficulty";
 import { TYPE_LABELS, TYPE_SUBLABELS, COLORS, TYPE_COLORS, STORAGE_KEY, SPLASH_IMAGE } from "./constants";
 
-type Puzzle = {
-  date: string;
-  type: PuzzleType;
-  lensId?: LensId;
-  root?: string;
-  lang?: string;
-  meaning?: string;
-  prompt?: string;
-  targets?: string[];
-  required?: string[];
-  pool?: string[];
-  groups?: PuzzleGroup[];
-  pairs?: PuzzlePair[];
-  timeline?: PuzzleTimelineItem[];
-  falseSystem?: FalseSystemConfig;
-  word?: string;
-  fragments?: string[];
-  answer?: string;
-  reveal: Reveal;
-  meta?: {
-    root?: string;
-    lang?: string;
-    meaning?: string;
-  };
-};
-
-type RootState = {
-  found?: string[];
-};
-
-type SortState = {
-  assigned?: Record<string, string>;
-};
-
-type AnswerState = {
-  answers?: Record<number, string>;
-};
-
-type IdiomState = {
-  sequence?: string[];
-  idiomFound?: number[];
-};
-
-type PuzzleState = RootState & SortState & AnswerState & IdiomState;
-
-
-const load = () => {
+const load = (): ProgressStore => {
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") as ProgressStore;
   } catch {
     return {};
   }
 };
 
-const save = (data: Record<string, any>) => {
+const save = (data: ProgressStore): void => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch {}
 };
 
-const puzzleCache: Record<string, Puzzle> = {};
+const puzzleCache: Record<string, Puzzle | undefined> = {};
+
+const isPuzzleProgressEntry = (value: ProgressStore[string]): value is PuzzleProgressEntry =>
+  typeof value === "object" && value !== null;
 
 const getPuzzleForDate = (dateStr: string): Puzzle | null => {
   try {
@@ -86,7 +43,9 @@ const getTodayStr = () => {
 };
 
 const getMonthDates = (anchorDateStr: string) => {
-  const [year, month] = anchorDateStr.split("-").map(Number);
+  const [yearRaw, monthRaw] = anchorDateStr.split("-").map(Number);
+  const year = yearRaw ?? new Date().getFullYear();
+  const month = monthRaw ?? new Date().getMonth() + 1;
   const daysInMonth = new Date(year, month, 0).getDate();
   return Array.from({ length: daysInMonth }, (_, i) => {
     const day = i + 1;
@@ -606,10 +565,11 @@ const Starfield = () => (
       zIndex: 0,
       pointerEvents: "none",
     }}
-    ref={(el: any) => {
+    ref={(el: (HTMLCanvasElement & { _init?: boolean }) | null) => {
       if (!el || el._init) return;
       el._init = true;
       const ctx = el.getContext("2d");
+      if (!ctx) return;
 
       const resize = () => {
         el.width = el.offsetWidth;
@@ -618,7 +578,22 @@ const Starfield = () => (
 
       resize();
 
-      const stars = Array.from({ length: 180 }, () => ({
+      type StarParticle = {
+        x: number;
+        y: number;
+        r: number;
+        o: number;
+        s: number;
+        d: 1 | -1;
+        cyan: boolean;
+      };
+
+      type StarLink = {
+        a: number;
+        b: number;
+      };
+
+      const stars: StarParticle[] = Array.from({ length: 180 }, () => ({
         x: Math.random() * el.width,
         y: Math.random() * el.height,
         r: Math.random() * 1.15 + 0.1,
@@ -628,7 +603,7 @@ const Starfield = () => (
         cyan: Math.random() > 0.6,
       }));
 
-      const links = Array.from({ length: 38 }, () => ({
+      const links: StarLink[] = Array.from({ length: 38 }, () => ({
         a: Math.floor(Math.random() * stars.length),
         b: Math.floor(Math.random() * stars.length),
       }));
@@ -636,9 +611,10 @@ const Starfield = () => (
       const draw = () => {
         ctx.clearRect(0, 0, el.width, el.height);
 
-        links.forEach((l: any) => {
+        links.forEach((l) => {
           const a = stars[l.a];
           const b = stars[l.b];
+          if (!a || !b) return;
           const dx = a.x - b.x;
           const dy = a.y - b.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
@@ -652,7 +628,7 @@ const Starfield = () => (
           }
         });
 
-        stars.forEach((s: any) => {
+        stars.forEach((s) => {
           s.o += 0.003 * s.s * s.d;
           if (s.o > 0.7 || s.o < 0.08) s.d *= -1;
           ctx.beginPath();
@@ -1604,7 +1580,9 @@ const GrimmPuzzle = ({
   const submit = (idx: number) => {
     const val = (inputs[idx] || "").trim().toLowerCase();
     if (!val) return;
-    const correct = val === pairs[idx].target.toLowerCase();
+    const pair = pairs[idx];
+    if (!pair) return;
+    const correct = val === pair.target.toLowerCase();
     const newAnswers = { ...answers };
     if (correct) newAnswers[idx] = val;
     onState({ ...state, answers: newAnswers });
@@ -2173,7 +2151,7 @@ export default function Derivative() {
   );
   const [selDate, setSelDate] = useState<string | null>(null);
   const [puzzle, setPuzzle] = useState<Puzzle | null>(null);
-  const [progress, setProgress] = useState<Record<string, any>>(load());
+  const [progress, setProgress] = useState<ProgressStore>(load());
   const [revealed, setRevealed] = useState(false);
   const [puzzleState, setPuzzleState] = useState<PuzzleState>({});
   const [shareMsg, setShareMsg] = useState<ShareData | null>(null);
@@ -2181,7 +2159,10 @@ export default function Derivative() {
   const today = getTodayStr();
   const archiveDates = useMemo(() => getMonthDates(today), [today]);
 
-  const getProgress = (dateStr: string) => progress[dateStr] || {};
+  const getProgress = (dateStr: string): PuzzleProgressEntry => {
+    const entry = progress[dateStr];
+    return isPuzzleProgressEntry(entry) ? entry : {};
+  };
 
   const openPuzzle = (dateStr: string) => {
     const p = getPuzzleForDate(dateStr);
@@ -2284,7 +2265,10 @@ export default function Derivative() {
       return r;
     };
 
-    const [year, month, day] = selDate.split("-").map(Number);
+    const [yearRaw, monthRaw, dayRaw] = selDate.split("-").map(Number);
+    const year = yearRaw ?? new Date().getFullYear();
+    const month = monthRaw ?? new Date().getMonth() + 1;
+    const day = dayRaw ?? new Date().getDate();
     const dateRoman = `${toRoman(day)} · ${toRoman(month)} · ${toRoman(year)}`;
 
     const diffLevel = getDifficulty(puzzle.type, puzzle.lensId ?? "DEFAULT");
@@ -2703,16 +2687,21 @@ export default function Derivative() {
               </div>
             ))}
 
-            {[...Array(new Date(today.split("-").map(Number)[0], today.split("-").map(Number)[1] - 1, 1).getDay())].map((_, i) => (
+            {(() => {
+              const [yearRaw, monthRaw] = today.split("-").map(Number);
+              const year = yearRaw ?? new Date().getFullYear();
+              const month = monthRaw ?? new Date().getMonth() + 1;
+              return [...Array(new Date(year, month - 1, 1).getDay())].map((_, i) => (
               <div key={"p" + i} />
-            ))}
+              ));
+            })()}
 
             {archiveDates.map((dateStr) => {
-              const day = parseInt(dateStr.split("-")[2], 10);
+              const day = parseInt(dateStr.split("-")[2] ?? "1", 10);
               const st = statusFor(dateStr);
               const isToday = dateStr === today;
               const archivePuzzle = getPuzzleForDate(dateStr);
-              const diffColor = archivePuzzle?.lensId
+              const diffColor = archivePuzzle
                 ? DIFFICULTY_META[getDifficulty(archivePuzzle.type, archivePuzzle.lensId)].color
                 : COLORS.textFaint;
               return (

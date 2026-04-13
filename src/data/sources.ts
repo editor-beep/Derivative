@@ -61,7 +61,10 @@ const DATASET_SOURCE_INDEX: Record<string, { sourceIds: string[]; confidence: En
 
 export function applyDatasetProvenance(entries: Array<Record<string, unknown>>, datasetKey: keyof typeof DATASET_SOURCE_INDEX): void {
   const config = DATASET_SOURCE_INDEX[datasetKey];
-  const base = config.sourceIds.map((id) => SOURCES[id]);
+  if (!config) return;
+  const base = config.sourceIds
+    .map((id) => SOURCES[id])
+    .filter((source): source is SourceReference => source !== undefined);
 
   for (const entry of entries) {
     if (entry.provenance) continue;
