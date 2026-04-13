@@ -128,28 +128,6 @@ export const FRENCH_DOUBLETS_POOL = [
       "Royal and regal share the same Latin root — one drifted through French courts as a feeling, the other stayed in Latin as a statute.",
   },
   {
-    root: "fragilis / securus",
-    lang: "Latin → Old French + Latin",
-    meaning: "physical state",
-    groups: [
-      {
-        id: "french",
-        label: "French-eroded form (lived experience)",
-        accepts: ["frail", "sure"],
-        related: ["afraid", "secure"],
-      },
-      {
-        id: "latin",
-        label: "Latin-learned form (technical precision)",
-        accepts: ["fragile", "secure"],
-        related: ["fracture", "certainty"],
-      },
-    ],
-    pool: ["frail", "sure", "fragile", "secure"],
-    tension:
-      "Frail is the body you carry; fragile is the glass you ship. Same root, one humanized by French, one preserved in Latin amber.",
-  },
-  {
     root: "caput / capitaneus",
     lang: "Latin → Old French + English",
     meaning: "head / leader",
