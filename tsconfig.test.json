@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "strict": true,
+    "noEmit": false,
+    "outDir": ".test-dist",
+    "rootDir": ".",
+    "skipLibCheck": true,
+    "ignoreDeprecations": "6.0"
+  },
+  "include": [
+    "generator.ts",
+    "puzzleSynthesizer.ts",
+    "revealEngine.ts",
+    "insightEngine.ts",
+    "types.ts",
+    "seed.ts",
+    "src/**/*.ts"
+  ]
+}
