@@ -1,35 +1,25 @@
 // generator.ts
 
-import { hashString, mulberry32 } from "./seed";
-import { generateInsight, POOL_FLAT_TABLE } from "./insightEngine";
+import { hashString } from "./seed";
+import { generateInsight } from "./insightEngine";
 import { synthesizePuzzle } from "./puzzleSynthesizer";
 import { generateReveal } from "./revealEngine";
-
-function shuffleArray<T>(arr: T[], r: () => number): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(r() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+import { getPuzzleManifestEntry } from "./src/data/puzzleManifest";
 
 export function generateDailyPuzzle(date: string) {
-  const seed = hashString(date);
-  const year = date.slice(0, 4);
+  const manifestEntry = getPuzzleManifestEntry(date);
 
-  // Shuffle the full combo table once per year — same year always same order.
-  const yearSeed = hashString("year-" + year);
-  const shuffled = shuffleArray(POOL_FLAT_TABLE, mulberry32(yearSeed));
+  if (!manifestEntry) {
+    throw new Error(`No manifest puzzle scheduled for ${date}`);
+  }
 
-  // Map this date to a position in the shuffled table.
-  const yearStart = new Date(year + "-01-01");
-  const dayOfYear = Math.round(
-    (new Date(date).getTime() - yearStart.getTime()) / 86_400_000
-  );
-  const combo = shuffled[dayOfYear % shuffled.length];
+  const seed = hashString(`manifest:${manifestEntry.id}:${date}`);
+  const insight = generateInsight(seed, {
+    builderIdx: manifestEntry.builderIdx,
+    entryIdx: manifestEntry.entryIdx,
+    lensIdx: manifestEntry.lensIdx,
+  });
 
-  const insight = generateInsight(seed, combo);
   const puzzle = synthesizePuzzle(insight, date);
   puzzle.reveal = generateReveal(insight);
 
