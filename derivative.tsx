@@ -1083,27 +1083,9 @@ const RootPuzzle = ({
         borderRadius: "4px",
         padding: "1rem",
         background: `linear-gradient(180deg, ${COLORS.surface2}, ${COLORS.surface})`,
-        overflow: "hidden",
       }}
     >
       <SystemMesh intensity={1} />
-
-      {/* 🔥 ROOT GRAPH (NOW VISIBLE + CORRECT ROOT) */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          zIndex: 0.5,
-          opacity: 0.9, // 🔥 boost visibility
-        }}
-      >
-        <RootGraph
-          root={root}
-          required={required}
-          found={found}
-          bonus={bonusFound}
-        />
-      </div>
 
       {/* UI LAYER */}
       <div style={{ position: "relative", zIndex: 1 }}>
@@ -1219,6 +1201,16 @@ const RootPuzzle = ({
             ))}
           </div>
         )}
+      </div>
+
+      {/* ROOT GRAPH — sits below the puzzle UI in its own block */}
+      <div style={{ position: "relative", height: "320px", marginTop: "0.75rem" }}>
+        <RootGraph
+          root={root}
+          required={required}
+          found={found}
+          bonus={bonusFound}
+        />
       </div>
     </div>
   );
