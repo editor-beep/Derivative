@@ -10,10 +10,11 @@ import { FOLK_ETYMOLOGY_POOL } from "./src/data/folkEtymology";
 import { ROOT_EXTENDED_POOL } from "./src/data/rootsExtended";
 import { ROOT_EXTENDED_POOL_2 } from "./src/data/rootsExtended2";
 import { MEANING_DRIFT_POOL_2 } from "./src/data/meaningDrift2";
+import { VERB_ROOTS_POOL } from "./src/data/verbRoots";
 
 // ── ROOT DATA ─────────────────────────────────────────────────────────────────
 
-const ROOT_POOL = [...ROOT_EXTENDED_POOL, ...ROOT_EXTENDED_POOL_2,
+const ROOT_POOL = [...VERB_ROOTS_POOL, ...ROOT_EXTENDED_POOL, ...ROOT_EXTENDED_POOL_2,
   {
     root: "port", lang: "Latin", meaning: "carry",
     targets: ["portable", "import", "export", "transport", "report", "deport", "support", "portage", "porter", "deportment"],
@@ -856,6 +857,9 @@ export function applyLens(
         const paths = insight.data.entryPaths as Record<string, string>;
         const via_french = insight.words.filter(w => paths[w] === "via_french");
         const direct = insight.words.filter(w => paths[w] === "direct_latin");
+        const present_stem = insight.words.filter(w => paths[w] === "present_stem");
+        const participle_stem = insight.words.filter(w => paths[w] === "participial_stem");
+
         if (via_french.length > 0 && direct.length > 0) {
           out.data = {
             ...out.data,
@@ -866,6 +870,17 @@ export function applyLens(
             pool: insight.words,
           };
           out.tension = insight.tension + ` — but not all of them took the same route into English.`;
+        } else if (present_stem.length > 0 && participle_stem.length > 0) {
+          const pp = (insight.data.principalParts as { infinitive: string; participle: string } | undefined);
+          out.data = {
+            ...out.data,
+            groups: [
+              { id: "present", label: `Present-stem (${pp?.infinitive ?? "present"})`, accepts: present_stem, related: [] },
+              { id: "perfect", label: `Participial-stem (${pp?.participle ?? "participle"})`, accepts: participle_stem, related: [] },
+            ],
+            pool: insight.words,
+          };
+          out.tension = insight.tension + ` — the same verb left two distinct stem-families in English.`;
         }
       }
       return out;
@@ -944,7 +959,8 @@ export function applyLens(
 // ── FLAT COMBO TABLE ──────────────────────────────────────────────────────────
 
 // Sizes must stay in sync with BUILDERS order: ROOT, SUPPLETIVE, SEMANTIC, COLLISION, DECEPTION, FALSE_FAMILY, IDIOM, BORROWED
-const POOL_SIZES = [30, 3, 5, 3, 2, 2, 7, 4];
+// ROOT breakdown: 27 (verbRoots) + 44 (rootsExtended) + 36 (rootsExtended2) + 30 (inline) = 137
+const POOL_SIZES = [137, 3, 5, 3, 2, 2, 7, 4];
 
 export const POOL_FLAT_TABLE: Array<{ builderIdx: number; entryIdx: number; lensIdx: number }> =
   (() => {
