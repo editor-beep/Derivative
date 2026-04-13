@@ -8,3 +8,5 @@ export { EPONYM_POOL } from "./eponyms";
 export { SUPPLETIVE_EXTENDED_POOL } from "./suppletiveParadigms";
 export { FOLK_ETYMOLOGY_POOL } from "./folkEtymology";
 export { TOPONYM_POOL } from "./toponyms";
+
+export { ACADEMIC_ROOT_TABLE } from "./academicRootTable";
