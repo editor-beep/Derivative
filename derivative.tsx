@@ -1468,7 +1468,7 @@ const SortPuzzle = ({
                     marginBottom: grpWords.length > 0 ? "0.5rem" : "0",
                   }}
                 >
-                  {grp.label}
+                  {revealed ? grp.solutionLabel ?? grp.label : grp.displayLabel ?? grp.label}
                 </div>
 
                 {grpWords.length > 0 && (

@@ -32,16 +32,32 @@ function buildRootPuzzle(insight: LinguisticInsight, date: string): Puzzle {
 
 function buildSortPuzzle(insight: LinguisticInsight, date: string): Puzzle {
   const { groups, pool, falseSystem } = insight.data as {
-    groups: Array<{ id: string; label: string; accepts: string[]; related: string[] }>;
+    groups: Array<{
+      id: string;
+      label?: string;
+      displayLabel?: string;
+      solutionLabel?: string;
+      accepts: string[];
+      related: string[];
+    }>;
     pool: string[];
     falseSystem?: Puzzle["falseSystem"];
   };
+  const normalizedGroups = groups.map((group) => {
+    const neutralLabel = group.displayLabel ?? group.label ?? group.solutionLabel ?? group.id;
+    return {
+      ...group,
+      label: neutralLabel,
+      displayLabel: neutralLabel,
+      solutionLabel: group.solutionLabel ?? neutralLabel,
+    };
+  });
   return {
     date,
     type: insight.type,
     lensId: lensId(insight),
     prompt: insight.tension,
-    groups,
+    groups: normalizedGroups,
     pool,
     falseSystem,
     meta: {
