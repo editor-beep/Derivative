@@ -149,12 +149,28 @@ export const ROOT_POOL = [
     tension: "Latin 'corpus' (body) gives us both the legal corporation (a fictional body) and the actual corpse — the same word for the living institution and the dead individual",
   },
   {
+    root: "culp",
+    lang: "Latin",
+    meaning: "blame, fault",
+    targets: ["culpable", "culpability", "inculpate", "exculpate", "culprit", "inculpation", "exculpation", "culpatory", "culpably", "culpableness"],
+    required: ["culpable", "culpability", "inculpate", "exculpate", "culprit"],
+    tension: "Latin 'culpa' (fault, blame) turns moral failure into legal assignability — to exculpate is to remove fault, to inculpate is to pin it on someone",
+  },
+  {
     root: "cred",
     lang: "Latin",
     meaning: "believe, trust",
     targets: ["credit", "credible", "incredible", "creed", "credential", "discredit", "accredit", "credulous", "miscreant"],
     required: ["credit", "credible", "creed", "credential", "credulous"],
     tension: "Latin 'credere' (believe, trust) underlies both financial and theological vocabulary",
+  },
+  {
+    root: "damn",
+    lang: "Latin",
+    meaning: "loss, damage, condemn",
+    targets: ["damage", "damages", "damnation", "damn", "damnable", "indemnity", "indemnify", "indemnification", "condemn", "condemnation"],
+    required: ["damage", "damages", "damnation", "indemnity", "condemn"],
+    tension: "Latin 'damnum/damnare' links injury to judgment: damages price a loss, while condemnation declares the value destroyed or the person at fault",
   },
   {
     root: "dent",
@@ -295,6 +311,14 @@ export const ROOT_POOL = [
     tension: "Latin 'iacere' (to throw) underlies words from 'abject' (thrown down) to 'trajectory' (the path of the throw)",
   },
   {
+    root: "judic",
+    lang: "Latin",
+    meaning: "judge, declare",
+    targets: ["judge", "judgment", "judicial", "judiciary", "adjudicate", "judicious", "prejudge", "judicature", "judicatory", "misjudge"],
+    required: ["judge", "judgment", "judicial", "judiciary", "adjudicate"],
+    tension: "Latin 'judex/judicare' makes judgment institutional — to adjudicate is not just to think but to bind others through a formal decision",
+  },
+  {
     root: "junct",
     lang: "Latin",
     meaning: "join",
@@ -381,6 +405,14 @@ export const ROOT_POOL = [
     targets: ["malice", "malfunction", "malnutrition", "malevolent", "malign", "malformed", "malpractice", "malady", "malcontent"],
     required: ["malice", "malfunction", "malevolent", "malign", "malady"],
     tension: "Latin 'malus' (bad) is a prolific prefix — 'mal-' still forms new English compounds today",
+  },
+  {
+    root: "mand",
+    lang: "Latin",
+    meaning: "order, command",
+    targets: ["mandate", "mandatory", "command", "commend", "countermand", "mandamus", "remand", "demand", "mandatorily", "mandator"],
+    required: ["mandate", "mandatory", "command", "countermand", "mandamus"],
+    tension: "Latin 'mandare' (to order, entrust) is power spoken downward — a mandate authorizes command while a countermand revokes it",
   },
   {
     root: "manu",
@@ -495,6 +527,14 @@ export const ROOT_POOL = [
     tension: "Latin 'pes/pedis' and Greek 'pous/podos' both mean foot — they enter English in parallel streams: Latin 'ped-' for walking, Greek 'pod-' for support and creature classification",
   },
   {
+    root: "poen",
+    lang: "Latin",
+    meaning: "punishment, penalty",
+    targets: ["penalty", "penal", "penalize", "penalization", "penitence", "penitent", "penitentiary", "subpoena", "penance", "penology"],
+    required: ["penalty", "penal", "penalize", "penitence", "penitentiary"],
+    tension: "Latin 'poena' (punishment) carries from courtroom penalty to penitentiary architecture, converting moral pain into state-administered correction",
+  },
+  {
     root: "pend",
     lang: "Latin",
     meaning: "hang, weigh",
@@ -541,6 +581,14 @@ export const ROOT_POOL = [
     targets: ["potential", "potent", "impotent", "omnipotent", "plenipotentiary", "potency", "impotence", "omnipotence", "prepotent", "possessive"],
     required: ["potential", "potent", "impotent", "omnipotent", "plenipotentiary"],
     tension: "Latin 'posse' (to be able) connects the omnipotent (all-powerful) to the plenipotentiary (full-powered ambassador) to potential (power not yet released) — power as divine absolute, legal delegation, and unrealized capacity",
+  },
+  {
+    root: "prob",
+    lang: "Latin",
+    meaning: "test, prove, approve",
+    targets: ["probate", "probation", "probable", "probability", "probe", "proof", "prove", "approve", "reprove", "improbable"],
+    required: ["probate", "probation", "probable", "probe", "approve"],
+    tension: "Latin 'probare' (to test/prove) lets institutions examine people and property — probation tests conduct, probate tests claims to inheritance",
   },
   {
     root: "press",
@@ -607,6 +655,14 @@ export const ROOT_POOL = [
     targets: ["solar", "solstice", "solarium", "parasol", "insolation", "soleil", "sol", "heliocentric", "photosynthesis", "sunflower"],
     required: ["solar", "solstice", "solarium", "parasol", "insolation"],
     tension: "Latin 'sol' (sun) connects the solstice (sun standing still) to the parasol (against the sun) to solar energy — the sun as calendar marker, shield, and power source",
+  },
+  {
+    root: "soci",
+    lang: "Latin",
+    meaning: "companion, ally",
+    targets: ["social", "society", "sociology", "associate", "association", "dissociate", "consociate", "sociable", "sociopathy", "socioeconomic"],
+    required: ["social", "society", "sociology", "associate", "association"],
+    tension: "Latin 'socius' (companion) moved from alliance to abstraction — modern society becomes something that can be measured, managed, and engineered",
   },
   {
     root: "son",
@@ -680,6 +736,14 @@ export const ROOT_POOL = [
     required: ["territory", "terrain", "terrestrial", "inter", "subterranean"],
     tension: "Latin 'terra' (earth) connects burial, geography, and place — a root that literally grounds everything",
     impostors: ["terror"]
+  },
+  {
+    root: "test",
+    lang: "Latin",
+    meaning: "witness, testify",
+    targets: ["testify", "testimony", "testament", "attest", "contest", "detest", "protest", "intestate", "testator", "testimonial"],
+    required: ["testify", "testimony", "testament", "attest", "testator"],
+    tension: "Latin 'testis' (witness) formalizes truth through procedure — testimony and testament both depend on recognized witnessing",
   },
   {
     root: "tract",
@@ -855,6 +919,14 @@ export const ROOT_POOL = [
     tension: "Greek 'derma' (skin) connects the dermatologist to the taxidermist (one who arranges skins) to the pachyderm (thick-skinned) — skin as medical surface, craft material, and zoological category",
   },
   {
+    root: "gastr",
+    lang: "Greek",
+    meaning: "stomach, belly",
+    targets: ["gastric", "gastritis", "gastroenterology", "gastropod", "gastronomy", "gastroscope", "epigastric", "gastrointestinal", "gastrectomy", "gastrostomy"],
+    required: ["gastric", "gastritis", "gastroenterology", "gastropod", "gastrointestinal"],
+    tension: "Greek 'gaster/gastros' reframes the belly as a system — everyday appetite becomes a domain for specialists and instruments",
+  },
+  {
     root: "geo",
     lang: "Greek",
     meaning: "earth",
@@ -877,6 +949,14 @@ export const ROOT_POOL = [
     targets: ["heliocentric", "heliotrope", "helium", "helicopter", "heliosphere", "heliograph", "perihelion", "aphelion", "helipad", "heliolatry"],
     required: ["heliocentric", "heliotrope", "helium", "helicopter", "perihelion"],
     tension: "Greek 'helios' (the sun-god, personified) became a scientific prefix when Copernicus's 'heliocentric' model dethroned Earth in the 17th century. The same root runs from the poetic 'heliotrope' (sun-turner) to the chemical 'helium' (named because it was first detected in the sun's spectrum) to the mechanical 'helicopter' (spiral-sun, via helical rotor) — myth, chemistry, and engineering from one ancient word for light",
+  },
+  {
+    root: "hemat",
+    lang: "Greek",
+    meaning: "blood",
+    targets: ["hematology", "hematoma", "hematocrit", "hematopoiesis", "hematemesis", "hemostasis", "hemoglobin", "hematuria", "hematinic", "hematogenous"],
+    required: ["hematology", "hematoma", "hematocrit", "hematopoiesis", "hemostasis"],
+    tension: "Greek 'haima/haimatos' turns blood from symbol into specimen — hematology names what once was only visceral experience",
   },
   {
     root: "hydr",
@@ -933,6 +1013,14 @@ export const ROOT_POOL = [
     targets: ["optician", "optical", "optometry", "optic", "synopsis", "autopsy", "diopter", "myopic", "optics", "optotype"],
     required: ["optician", "optical", "optometry", "synopsis", "autopsy"],
     tension: "Greek 'opsis/optos' (sight) connects the optician to the autopsy (seeing for oneself) to the synopsis (seeing together, a summary) — every '-opsy' and '-optic' is an act of looking",
+  },
+  {
+    root: "osteo",
+    lang: "Greek",
+    meaning: "bone",
+    targets: ["osteology", "osteoporosis", "osteopath", "osteocyte", "osteoblast", "osteoarthritis", "periosteum", "endosteum", "osteogenesis", "osteotomy"],
+    required: ["osteology", "osteoporosis", "osteopath", "osteocyte", "osteoarthritis"],
+    tension: "Greek 'osteon' isolates bone as a system in itself — structure becomes object, then specialty, then intervention",
   },
   {
     root: "orth",
