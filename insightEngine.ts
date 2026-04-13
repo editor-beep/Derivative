@@ -536,6 +536,34 @@ function buildCollisionInsight(r: () => number, idx?: number): LinguisticInsight
   };
 }
 
+function buildGrimmInsight(r: () => number, idx?: number): LinguisticInsight {
+  const d = pickAt(GRIMM_POOL, r, idx);
+  return {
+    id: `grimm-${d.root}`,
+    type: "GRIMM",
+    root: d.root,
+    language: d.lang,
+    words: d.pairs.map((p) => p.target),
+    meaning: d.meaning,
+    tension: d.tension,
+    data: { pairs: d.pairs }
+  };
+}
+
+function buildPieInsight(r: () => number, idx?: number): LinguisticInsight {
+  const d = pickAt(PIE_POOL, r, idx);
+  return {
+    id: `pie-${d.root}`,
+    type: "PIE",
+    root: d.root,
+    language: d.lang,
+    words: d.pool,
+    meaning: d.meaning,
+    tension: d.tension,
+    data: { groups: d.groups, pool: d.pool }
+  };
+}
+
 function buildDeceptionInsight(r: () => number, idx?: number): LinguisticInsight {
   const d = pickAt(DECEPTION_POOL, r, idx);
   return {
@@ -788,14 +816,29 @@ export function applyLens(
 
 // ── FLAT COMBO TABLE ──────────────────────────────────────────────────────────
 
-// Sizes must stay in sync with BUILDERS order: ROOT, SUPPLETIVE, SEMANTIC, COLLISION, DECEPTION, FALSE_FAMILY, IDIOM, BORROWED, TOPONYM
-const POOL_SIZES = [30, 4, 5, 3, 2, 2, 7, 23, 4];
+type Builder = (r: () => number, idx?: number) => LinguisticInsight;
+type BuilderSource = { key: string; count: number; build: Builder };
+
+// Dynamic source registry used by both BUILDERS and the flat combo table.
+const BUILDER_SOURCES: BuilderSource[] = [
+  { key: "ROOT", count: ROOT_POOL.length, build: buildRootInsight },
+  { key: "SUPPLETIVE", count: SUPPLETIVE_POOL.length, build: buildSuppletiveInsight },
+  { key: "SEMANTIC", count: SEMANTIC_POOL.length, build: buildSemanticShiftInsight },
+  { key: "COLLISION", count: COLLISION_POOL.length, build: buildCollisionInsight },
+  { key: "GRIMM", count: GRIMM_POOL.length, build: buildGrimmInsight },
+  { key: "PIE", count: PIE_POOL.length, build: buildPieInsight },
+  { key: "DECEPTION", count: DECEPTION_POOL.length, build: buildDeceptionInsight },
+  { key: "FALSE_FAMILY", count: FALSE_FAMILY_POOL.length, build: buildFalseFamilyInsight },
+  { key: "IDIOM", count: IDIOM_POOL.length, build: buildIdiomInsight },
+  { key: "BORROWED", count: BORROWED_POOL.length, build: buildBorrowedInsight },
+  { key: "TOPONYM", count: TOPONYM_POOL.length, build: buildToponymInsight },
+];
 
 export const POOL_FLAT_TABLE: Array<{ builderIdx: number; entryIdx: number; lensIdx: number }> =
   (() => {
     const result: Array<{ builderIdx: number; entryIdx: number; lensIdx: number }> = [];
-    for (let b = 0; b < POOL_SIZES.length; b++) {
-      for (let e = 0; e < POOL_SIZES[b]; e++) {
+    for (let b = 0; b < BUILDER_SOURCES.length; b++) {
+      for (let e = 0; e < BUILDER_SOURCES[b].count; e++) {
         for (let l = 0; l < LENSES.length; l++) {
           result.push({ builderIdx: b, entryIdx: e, lensIdx: l });
         }
@@ -806,19 +849,7 @@ export const POOL_FLAT_TABLE: Array<{ builderIdx: number; entryIdx: number; lens
 
 // ── EXPORT ────────────────────────────────────────────────────────────────────
 
-type Builder = (r: () => number, idx?: number) => LinguisticInsight;
-
-const BUILDERS: Builder[] = [
-  buildRootInsight,
-  buildSuppletiveInsight,
-  buildSemanticShiftInsight,
-  buildCollisionInsight,
-  buildDeceptionInsight,
-  buildFalseFamilyInsight,
-  buildIdiomInsight,
-  buildBorrowedInsight,
-  buildToponymInsight,
-];
+const BUILDERS: Builder[] = BUILDER_SOURCES.map((source) => source.build);
 
 export function generateInsight(
   seed: number,

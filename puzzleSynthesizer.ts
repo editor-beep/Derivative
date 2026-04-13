@@ -83,6 +83,27 @@ function buildTimelinePuzzle(insight: LinguisticInsight, date: string): Puzzle {
   };
 }
 
+function buildGrimmPuzzle(insight: LinguisticInsight, date: string): Puzzle {
+  const { pairs } = insight.data as {
+    pairs: Array<{ source: string; target: string; note?: string }>;
+  };
+  return {
+    date,
+    type: "GRIMM",
+    lensId: lensId(insight),
+    prompt: insight.tension,
+    pairs,
+    pool: pairs.map((p) => p.target),
+    meta: {
+      root: insight.root,
+      lang: insight.language,
+      meaning: insight.meaning,
+      lensLabel: lensLabel(insight),
+    },
+    reveal: { headline: "", body: "", connections: [] },
+  };
+}
+
 function buildIdiomPuzzle(insight: LinguisticInsight, date: string): Puzzle {
   const { phrase, origin } = insight.data as {
     phrase: string;
@@ -125,6 +146,9 @@ export function synthesizePuzzle(insight: LinguisticInsight, date: string): Puzz
 
     case "BORROWED":
       return buildBorrowedPuzzle(insight, date);
+
+    case "GRIMM":
+      return buildGrimmPuzzle(insight, date);
 
     case "TOPONYM":
       return buildSortPuzzle(insight, date);
