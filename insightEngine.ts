@@ -1,6 +1,6 @@
 // insightEngine.ts
 
-import { LinguisticInsight, Lens } from "./types";
+import { FalseSystemConfig, LinguisticInsight, Lens } from "./types";
 import { mulberry32 } from "./seed";
 import {
   ROOT_POOL,
@@ -14,7 +14,17 @@ import {
 
 // ── SUPPLETIVE DATA ───────────────────────────────────────────────────────────
 
-const SUPPLETIVE_POOL = [...SUPPLETIVE_EXTENDED_POOL,
+type SuppletiveEntry = {
+  root: string;
+  lang: string;
+  meaning: string;
+  groups: Array<{ id: string; label: string; accepts: string[]; related: string[] }>;
+  pool: string[];
+  tension: string;
+  falseSystem?: FalseSystemConfig;
+};
+
+const SUPPLETIVE_POOL: SuppletiveEntry[] = [...SUPPLETIVE_EXTENDED_POOL,
   {
     root: "go / went", lang: "Old English + Proto-Germanic", meaning: "motion",
     groups: [
@@ -44,6 +54,21 @@ const SUPPLETIVE_POOL = [...SUPPLETIVE_EXTENDED_POOL,
     ],
     pool: ["be", "being", "been", "am", "is", "are", "was", "were", "exist", "remain"],
     tension: "English 'to be' fuses three distinct Proto-Germanic roots into one verb paradigm"
+  },
+  {
+    root: "little / less / least", lang: "Old English + mixed comparatives", meaning: "false comparative system",
+    groups: [
+      { id: "size", label: "size", accepts: ["small", "little"], related: [] },
+      { id: "quantity", label: "quantity", accepts: ["fewer", "less"], related: [] },
+      { id: "intensity", label: "intensity", accepts: [], related: [] }
+    ],
+    pool: ["little", "less", "least", "small", "fewer", "minimum"],
+    tension: "This puzzle offers clean categories, but the pattern fractures: English comparatives are stitched from multiple historical systems.",
+    falseSystem: {
+      decoys: ["least", "minimum"],
+      breakMessage: "SYSTEM FRACTURE: the category model stops explaining the data.",
+      revealTruth: "These words are not one semantic grid. They are overlapping leftovers from different historical strata."
+    }
   },
 ];
 
@@ -479,7 +504,7 @@ function buildSuppletiveInsight(r: () => number, idx?: number): LinguisticInsigh
     words: d.pool,
     meaning: d.meaning,
     tension: d.tension,
-    data: { groups: d.groups, pool: d.pool }
+    data: { groups: d.groups, pool: d.pool, falseSystem: d.falseSystem }
   };
 }
 
@@ -764,7 +789,7 @@ export function applyLens(
 // ── FLAT COMBO TABLE ──────────────────────────────────────────────────────────
 
 // Sizes must stay in sync with BUILDERS order: ROOT, SUPPLETIVE, SEMANTIC, COLLISION, DECEPTION, FALSE_FAMILY, IDIOM, BORROWED, TOPONYM
-const POOL_SIZES = [30, 3, 5, 3, 2, 2, 7, 23, 4];
+const POOL_SIZES = [30, 4, 5, 3, 2, 2, 7, 23, 4];
 
 export const POOL_FLAT_TABLE: Array<{ builderIdx: number; entryIdx: number; lensIdx: number }> =
   (() => {

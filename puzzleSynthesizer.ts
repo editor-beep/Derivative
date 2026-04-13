@@ -31,9 +31,10 @@ function buildRootPuzzle(insight: LinguisticInsight, date: string): Puzzle {
 }
 
 function buildSortPuzzle(insight: LinguisticInsight, date: string): Puzzle {
-  const { groups, pool } = insight.data as {
+  const { groups, pool, falseSystem } = insight.data as {
     groups: Array<{ id: string; label: string; accepts: string[]; related: string[] }>;
     pool: string[];
+    falseSystem?: Puzzle["falseSystem"];
   };
   return {
     date,
@@ -42,6 +43,7 @@ function buildSortPuzzle(insight: LinguisticInsight, date: string): Puzzle {
     prompt: insight.tension,
     groups,
     pool,
+    falseSystem,
     meta: {
       root: insight.root,
       lang: insight.language,

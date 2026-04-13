@@ -65,6 +65,7 @@ export interface Puzzle {
   groups?: PuzzleGroup[];
   pairs?: PuzzlePair[];
   timeline?: PuzzleTimelineItem[];
+  falseSystem?: FalseSystemConfig;
 
   // IDIOM-specific
   fragments?: string[];
@@ -79,6 +80,12 @@ export interface Puzzle {
   };
 
   reveal: Reveal;
+}
+
+export interface FalseSystemConfig {
+  decoys: string[];
+  breakMessage: string;
+  revealTruth: string;
 }
 
 export interface Reveal {
