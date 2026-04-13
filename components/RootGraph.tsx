@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { PREFIX_DATA } from "../lib/prefixMap";
 
 /* ── PREFIX PARSER ───────────────────────────────────────── */
@@ -9,11 +9,17 @@ function getPrefix(word: string, root: string): string | null {
 }
 
 /* ── ORBIT COLLISION DETECTION ───────────────────────────────── */
-const CHAR_WIDTH_PX = 5;    // monospace 8px ≈ 5px per glyph
-const MIN_NODE_GAP = 6;     // px clearance between adjacent label edges
+const CHAR_WIDTH_PX = 5;
+const MIN_NODE_GAP = 6;
 const MIN_ORBIT_RADIUS = 110;
-const MAX_ORBIT_RADIUS = 145; // keeps nodes inside 320px-tall SVG at center y=160
+const MAX_ORBIT_RADIUS = 145;
 const NODE_RADIUS = 10;
+
+/* ── VIEWBOX — fixed coordinate space, SVG scales to fit container ── */
+const VB_W = 520;
+const VB_H = 320;
+const CX = VB_W / 2; // 260
+const CY = VB_H / 2; // 160
 
 function computeOrbitRadius(words: string[]): number {
   if (words.length <= 1) return MIN_ORBIT_RADIUS;
@@ -41,10 +47,8 @@ export default function RootGraph({
   found: string[];
   bonus: string[];
 }) {
+  const [hintsVisible, setHintsVisible] = useState(false);
   const words = [...required, ...bonus];
-
-  const centerX = 260;
-  const centerY = 160;
   const radius = computeOrbitRadius(words);
 
   return (
@@ -78,22 +82,10 @@ export default function RootGraph({
           opacity: 0.65,
         }}
       >
-        <div style={{ position: "absolute", top: 12, left: 14 }}>
-          derivational system
-        </div>
-
-        <div style={{ position: "absolute", top: 12, right: 14 }}>
-          syntactic layer
-        </div>
-
-        <div style={{ position: "absolute", bottom: 14, left: 14 }}>
-          semantic transformation
-        </div>
-
-        <div style={{ position: "absolute", bottom: 14, right: 14 }}>
-          lexical output
-        </div>
-
+        <div style={{ position: "absolute", top: 12, left: 14 }}>derivational system</div>
+        <div style={{ position: "absolute", top: 12, right: 14 }}>syntactic layer</div>
+        <div style={{ position: "absolute", bottom: 14, left: 14 }}>semantic transformation</div>
+        <div style={{ position: "absolute", bottom: 14, right: 14 }}>lexical output</div>
         <div
           style={{
             position: "absolute",
@@ -108,20 +100,50 @@ export default function RootGraph({
         </div>
       </div>
 
-      {/* ── SVG SYSTEM ───────────────────────── */}
-      <svg width="100%" height="320" style={{ position: "relative", zIndex: 1 }}>
+      {/* ── HINT TOGGLE ─────────────────────────────── */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: 10,
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 4,
+          pointerEvents: "auto",
+        }}
+      >
+        <button
+          onClick={() => setHintsVisible((v) => !v)}
+          style={{
+            fontFamily: "monospace",
+            fontSize: "8px",
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: hintsVisible ? "#e8b84b" : "#4a3a28",
+            background: hintsVisible ? "rgba(200,146,42,0.08)" : "rgba(10,8,4,0.6)",
+            border: `1px solid ${hintsVisible ? "#c8922a55" : "#2a201055"}`,
+            borderRadius: "2px",
+            padding: "3px 10px",
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+          }}
+        >
+          {hintsVisible ? "hide hints" : "hint ›"}
+        </button>
+      </div>
 
+      {/* ── SVG — viewBox makes all coordinates scale to fit ── */}
+      <svg
+        width="100%"
+        height="100%"
+        viewBox={`0 0 ${VB_W} ${VB_H}`}
+        preserveAspectRatio="xMidYMid meet"
+        style={{ position: "absolute", inset: 0, zIndex: 1 }}
+      >
         {/* ROOT CORE */}
-        <circle
-          cx={centerX}
-          cy={centerY}
-          r={26}
-          className="root-core"
-        />
-
+        <circle cx={CX} cy={CY} r={26} className="root-core" />
         <text
-          x={centerX}
-          y={centerY + 4}
+          x={CX}
+          y={CY + 4}
           textAnchor="middle"
           fontSize="11"
           fill="#e8b84b"
@@ -132,33 +154,35 @@ export default function RootGraph({
 
         {words.map((word, i) => {
           const angle = (i / words.length) * Math.PI * 2;
-          const x = centerX + Math.cos(angle) * radius;
-          const y = centerY + Math.sin(angle) * radius;
+          const x = CX + Math.cos(angle) * radius;
+          const y = CY + Math.sin(angle) * radius;
 
           const isFound = found.includes(word);
+          const showLabel = isFound || hintsVisible;
           const prefix = getPrefix(word, root);
-          const meaning = prefix ? (PREFIX_DATA as Record<string, { meaning: string }>)[prefix]?.meaning ?? null : null;
+          const meaning =
+            prefix
+              ? (PREFIX_DATA as Record<string, { meaning: string }>)[prefix]?.meaning ?? null
+              : null;
 
           return (
             <g key={word}>
 
               {/* FLOW LINE */}
               <line
-                x1={centerX}
-                y1={centerY}
-                x2={x}
-                y2={y}
+                x1={CX} y1={CY}
+                x2={x}  y2={y}
                 stroke={isFound ? "#e8b84b" : "#2a2010"}
                 strokeWidth="1"
                 strokeDasharray="4 6"
                 className={isFound ? "flow-active" : "flow-idle"}
               />
 
-              {/* PREFIX */}
-              {prefix && (
+              {/* PREFIX — only when hints visible */}
+              {prefix && hintsVisible && (
                 <text
-                  x={(centerX + x) / 2}
-                  y={(centerY + y) / 2 - 6}
+                  x={(CX + x) / 2}
+                  y={(CY + y) / 2 - 6}
                   fontSize="8"
                   fill="#8a7868"
                   textAnchor="middle"
@@ -168,11 +192,11 @@ export default function RootGraph({
                 </text>
               )}
 
-              {/* MEANING */}
-              {meaning && (
+              {/* MEANING — only when hints visible */}
+              {meaning && hintsVisible && (
                 <text
-                  x={(centerX + x) / 2}
-                  y={(centerY + y) / 2 + 6}
+                  x={(CX + x) / 2}
+                  y={(CY + y) / 2 + 6}
                   fontSize="8"
                   fill="#4ecfcf"
                   textAnchor="middle"
@@ -182,24 +206,24 @@ export default function RootGraph({
                 </text>
               )}
 
-              {/* NODE */}
+              {/* NODE CIRCLE */}
               <circle
-                cx={x}
-                cy={y}
+                cx={x} cy={y}
                 r={NODE_RADIUS}
                 fill={isFound ? "rgba(200,146,42,0.2)" : "#0d0b08"}
                 stroke={isFound ? "#c8922a" : "#2a2010"}
               />
 
+              {/* NODE LABEL — show word if found or hints on, else dots */}
               <text
                 x={x}
                 y={y + 3}
                 textAnchor="middle"
                 fontSize="8"
-                fill={isFound ? "#e8b84b" : "#3a2e14"}
+                fill={isFound ? "#e8b84b" : hintsVisible ? "#5a4a38" : "#1e1808"}
                 fontFamily="monospace"
               >
-                {word}
+                {showLabel ? word : "·".repeat(Math.min(word.length, 7))}
               </text>
             </g>
           );
@@ -207,38 +231,28 @@ export default function RootGraph({
       </svg>
 
       {/* ── ANIMATIONS ───────────────────────── */}
-      <style>
-        {`
-          .flow-active {
-            animation: flowMove 1.2s linear infinite;
-          }
-
-          .flow-idle {
-            opacity: 0.25;
-          }
-
-          @keyframes flowMove {
-            from { stroke-dashoffset: 0; }
-            to { stroke-dashoffset: -20; }
-          }
-
-          .root-core {
-            fill: rgba(200,146,42,0.12);
-            stroke: #c8922a;
-            stroke-width: 1.5;
-            animation: corePulse 2.4s ease-in-out infinite;
-          }
-
-          @keyframes corePulse {
-            0%, 100% {
-              filter: drop-shadow(0 0 4px rgba(200,146,42,0.2));
-            }
-            50% {
-              filter: drop-shadow(0 0 14px rgba(200,146,42,0.6));
-            }
-          }
-        `}
-      </style>
+      <style>{`
+        .flow-active {
+          animation: flowMove 1.2s linear infinite;
+        }
+        .flow-idle {
+          opacity: 0.25;
+        }
+        @keyframes flowMove {
+          from { stroke-dashoffset: 0; }
+          to   { stroke-dashoffset: -20; }
+        }
+        .root-core {
+          fill: rgba(200,146,42,0.12);
+          stroke: #c8922a;
+          stroke-width: 1.5;
+          animation: corePulse 2.4s ease-in-out infinite;
+        }
+        @keyframes corePulse {
+          0%, 100% { filter: drop-shadow(0 0 4px rgba(200,146,42,0.2)); }
+          50%       { filter: drop-shadow(0 0 14px rgba(200,146,42,0.6)); }
+        }
+      `}</style>
     </div>
   );
 }
