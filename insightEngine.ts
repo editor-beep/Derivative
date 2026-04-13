@@ -786,18 +786,57 @@ export function applyLens(
   }
 }
 
-// ── FLAT COMBO TABLE ──────────────────────────────────────────────────────────
+type Builder = (r: () => number, idx?: number) => LinguisticInsight;
+type PuzzleBuilderType = Extract<
+  LinguisticInsight["type"],
+  | "ROOT"
+  | "SUPPLETIVE"
+  | "SEMANTIC"
+  | "COLLISION"
+  | "DECEPTION"
+  | "FALSE_FAMILY"
+  | "IDIOM"
+  | "BORROWED"
+  | "TOPONYM"
+>;
 
-// Sizes must stay in sync with BUILDERS order: ROOT, SUPPLETIVE, SEMANTIC, COLLISION, DECEPTION, FALSE_FAMILY, IDIOM, BORROWED, TOPONYM
-const POOL_SIZES = [30, 4, 5, 3, 2, 2, 7, 23, 4];
+type PuzzleSource = {
+  builderType: PuzzleBuilderType;
+  builder: Builder;
+  entryCount: number;
+  lensRule: (lens: Lens) => boolean;
+};
+
+export const PUZZLE_SOURCES: readonly PuzzleSource[] = [
+  { builderType: "ROOT", builder: buildRootInsight, entryCount: ROOT_POOL.length, lensRule: (lens) => lens.applicableTo.includes("ROOT") },
+  { builderType: "SUPPLETIVE", builder: buildSuppletiveInsight, entryCount: SUPPLETIVE_POOL.length, lensRule: (lens) => lens.applicableTo.includes("SUPPLETIVE") },
+  { builderType: "SEMANTIC", builder: buildSemanticShiftInsight, entryCount: SEMANTIC_POOL.length, lensRule: (lens) => lens.applicableTo.includes("SEMANTIC") },
+  { builderType: "COLLISION", builder: buildCollisionInsight, entryCount: COLLISION_POOL.length, lensRule: (lens) => lens.applicableTo.includes("COLLISION") },
+  { builderType: "DECEPTION", builder: buildDeceptionInsight, entryCount: DECEPTION_POOL.length, lensRule: (lens) => lens.applicableTo.includes("DECEPTION") },
+  { builderType: "FALSE_FAMILY", builder: buildFalseFamilyInsight, entryCount: FALSE_FAMILY_POOL.length, lensRule: (lens) => lens.applicableTo.includes("FALSE_FAMILY") },
+  { builderType: "IDIOM", builder: buildIdiomInsight, entryCount: IDIOM_POOL.length, lensRule: (lens) => lens.applicableTo.includes("IDIOM") },
+  { builderType: "BORROWED", builder: buildBorrowedInsight, entryCount: BORROWED_POOL.length, lensRule: (lens) => lens.applicableTo.includes("BORROWED") },
+  { builderType: "TOPONYM", builder: buildToponymInsight, entryCount: TOPONYM_POOL.length, lensRule: (lens) => lens.applicableTo.includes("TOPONYM") },
+];
+
+for (const source of PUZZLE_SOURCES) {
+  if (source.entryCount === 0) {
+    throw new Error(`Puzzle source "${source.builderType}" has zero entries.`);
+  }
+}
+
+// ── FLAT COMBO TABLE ──────────────────────────────────────────────────────────
 
 export const POOL_FLAT_TABLE: Array<{ builderIdx: number; entryIdx: number; lensIdx: number }> =
   (() => {
     const result: Array<{ builderIdx: number; entryIdx: number; lensIdx: number }> = [];
-    for (let b = 0; b < POOL_SIZES.length; b++) {
-      for (let e = 0; e < POOL_SIZES[b]; e++) {
+    for (let b = 0; b < PUZZLE_SOURCES.length; b++) {
+      const source = PUZZLE_SOURCES[b];
+      for (let e = 0; e < source.entryCount; e++) {
         for (let l = 0; l < LENSES.length; l++) {
-          result.push({ builderIdx: b, entryIdx: e, lensIdx: l });
+          if (source.lensRule(LENSES[l])) {
+            result.push({ builderIdx: b, entryIdx: e, lensIdx: l });
+          }
         }
       }
     }
@@ -805,20 +844,6 @@ export const POOL_FLAT_TABLE: Array<{ builderIdx: number; entryIdx: number; lens
   })();
 
 // ── EXPORT ────────────────────────────────────────────────────────────────────
-
-type Builder = (r: () => number, idx?: number) => LinguisticInsight;
-
-const BUILDERS: Builder[] = [
-  buildRootInsight,
-  buildSuppletiveInsight,
-  buildSemanticShiftInsight,
-  buildCollisionInsight,
-  buildDeceptionInsight,
-  buildFalseFamilyInsight,
-  buildIdiomInsight,
-  buildBorrowedInsight,
-  buildToponymInsight,
-];
 
 export function generateInsight(
   seed: number,
@@ -828,14 +853,14 @@ export function generateInsight(
     // Use a stable sub-seed for the RNG (needed for IDIOM fragment shuffle etc.)
     // Entry selection is handled by passing entryIdx directly to the builder.
     const r = mulberry32((seed ^ 0xFACEFEED) >>> 0);
-    const insight = BUILDERS[override.builderIdx](r, override.entryIdx);
+    const insight = PUZZLE_SOURCES[override.builderIdx].builder(r, override.entryIdx);
     return applyLens(insight, LENSES[override.lensIdx], r);
   }
 
   // Legacy fallback: 1-D random selection (used when generator.ts has no override)
   const r = mulberry32(seed);
-  const chosen = BUILDERS[Math.floor(r() * BUILDERS.length)];
-  const insight = chosen(r);
+  const chosen = PUZZLE_SOURCES[Math.floor(r() * PUZZLE_SOURCES.length)];
+  const insight = chosen.builder(r);
   const rLens = mulberry32((seed ^ 0xD1CE5EED) >>> 0);
   const lens = LENSES[Math.floor(rLens() * LENSES.length)];
   return applyLens(insight, lens, r);
