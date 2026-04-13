@@ -339,7 +339,7 @@ const TYPE_ICONS: Record<string, ({ color }: { color: string }) => JSX.Element> 
   TOPONYM: IconToponym,
 };
 
-const TYPE_SHARE_ICONS: Record<string, string> = {
+const TYPE_SHARE_ICONS: Record<PuzzleType, string> = {
   ROOT: "Ψ",
   SUPPLETIVE: "≠",
   GRIMM: "∿",
@@ -354,7 +354,7 @@ const TYPE_SHARE_ICONS: Record<string, string> = {
   PHANTOM_ROOT: "∅",
 };
 
-const DIFFICULTY_SHARE_ICONS: Record<string, string> = {
+const DIFFICULTY_SHARE_ICONS: Record<DifficultyLevel, string> = {
   EASY: "○",
   MEDIUM: "◎",
   HARD: "◉",
@@ -2244,7 +2244,7 @@ export default function Derivative() {
     const [year, month, day] = selDate.split("-").map(Number);
     const dateRoman = `${toRoman(day)} · ${toRoman(month)} · ${toRoman(year)}`;
 
-    const diffLevel = getDifficulty(puzzle.type as any, puzzle.lensId as any);
+    const diffLevel = getDifficulty(puzzle.type, puzzle.lensId);
     const diffIcon = DIFFICULTY_SHARE_ICONS[diffLevel] || "○";
     const typeIcon = TYPE_SHARE_ICONS[puzzle.type] || "◇";
     const iconRow = `◈  ${diffIcon}  ${typeIcon}`;
