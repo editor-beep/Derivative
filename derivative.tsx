@@ -44,6 +44,7 @@ type AnswerState = {
 
 type IdiomState = {
   sequence?: string[];
+  idiomFound?: number[];
 };
 
 type PuzzleState = RootState & SortState & AnswerState & IdiomState;
@@ -1888,9 +1889,21 @@ const IdiomPuzzle = ({
   const color = TYPE_COLORS["IDIOM"];
 
   const submit = () => {
-    const w = input.trim().toLowerCase();
+    const raw = input.trim().toLowerCase();
     setInput("");
-    if (!w) return;
+    if (!raw) return;
+
+    // Full-phrase entry: reveal all positions at once
+    if (raw === answer.toLowerCase()) {
+      const allIndices = answerWords.map((_, i) => i);
+      onState({ ...state, idiomFound: allIndices });
+      setFlash({ msg: "expression reconstructed", ok: true });
+      setTimeout(() => setFlash(null), 1400);
+      return;
+    }
+
+    // Single-word entry: match against individual words in the phrase
+    const w = raw;
 
     // All positions in the phrase that match this word
     const allPositions = answerWords
@@ -1906,7 +1919,6 @@ const IdiomPuzzle = ({
       onState({ ...state, idiomFound: [...idiomFound, ...newPositions] });
       setFlash({ msg: newPositions.length > 1 ? `×${newPositions.length} found` : "correct", ok: true });
     } else if (allPositions.length > 0) {
-      // All instances already found
       setFlash({ msg: "already found", ok: false });
       setShake(true);
       setTimeout(() => setShake(false), 500);
