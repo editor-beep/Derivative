@@ -5,6 +5,7 @@ export type SuffixCategory =
   | "ADJECTIVIZER"    // -able/-ful/-less/-ous/-al/-ic/-ive/-ish/-ary
   | "VERBALIZER"      // -ize/-ify/-en/-ate
   | "ADVERBIALIZER"   // -ly
+  | "DIMINUTIVE"      // -let/-ling/-ette/-y/-kin: small or affectionate version of
   | "DECEPTIVE";      // looks like a suffix but isn't, or is inflectional not derivational
 
 export type SuffixEntry = {
@@ -367,6 +368,63 @@ export const SUFFIX_MAP: SuffixEntry[] = [
     examples: ["quickly", "carefully", "honestly", "deeply", "suddenly"],
     notes:
       "Also forms adjectives from nouns (friendly, kingly, manly) — polyfunctional suffix",
+  },
+
+  /* ── DIMINUTIVE ─────────────────────────────────────────────── */
+  {
+    suffix: "let",
+    meaning: "small or lesser version of",
+    category: "DIMINUTIVE",
+    transformsTo: "noun",
+    attachesTo: ["noun"],
+    origin: "Old French -elet, a double diminutive from -el + -et",
+    examples: ["booklet", "droplet", "piglet", "streamlet", "leaflet", "tablet"],
+    notes:
+      "One of the most transparent diminutives still productive in English; 'tablet' and 'hamlet' are older survivals where the source noun has shifted",
+  },
+  {
+    suffix: "ling",
+    meaning: "small, young, or inferior version of; one belonging to or characterized by",
+    category: "DIMINUTIVE",
+    transformsTo: "noun",
+    attachesTo: ["noun", "adjective"],
+    origin: "Old English -ling, Proto-Germanic *-lingaz",
+    examples: ["duckling", "sapling", "seedling", "youngling", "weakling", "underling"],
+    notes:
+      "Can carry a derogatory nuance when applied to persons (weakling, hireling, underling). 'Darling' (dear + -ling) is now fully lexicalized",
+  },
+  {
+    suffix: "ette",
+    meaning: "small or diminutive version of; also used for imitation materials and feminine roles",
+    category: "DIMINUTIVE",
+    transformsTo: "noun",
+    attachesTo: ["noun"],
+    origin: "French -ette, feminine diminutive of -et",
+    examples: ["kitchenette", "statuette", "novelette", "diskette", "cigarette", "serviette"],
+    notes:
+      "Borrowed from French; also forms imitation-material nouns (leatherette, flannelette) and feminine occupational nouns (usherette, majorette), making its semantics broader than pure size reduction",
+  },
+  {
+    suffix: "y / ie",
+    meaning: "affectionate or diminutive form of; hypocoristic",
+    category: "DIMINUTIVE",
+    transformsTo: "noun",
+    attachesTo: ["noun"],
+    origin: "Middle English, partly from Scottish -ie; exact origin disputed",
+    examples: ["doggy", "birdie", "kitty", "daddy", "auntie", "tummy", "belly"],
+    notes:
+      "Primarily hypocoristic (pet-name forming) rather than size-reducing. Distinct from adjectivizer -y (rocky, sleepy). Dominant in baby-talk and intimate registers; highly productive",
+  },
+  {
+    suffix: "kin",
+    meaning: "small diminutive of",
+    category: "DIMINUTIVE",
+    transformsTo: "noun",
+    attachesTo: ["noun"],
+    origin: "Middle Dutch -kin / Low German -ken",
+    examples: ["lambkin", "manikin", "catkin", "napkin", "firkin", "pumpkin"],
+    notes:
+      "Largely fossilized; in 'napkin' (nape + kin = tablecloth) and 'firkin' (quarter-barrel) the base is opaque or the size meaning is lost. 'Manikin' survives as a technical term",
   },
 
   /* ── DECEPTIVE ──────────────────────────────────────────────── */
