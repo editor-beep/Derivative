@@ -11,7 +11,8 @@ export type PuzzleType =
   | "FALSE_FAMILY"
   | "PHANTOM_ROOT"
   | "IDIOM"
-  | "BORROWED";
+  | "BORROWED"
+  | "TOPONYM";
 
 export type LensId =
   | "DEFAULT"

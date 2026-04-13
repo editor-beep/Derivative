@@ -75,6 +75,19 @@ function idiomReveal(insight: LinguisticInsight): Reveal {
   };
 }
 
+function toponymReveal(insight: LinguisticInsight): Reveal {
+  const root = insight.root || "";
+  const words = insight.words;
+  return {
+    headline: `TOPONYM — ${root}`,
+    body: insight.tension,
+    connections: words
+      .slice(0, 4)
+      .map((w, i) => [w, words[(i + 2) % words.length]] as [string, string]),
+    lensNote: lensNote(insight),
+  };
+}
+
 function borrowedReveal(insight: LinguisticInsight): Reveal {
   const root = insight.root || "";
   const words = insight.words;
@@ -101,6 +114,9 @@ export function generateReveal(insight: LinguisticInsight): Reveal {
 
     case "BORROWED":
       return borrowedReveal(insight);
+
+    case "TOPONYM":
+      return toponymReveal(insight);
 
     default:
       return defaultReveal(insight);

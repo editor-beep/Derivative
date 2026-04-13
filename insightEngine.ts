@@ -12,6 +12,7 @@ import { FOLK_ETYMOLOGY_POOL } from "./src/data/folkEtymology";
 import { ROOT_EXTENDED_POOL } from "./src/data/rootsExtended";
 import { ROOT_EXTENDED_POOL_2 } from "./src/data/rootsExtended2";
 import { MEANING_DRIFT_POOL_2 } from "./src/data/meaningDrift2";
+import { TOPONYM_POOL } from "./src/data/toponyms";
 
 // ── ROOT DATA ─────────────────────────────────────────────────────────────────
 
@@ -771,6 +772,20 @@ function buildBorrowedInsight(r: () => number, idx?: number): LinguisticInsight 
   };
 }
 
+function buildToponymInsight(r: () => number, idx?: number): LinguisticInsight {
+  const d = pickAt(TOPONYM_POOL, r, idx);
+  return {
+    id: `toponym-${d.root.slice(0, 14).replace(/\s/g, "-")}`,
+    type: "TOPONYM",
+    root: d.root,
+    language: d.lang,
+    words: d.pool,
+    meaning: d.meaning,
+    tension: d.tension,
+    data: { groups: d.groups, pool: d.pool }
+  };
+}
+
 // ── LENSES ────────────────────────────────────────────────────────────────────
 
 export const LENSES: Lens[] = [
@@ -778,19 +793,19 @@ export const LENSES: Lens[] = [
     id: "DEFAULT",
     label: "The Root",
     sublabel: "direct etymology",
-    applicableTo: ["ROOT","SEMANTIC","SUPPLETIVE","GRIMM","COLLISION","PIE","DECEPTION","FALSE_FAMILY","PHANTOM_ROOT","IDIOM","BORROWED"],
+    applicableTo: ["ROOT","SEMANTIC","SUPPLETIVE","GRIMM","COLLISION","PIE","DECEPTION","FALSE_FAMILY","PHANTOM_ROOT","IDIOM","BORROWED","TOPONYM"],
   },
   {
     id: "METAPHOR_DRIFT",
     label: "The Abstraction",
     sublabel: "when roots lose their body",
-    applicableTo: ["ROOT", "BORROWED", "SEMANTIC"],
+    applicableTo: ["ROOT", "BORROWED", "SEMANTIC", "TOPONYM"],
   },
   {
     id: "ETYMOLOGY_FILTER",
     label: "The Path",
     sublabel: "French vs. Latin vs. direct",
-    applicableTo: ["ROOT", "COLLISION", "BORROWED"],
+    applicableTo: ["ROOT", "COLLISION", "BORROWED", "TOPONYM"],
   },
   {
     id: "FALSE_TWIN",
@@ -814,7 +829,7 @@ export const LENSES: Lens[] = [
     id: "REGISTER_SORT",
     label: "The Class Marker",
     sublabel: "formal vs. everyday vs. technical",
-    applicableTo: ["BORROWED", "COLLISION", "FALSE_FAMILY"],
+    applicableTo: ["BORROWED", "COLLISION", "FALSE_FAMILY", "TOPONYM"],
   },
   {
     id: "SOUND_TRACE",
@@ -945,8 +960,8 @@ export function applyLens(
 
 // ── FLAT COMBO TABLE ──────────────────────────────────────────────────────────
 
-// Sizes must stay in sync with BUILDERS order: ROOT, SUPPLETIVE, SEMANTIC, COLLISION, DECEPTION, FALSE_FAMILY, IDIOM, BORROWED
-const POOL_SIZES = [30, 3, 5, 3, 2, 2, 7, 23];
+// Sizes must stay in sync with BUILDERS order: ROOT, SUPPLETIVE, SEMANTIC, COLLISION, DECEPTION, FALSE_FAMILY, IDIOM, BORROWED, TOPONYM
+const POOL_SIZES = [30, 3, 5, 3, 2, 2, 7, 23, 4];
 
 export const POOL_FLAT_TABLE: Array<{ builderIdx: number; entryIdx: number; lensIdx: number }> =
   (() => {
@@ -974,6 +989,7 @@ const BUILDERS: Builder[] = [
   buildFalseFamilyInsight,
   buildIdiomInsight,
   buildBorrowedInsight,
+  buildToponymInsight,
 ];
 
 export function generateInsight(

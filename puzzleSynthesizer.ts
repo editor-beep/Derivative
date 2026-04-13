@@ -126,6 +126,9 @@ export function synthesizePuzzle(insight: LinguisticInsight, date: string): Puzz
     case "BORROWED":
       return buildBorrowedPuzzle(insight, date);
 
+    case "TOPONYM":
+      return buildSortPuzzle(insight, date);
+
     case "SUPPLETIVE":
     case "COLLISION":
     case "PIE":

@@ -41,6 +41,7 @@ const TYPE_BASE: Record<PuzzleType, 0 | 1 | 2> = {
   ROOT: 0,
   SEMANTIC: 0,
   BORROWED: 0,
+  TOPONYM: 0,   // accessible — everyday words with surprising hidden geography
   COLLISION: 0,
   // 1 — requires some grammatical / vocabulary depth
   SUPPLETIVE: 1,

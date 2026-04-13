@@ -78,6 +78,7 @@ const TYPE_LABELS: Record<string, string> = {
   PHANTOM_ROOT: "INFERRED ROOT",
   IDIOM: "IDIOM SYSTEM",
   BORROWED: "BORROWED LAYER",
+  TOPONYM: "PLACE NAMES",
 };
 
 const TYPE_SUBLABELS: Record<string, string> = {
@@ -92,6 +93,7 @@ const TYPE_SUBLABELS: Record<string, string> = {
   PHANTOM_ROOT: "reverse inference",
   IDIOM: "fossilized ideology",
   BORROWED: "colonial lexicon",
+  TOPONYM: "geographic extraction",
 };
 
 const COLORS = {
@@ -135,6 +137,7 @@ const TYPE_COLORS: Record<string, string> = {
   PHANTOM_ROOT: "#5bcf94",
   IDIOM: "#c46eb0",
   BORROWED: "#7ab87a",
+  TOPONYM: "#4db6ac",
 };
 
 const STORAGE_KEY = "derivative_v4";
@@ -371,6 +374,14 @@ const IconBorrowed = ({ color }: { color: string }) => (
   </IconBase>
 );
 
+const IconToponym = ({ color }: { color: string }) => (
+  <IconBase color={color}>
+    <circle cx="12" cy="9" r="3.5" fill="none" stroke={color} strokeWidth="1.2" />
+    <path d="M12 12.5 L12 19" stroke={color} strokeWidth="1.2" strokeLinecap="round" />
+    <path d="M8.5 18.5 Q12 21.5 15.5 18.5" stroke={color} strokeWidth="1.0" fill="none" />
+  </IconBase>
+);
+
 // ── Difficulty icons ──────────────────────────────────────────────────────────
 
 const IconDifficultyEasy = ({ color }: { color: string }) => (
@@ -419,6 +430,7 @@ const TYPE_ICONS: Record<string, ({ color }: { color: string }) => JSX.Element> 
   PHANTOM_ROOT: IconPhantomRoot,
   IDIOM: IconIdiom,
   BORROWED: IconBorrowed,
+  TOPONYM: IconToponym,
 };
 
 const GlobalFX = () => (
@@ -2269,7 +2281,7 @@ export default function Derivative() {
       return blanks.every((_, i) => puzzleState.answers?.[i]);
     }
 
-    if (["SUPPLETIVE", "PIE", "COLLISION", "DECEPTION", "FALSE_FAMILY", "PHANTOM_ROOT", "BORROWED"].includes(puzzle.type)) {
+    if (["SUPPLETIVE", "PIE", "COLLISION", "DECEPTION", "FALSE_FAMILY", "PHANTOM_ROOT", "BORROWED", "TOPONYM"].includes(puzzle.type)) {
       const assigned = puzzleState.assigned || {};
       return (puzzle.groups || []).every((g) =>
         g.accepts.every((w) => assigned[w] === g.id)
@@ -2345,7 +2357,7 @@ export default function Derivative() {
       chain = (puzzle.required || []).map((w) => (found.includes(w) ? "◈" : "◇")).join("─");
       const n = found.filter((w) => (puzzle.required || []).includes(w)).length;
       scoreStr = `${n} of ${(puzzle.required || []).length} found`;
-    } else if (["SUPPLETIVE", "PIE", "COLLISION", "DECEPTION", "FALSE_FAMILY", "PHANTOM_ROOT", "BORROWED"].includes(puzzle.type)) {
+    } else if (["SUPPLETIVE", "PIE", "COLLISION", "DECEPTION", "FALSE_FAMILY", "PHANTOM_ROOT", "BORROWED", "TOPONYM"].includes(puzzle.type)) {
       const assigned = puzzleState.assigned || {};
       chain = (puzzle.groups || [])
         .map((g) => {
@@ -2408,7 +2420,7 @@ export default function Derivative() {
     const s = p.state;
     if (puz.type === "ROOT" && (s.found || []).length > 0) return "partial";
     if (
-      ["SUPPLETIVE", "PIE", "COLLISION", "DECEPTION", "FALSE_FAMILY", "PHANTOM_ROOT", "BORROWED"].includes(puz.type) &&
+      ["SUPPLETIVE", "PIE", "COLLISION", "DECEPTION", "FALSE_FAMILY", "PHANTOM_ROOT", "BORROWED", "TOPONYM"].includes(puz.type) &&
       Object.keys(s.assigned || {}).length > 0
     )
       return "partial";
@@ -2879,6 +2891,7 @@ export default function Derivative() {
       "FALSE_FAMILY",
       "PHANTOM_ROOT",
       "BORROWED",
+      "TOPONYM",
     ].includes(puzzle.type);
 
     return (
