@@ -12,11 +12,14 @@ function lensLabel(insight: LinguisticInsight): string | undefined {
 
 function buildRootPuzzle(insight: LinguisticInsight, date: string): Puzzle {
   const { targets, required } = insight.data as { targets: string[]; required: string[] };
+  const isDefaultLens = lensId(insight) === "DEFAULT";
   return {
     date,
     type: "ROOT",
     lensId: lensId(insight),
-    prompt: `Find words derived from the ${insight.language} root "${insight.root}" (${insight.meaning})`,
+    prompt: isDefaultLens
+      ? `Find words derived from the ${insight.language} root "${insight.root}" (${insight.meaning})`
+      : insight.tension,
     targets,
     required,
     pool: targets,

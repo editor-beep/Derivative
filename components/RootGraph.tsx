@@ -1,11 +1,20 @@
 import React, { useState } from "react";
 import { PREFIX_DATA } from "../lib/prefixMap";
+import { SUFFIX_INDEX } from "../lib/suffixMap";
 
 /* ── PREFIX PARSER ───────────────────────────────────────── */
 function getPrefix(word: string, root: string): string | null {
   const idx = word.indexOf(root);
   if (idx <= 0) return null;
   return word.slice(0, idx);
+}
+
+function getSuffix(word: string, root: string): string | null {
+  const idx = word.indexOf(root);
+  if (idx < 0) return null;
+  const suffix = word.slice(idx + root.length);
+  if (!suffix) return null;
+  return SUFFIX_INDEX[suffix] ? suffix : null;
 }
 
 /* ── ORBIT COLLISION DETECTION ───────────────────────────────── */
@@ -160,10 +169,13 @@ export default function RootGraph({
           const isFound = found.includes(word);
           const showLabel = isFound || hintsVisible;
           const prefix = getPrefix(word, root);
+          const suffix = getSuffix(word, root);
           const meaning =
             prefix
               ? (PREFIX_DATA as Record<string, { meaning: string }>)[prefix]?.meaning ?? null
               : null;
+          const suffixMeaning =
+            suffix ? (SUFFIX_INDEX[suffix]?.meaning ?? null) : null;
 
           return (
             <g key={word}>
@@ -203,6 +215,32 @@ export default function RootGraph({
                   fontFamily="monospace"
                 >
                   {meaning}
+                </text>
+              )}
+
+              {suffix && hintsVisible && (
+                <text
+                  x={(CX + x) / 2}
+                  y={(CY + y) / 2 + 18}
+                  fontSize="8"
+                  fill="#8a7868"
+                  textAnchor="middle"
+                  fontFamily="monospace"
+                >
+                  -{suffix}
+                </text>
+              )}
+
+              {suffixMeaning && hintsVisible && (
+                <text
+                  x={(CX + x) / 2}
+                  y={(CY + y) / 2 + 30}
+                  fontSize="8"
+                  fill="#7dbf6a"
+                  textAnchor="middle"
+                  fontFamily="monospace"
+                >
+                  {suffixMeaning}
                 </text>
               )}
 

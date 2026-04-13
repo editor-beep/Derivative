@@ -2,6 +2,8 @@
 
 import { FalseSystemConfig, LinguisticInsight, Lens } from "./types";
 import { mulberry32 } from "./seed";
+import { PREFIX_DATA } from "./lib/prefixMap";
+import { SUFFIX_INDEX } from "./lib/suffixMap";
 import {
   ROOT_POOL,
   MEANING_DRIFT_POOL, MEANING_DRIFT_POOL_2,
@@ -470,6 +472,53 @@ function pickAt<T>(arr: T[], r: () => number, idx?: number): T {
   return idx !== undefined ? arr[idx % arr.length] : pick(arr, r);
 }
 
+const PRODUCTIVE_SUFFIX_KEYS = Object.keys(SUFFIX_INDEX).filter((k) => /^[a-z]+$/.test(k));
+
+type MorphHit = {
+  word: string;
+  prefix?: string;
+  prefixMeaning?: string;
+  suffix?: string;
+  suffixMeaning?: string;
+};
+
+function analyzeAffixes(word: string, root?: string): MorphHit {
+  const lowerWord = word.toLowerCase();
+  const lowerRoot = (root || "").toLowerCase().trim();
+  const idx = lowerRoot ? lowerWord.indexOf(lowerRoot) : -1;
+
+  let prefix: string | undefined;
+  let prefixMeaning: string | undefined;
+  let suffix: string | undefined;
+  let suffixMeaning: string | undefined;
+
+  if (idx > 0) {
+    const candidatePrefix = lowerWord.slice(0, idx);
+    const prefixInfo = (PREFIX_DATA as Record<string, { meaning: string }>)[candidatePrefix];
+    if (prefixInfo) {
+      prefix = candidatePrefix;
+      prefixMeaning = prefixInfo.meaning;
+    }
+  }
+
+  if (idx >= 0 && lowerRoot) {
+    const candidateSuffix = lowerWord.slice(idx + lowerRoot.length);
+    const suffixInfo = SUFFIX_INDEX[candidateSuffix];
+    if (candidateSuffix && suffixInfo) {
+      suffix = candidateSuffix;
+      suffixMeaning = suffixInfo.meaning;
+    }
+  } else {
+    const matchedSuffix = PRODUCTIVE_SUFFIX_KEYS.find((s) => lowerWord.endsWith(s));
+    if (matchedSuffix) {
+      suffix = matchedSuffix;
+      suffixMeaning = SUFFIX_INDEX[matchedSuffix].meaning;
+    }
+  }
+
+  return { word, prefix, prefixMeaning, suffix, suffixMeaning };
+}
+
 // ── BUILDERS ──────────────────────────────────────────────────────────────────
 
 function buildRootInsight(r: () => number, idx?: number): LinguisticInsight {
@@ -743,10 +792,35 @@ export function applyLens(
     }
 
     case "COMPOUND_HUNT": {
-      if (insight.type === "ROOT" && insight.data.decompositions) {
+      if (insight.type === "ROOT") {
+        const hits = insight.words
+          .map((word) => analyzeAffixes(word, insight.root))
+          .filter((hit) => Boolean(hit.prefix || hit.suffix));
+
+        if (hits.length > 0) {
+          const morphology = Object.fromEntries(
+            hits.map((hit) => [
+              hit.word,
+              {
+                prefix: hit.prefix,
+                prefixMeaning: hit.prefixMeaning,
+                suffix: hit.suffix,
+                suffixMeaning: hit.suffixMeaning,
+              },
+            ])
+          );
+
+          out.data = {
+            ...out.data,
+            morphology,
+            required: hits.map((hit) => hit.word).slice(0, 6),
+            targets: insight.words,
+          };
+        }
+
         out.tension =
           `The root "${insight.root}" (${insight.meaning}) is hiding inside each of these words. ` +
-          `Find it, and name what the prefix adds.`;
+          `Find it, and name what the prefix or suffix adds.`;
       }
       return out;
     }
