@@ -5,6 +5,7 @@ import { mulberry32 } from "./seed";
 import { FRENCH_VISUAL_FRAUD_POOL, FRENCH_DOUBLETS_POOL, FRENCH_FALSE_FRIENDS_POOL } from "./src/data/frenchFakeouts";
 import { NORSE_CONSONANT_POOL, NORSE_BORROWED_POOL } from "./src/data/norseCollisions";
 import { LOANWORD_EXTRACTION_POOL } from "./src/data/loanwordExtraction";
+import { EPONYM_POOL } from "./src/data/eponyms";
 import { MEANING_DRIFT_POOL } from "./src/data/meaningDrift";
 import { SUPPLETIVE_EXTENDED_POOL } from "./src/data/suppletiveParadigms";
 import { FOLK_ETYMOLOGY_POOL } from "./src/data/folkEtymology";
@@ -530,7 +531,7 @@ const IDIOM_POOL = [
 
 // ── BORROWED DATA ─────────────────────────────────────────────────────────────
 
-const BORROWED_POOL = [...FRENCH_FALSE_FRIENDS_POOL, ...NORSE_BORROWED_POOL, ...LOANWORD_EXTRACTION_POOL,
+const BORROWED_POOL = [...FRENCH_FALSE_FRIENDS_POOL, ...NORSE_BORROWED_POOL, ...LOANWORD_EXTRACTION_POOL, ...EPONYM_POOL,
   {
     root: "Arabic extraction",
     lang: "Arabic → English",
@@ -945,7 +946,7 @@ export function applyLens(
 // ── FLAT COMBO TABLE ──────────────────────────────────────────────────────────
 
 // Sizes must stay in sync with BUILDERS order: ROOT, SUPPLETIVE, SEMANTIC, COLLISION, DECEPTION, FALSE_FAMILY, IDIOM, BORROWED
-const POOL_SIZES = [30, 3, 5, 3, 2, 2, 7, 20];
+const POOL_SIZES = [30, 3, 5, 3, 2, 2, 7, 23];
 
 export const POOL_FLAT_TABLE: Array<{ builderIdx: number; entryIdx: number; lensIdx: number }> =
   (() => {
