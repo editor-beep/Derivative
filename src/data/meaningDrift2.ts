@@ -349,4 +349,4 @@ export const MEANING_DRIFT_POOL_2 = [
 ];
 
 // Provenance annotations
-applyDatasetProvenance(MEANING_DRIFT_POOL_2 as any[], "meaning_drift_2");
+applyDatasetProvenance(MEANING_DRIFT_POOL_2, "meaning_drift_2");

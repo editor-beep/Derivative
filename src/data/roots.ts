@@ -1305,4 +1305,4 @@ export const ROOT_POOL = [
 ];
 
 // Provenance annotations
-applyDatasetProvenance(ROOT_POOL as any[], "roots_core");
+applyDatasetProvenance(ROOT_POOL, "roots_core");

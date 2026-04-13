@@ -485,4 +485,4 @@ export const SUPPLETIVE_EXTENDED_POOL = [
 ];
 
 // Provenance annotations
-applyDatasetProvenance(SUPPLETIVE_EXTENDED_POOL as any[], "suppletive_paradigms");
+applyDatasetProvenance(SUPPLETIVE_EXTENDED_POOL, "suppletive_paradigms");

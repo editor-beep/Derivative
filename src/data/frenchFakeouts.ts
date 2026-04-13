@@ -357,6 +357,6 @@ export const FRENCH_FALSE_FRIENDS_POOL = [
 ];
 
 // Provenance annotations
-applyDatasetProvenance(FRENCH_VISUAL_FRAUD_POOL as any[], "french_visual_fraud");
-applyDatasetProvenance(FRENCH_DOUBLETS_POOL as any[], "french_doublets");
-applyDatasetProvenance(FRENCH_FALSE_FRIENDS_POOL as any[], "french_false_friends");
+applyDatasetProvenance(FRENCH_VISUAL_FRAUD_POOL, "french_visual_fraud");
+applyDatasetProvenance(FRENCH_DOUBLETS_POOL, "french_doublets");
+applyDatasetProvenance(FRENCH_FALSE_FRIENDS_POOL, "french_false_friends");

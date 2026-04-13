@@ -338,4 +338,4 @@ export const ACADEMIC_ROOT_TABLE: AcademicRootRow[] = [
 ];
 
 // Provenance annotations
-applyDatasetProvenance(ACADEMIC_ROOT_TABLE as any[], "academic_root_table");
+applyDatasetProvenance(ACADEMIC_ROOT_TABLE, "academic_root_table");

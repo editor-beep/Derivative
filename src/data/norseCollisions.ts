@@ -195,5 +195,5 @@ export const NORSE_BORROWED_POOL = [
 ];
 
 // Provenance annotations
-applyDatasetProvenance(NORSE_CONSONANT_POOL as any[], "norse_consonant");
-applyDatasetProvenance(NORSE_BORROWED_POOL as any[], "norse_borrowed");
+applyDatasetProvenance(NORSE_CONSONANT_POOL, "norse_consonant");
+applyDatasetProvenance(NORSE_BORROWED_POOL, "norse_borrowed");

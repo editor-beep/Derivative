@@ -308,4 +308,4 @@ export const ROOT_EXTENDED_POOL_2 = [
 ];
 
 // Provenance annotations
-applyDatasetProvenance(ROOT_EXTENDED_POOL_2 as any[], "roots_extended_2");
+applyDatasetProvenance(ROOT_EXTENDED_POOL_2, "roots_extended_2");

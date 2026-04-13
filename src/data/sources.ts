@@ -59,7 +59,7 @@ const DATASET_SOURCE_INDEX: Record<string, { sourceIds: string[]; confidence: En
   academic_root_table: { sourceIds: ["oed", "wiktionary"], confidence: "verified", notes: "Reference-table rows summarize well-attested classical stems." },
 };
 
-export function applyDatasetProvenance(entries: Array<Record<string, unknown>>, datasetKey: keyof typeof DATASET_SOURCE_INDEX): void {
+export function applyDatasetProvenance<TEntry extends object>(entries: TEntry[], datasetKey: keyof typeof DATASET_SOURCE_INDEX): void {
   const config = DATASET_SOURCE_INDEX[datasetKey];
   if (!config) return;
   const base = config.sourceIds
@@ -67,9 +67,10 @@ export function applyDatasetProvenance(entries: Array<Record<string, unknown>>, 
     .filter((source): source is SourceReference => source !== undefined);
 
   for (const entry of entries) {
-    if (entry.provenance) continue;
+    const withProvenance = entry as TEntry & { provenance?: EntryProvenance };
+    if (withProvenance.provenance) continue;
 
-    entry.provenance = {
+    withProvenance.provenance = {
       sourceIds: config.sourceIds,
       sources: base,
       confidence: config.confidence,
