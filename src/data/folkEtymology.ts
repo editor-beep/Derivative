@@ -1,3 +1,4 @@
+import { applyDatasetProvenance } from "./sources";
 // src/data/folkEtymology.ts
 // Folk Etymology seed data — DECEPTION_POOL entries.
 // Three subtypes:
@@ -238,3 +239,6 @@ export const FOLK_ETYMOLOGY_POOL = [
       "Pea, cherry, and sherry all ended in a sound that resembled a plural '-s,' so speakers assumed they were plural and invented new singulars. Pease porridge is still correct — a pea is a grammatical accident.",
   },
 ];
+
+// Provenance annotations
+applyDatasetProvenance(FOLK_ETYMOLOGY_POOL as any[], "folk_etymology");

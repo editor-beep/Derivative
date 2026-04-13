@@ -1,3 +1,4 @@
+import { applyDatasetProvenance } from "./sources";
 // eponyms.ts
 // BORROWED puzzle entries framed around eponyms — words derived from real people's names.
 // These are among the most "deceptive" entries in English: a single person's identity
@@ -76,3 +77,6 @@ export const EPONYM_POOL = [
       "Sadism is named after the Marquis de Sade — a French nobleman whose writings celebrated cruelty; masochism after Leopold von Sacher-Masoch — an Austrian writer who explored submission. Extreme aristocratic depravity and literary transgression became the clinical language of psychology. Guillotine is named after a doctor who promoted execution as 'humane' medical progress — state terror rebranded as rational science. Gerrymander preserves Massachusetts Governor Elbridge Gerry's salamander-shaped voting district, elite electoral rigging turned into a standard political-science term. Chauvinism takes a possibly-fictional Napoleon loyalist's blind patriotism and turns it into the universal word for excessive bias — French imperial nationalism laundered into neutral English.",
   },
 ];
+
+// Provenance annotations
+applyDatasetProvenance(EPONYM_POOL as any[], "eponyms");

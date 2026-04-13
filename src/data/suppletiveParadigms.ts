@@ -1,3 +1,4 @@
+import { applyDatasetProvenance } from "./sources";
 // src/data/suppletiveParadigms.ts
 // Suppletive Paradigms seed data — SUPPLETIVE_POOL entries.
 // Skips entries already in insightEngine.ts: go/went, good/better/best, be/am/was.
@@ -482,3 +483,6 @@ export const SUPPLETIVE_EXTENDED_POOL = [
       "The 'l' in could was inserted by analogy with would and should — it was never pronounced and has no etymological basis. But the 'n' in can is genuine: it descends from the verb 'to know,' making 'can' literally mean 'to know how.'",
   },
 ];
+
+// Provenance annotations
+applyDatasetProvenance(SUPPLETIVE_EXTENDED_POOL as any[], "suppletive_paradigms");

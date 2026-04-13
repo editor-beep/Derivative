@@ -1,3 +1,4 @@
+import { applyDatasetProvenance } from "./sources";
 // src/data/toponyms.ts
 // Toponym puzzle pool — words derived from place names.
 // Each entry uses the sort-puzzle shape (groups + pool) so players sort
@@ -138,3 +139,6 @@ export const TOPONYM_POOL = [
       "a word encoding exclusion, not geography. Every item in your wardrobe is a place that got commodified.",
   },
 ];
+
+// Provenance annotations
+applyDatasetProvenance(TOPONYM_POOL as any[], "toponyms");

@@ -1,3 +1,4 @@
+import { applyDatasetProvenance } from "./sources";
 // src/data/rootsExtended2.ts
 // Second batch of root pool entries — 36 roots from the user's list
 // not covered in rootsExtended.ts.
@@ -305,3 +306,6 @@ export const ROOT_EXTENDED_POOL_2 = [
     tension: "Latin 'olfacere' (to smell) is one of the most isolated roots in English — 'olfactory' and 'olfaction' are nearly the only common words. The sense of smell has the smallest vocabulary of any of the five senses.",
   },
 ];
+
+// Provenance annotations
+applyDatasetProvenance(ROOT_EXTENDED_POOL_2 as any[], "roots_extended_2");

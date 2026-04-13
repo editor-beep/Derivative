@@ -1,3 +1,4 @@
+import { applyDatasetProvenance } from "./sources";
 // src/data/norseCollisions.ts
 // Norse/Saxon collision seed data — two pool types:
 //   NORSE_CONSONANT_POOL → COLLISION_POOL entries (sk- vs sh- splits)
@@ -192,3 +193,7 @@ export const NORSE_BORROWED_POOL = [
       "Window is 'wind-eye' in Norse — it replaced the Old English 'eye-hole.' Egg replaced 'ey.' Knife replaced 'seax' (which survives only in 'Essex'). The Norse reformed the kitchen and the house.",
   },
 ];
+
+// Provenance annotations
+applyDatasetProvenance(NORSE_CONSONANT_POOL as any[], "norse_consonant");
+applyDatasetProvenance(NORSE_BORROWED_POOL as any[], "norse_borrowed");
