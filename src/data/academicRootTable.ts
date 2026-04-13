@@ -1,3 +1,4 @@
+import { applyDatasetProvenance } from "./sources";
 export type AcademicRootRow = {
   lemma: string;
   language: "Latin" | "Greek" | "Old English" | "Old Norse";
@@ -335,3 +336,6 @@ export const ACADEMIC_ROOT_TABLE: AcademicRootRow[] = [
     usageNote: "Developed toward prosper/flourish in English.",
   },
 ];
+
+// Provenance annotations
+applyDatasetProvenance(ACADEMIC_ROOT_TABLE as any[], "academic_root_table");

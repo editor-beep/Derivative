@@ -1,3 +1,4 @@
+import { applyDatasetProvenance } from "./sources";
 // src/data/roots.ts
 // Consolidated root pool — single source of truth combining all entries from:
 //   • src/data/rootsExtended.ts  (ROOT_EXTENDED_POOL)
@@ -1302,3 +1303,6 @@ export const ROOT_POOL = [
     tension: "Old Norse 'vindauga' (wind-eye, from 'vindr' = wind + 'auga' = eye) replaced Old English 'eagþyrel' (eye-hole) — the same concept, differently compounded, and the Norse version won. 'Window' shows the blending of Norse and Saxon domestic architecture in the 11th-century Danelaw. The compound logic is identical; the political result was total Norse replacement of the Saxon term",
   },
 ];
+
+// Provenance annotations
+applyDatasetProvenance(ROOT_POOL as any[], "roots_core");

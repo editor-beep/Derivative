@@ -1,3 +1,4 @@
+import { applyDatasetProvenance } from "./sources";
 // src/data/meaningDrift.ts
 // Meaning Drift seed data — SEMANTIC_POOL entries (timeline format).
 // Skips entries already in insightEngine.ts: nice, silly, awful, villain, bully.
@@ -219,3 +220,6 @@ export const MEANING_DRIFT_POOL = [
       "Cloud started as a rock. Then it floated. Then it became a metaphor for anything that billows and conceals. Now it stores your photographs somewhere no one can clearly point to.",
   },
 ];
+
+// Provenance annotations
+applyDatasetProvenance(MEANING_DRIFT_POOL as any[], "meaning_drift_1");

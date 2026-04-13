@@ -1,3 +1,4 @@
+import { applyDatasetProvenance } from "./sources";
 // src/data/meaningDrift2.ts
 // Second batch of meaning drift entries — SEMANTIC_POOL (timeline format).
 // Covers the entries from the original seed data not included in meaningDrift.ts:
@@ -346,3 +347,6 @@ export const MEANING_DRIFT_POOL_2 = [
       "Special was borrowed to soften. By making difference sound like distinction, the word entered the euphemism treadmill: as its coded meaning became widely understood, 'special' acquired a second layer of irony that the original positive meaning now must fight against.",
   },
 ];
+
+// Provenance annotations
+applyDatasetProvenance(MEANING_DRIFT_POOL_2 as any[], "meaning_drift_2");

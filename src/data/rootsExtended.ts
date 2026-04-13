@@ -1,3 +1,4 @@
+import { applyDatasetProvenance } from "./sources";
 // src/data/rootsExtended.ts
 // Extended root pool — ROOT_POOL entries for the 92 roots not already in insightEngine.ts.
 // Already covered (skip): port, spec, duct, scrib, mit, vert, graph, phon.
@@ -367,3 +368,6 @@ export const ROOT_EXTENDED_POOL = [
     tension: "Latin 'plenus' (full) connects 'complete' (fully done) to 'deplete' (un-fill) to 'implement' (fill in/fill out) — fullness as completion, resource, and execution",
   },
 ];
+
+// Provenance annotations
+applyDatasetProvenance(ROOT_EXTENDED_POOL as any[], "roots_extended");

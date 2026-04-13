@@ -1,3 +1,4 @@
+import { applyDatasetProvenance } from "./sources";
 // loanwordExtraction.ts
 // BORROWED puzzle entries framed around extraction / deception:
 // how English absorbed prestige, knowledge, and vocabulary from cultures
@@ -160,3 +161,6 @@ export const LOANWORD_EXTRACTION_POOL = [
       "Glitch is now the universal word for a software hiccup — it started as Yiddish 'glitshn' (to slip). Chutzpah, schmooze, klutz entered American English through immigrant communities in New York, at the same time those communities faced housing discrimination, university quotas, and professional exclusion. The language absorbed the vocabulary faster than the society accepted the people.",
   },
 ];
+
+// Provenance annotations
+applyDatasetProvenance(LOANWORD_EXTRACTION_POOL as any[], "loanword_extraction");

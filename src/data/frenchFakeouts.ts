@@ -1,3 +1,4 @@
+import { applyDatasetProvenance } from "./sources";
 // src/data/frenchFakeouts.ts
 // French Fakeouts seed data — three pool types:
 //   FRENCH_VISUAL_FRAUD_POOL  → DECEPTION_POOL entries
@@ -354,3 +355,8 @@ export const FRENCH_FALSE_FRIENDS_POOL = [
       "Hazard came from Arabic dice — pure chance — and English turned luck into danger. Pain is the most basic collision: the French staff of life became the English word for suffering.",
   },
 ];
+
+// Provenance annotations
+applyDatasetProvenance(FRENCH_VISUAL_FRAUD_POOL as any[], "french_visual_fraud");
+applyDatasetProvenance(FRENCH_DOUBLETS_POOL as any[], "french_doublets");
+applyDatasetProvenance(FRENCH_FALSE_FRIENDS_POOL as any[], "french_false_friends");

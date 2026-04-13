@@ -31,6 +31,27 @@ export interface Lens {
   applicableTo: PuzzleType[];
 }
 
+
+
+export type ProvenanceConfidence = "verified" | "probable" | "disputed";
+
+export interface SourceReference {
+  sourceId: string;
+  sourceTitle: string;
+  sourceUrl: string;
+  publisher?: string;
+  retrievedAt: string;
+  license?: string;
+}
+
+export interface EntryProvenance {
+  sourceIds: string[];
+  sources?: SourceReference[];
+  confidence: ProvenanceConfidence;
+  notes: string;
+  counterSourceIds?: string[];
+}
+
 export interface LinguisticInsight {
   id: string;
   type: PuzzleType;
