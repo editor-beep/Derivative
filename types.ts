@@ -52,9 +52,59 @@ export interface EntryProvenance {
   counterSourceIds?: string[];
 }
 
-export interface LinguisticInsight {
+export interface RootInsightData extends RootInsightFragment {
+  targets: string[];
+  required: string[];
+  pool?: string[];
+  impostor?: string;
+  timeline?: PuzzleTimelineItem[];
+}
+
+export interface SortInsightData {
+  groups: Array<{
+    id: string;
+    label?: string;
+    displayLabel?: string;
+    solutionLabel?: string;
+    accepts: string[];
+    related: string[];
+  }>;
+  pool: string[];
+  falseSystem?: FalseSystemConfig;
+  registers?: Record<string, "formal" | "informal" | "technical" | string>;
+}
+
+export interface SemanticInsightData {
+  timeline: PuzzleTimelineItem[];
+  word: string;
+}
+
+export interface IdiomInsightData {
+  phrase: string;
+  fragments: string[];
+  origin: string;
+  revealHeadline: string;
+  revealBody: string;
+}
+
+export type InsightDataByType = {
+  ROOT: RootInsightData;
+  SEMANTIC: SemanticInsightData;
+  SUPPLETIVE: SortInsightData;
+  GRIMM: SortInsightData;
+  COLLISION: SortInsightData;
+  PIE: SortInsightData;
+  DECEPTION: SortInsightData;
+  FALSE_FAMILY: SortInsightData;
+  PHANTOM_ROOT: SortInsightData;
+  IDIOM: IdiomInsightData;
+  BORROWED: SortInsightData;
+  TOPONYM: SortInsightData;
+};
+
+export interface LinguisticInsightBase<TType extends PuzzleType> {
   id: string;
-  type: PuzzleType;
+  type: TType;
 
   // The lens applied to this insight — set by applyLens(), DEFAULT if absent
   lens?: Lens;
@@ -69,8 +119,14 @@ export interface LinguisticInsight {
   tension: string;
 
   // raw data for building puzzles — may be augmented by applyLens()
-  data: any;
+  data: InsightDataByType[TType];
 }
+
+export type LinguisticInsight = {
+  [TType in PuzzleType]: LinguisticInsightBase<TType>;
+}[PuzzleType];
+
+export type InsightByType<TType extends PuzzleType> = Extract<LinguisticInsight, { type: TType }>;
 
 export interface Puzzle {
   date: string;

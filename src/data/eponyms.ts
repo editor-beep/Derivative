@@ -79,4 +79,4 @@ export const EPONYM_POOL = [
 ];
 
 // Provenance annotations
-applyDatasetProvenance(EPONYM_POOL as any[], "eponyms");
+applyDatasetProvenance(EPONYM_POOL, "eponyms");

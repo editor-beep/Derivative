@@ -1,6 +1,6 @@
 // puzzleSynthesizer.ts
 
-import { LinguisticInsight, LensId, Puzzle } from "./types";
+import { InsightByType, LinguisticInsight, LensId, Puzzle } from "./types";
 
 function lensId(insight: LinguisticInsight): LensId {
   return insight.lens?.id ?? "DEFAULT";
@@ -10,8 +10,8 @@ function lensLabel(insight: LinguisticInsight): string | undefined {
   return insight.lens?.label;
 }
 
-function buildRootPuzzle(insight: LinguisticInsight, date: string): Puzzle {
-  const { targets, required } = insight.data as { targets: string[]; required: string[] };
+function buildRootPuzzle(insight: InsightByType<"ROOT">, date: string): Puzzle {
+  const { targets, required } = insight.data;
   return {
     date,
     type: "ROOT",
@@ -30,19 +30,8 @@ function buildRootPuzzle(insight: LinguisticInsight, date: string): Puzzle {
   };
 }
 
-function buildSortPuzzle(insight: LinguisticInsight, date: string): Puzzle {
-  const { groups, pool, falseSystem } = insight.data as {
-    groups: Array<{
-      id: string;
-      label?: string;
-      displayLabel?: string;
-      solutionLabel?: string;
-      accepts: string[];
-      related: string[];
-    }>;
-    pool: string[];
-    falseSystem?: Puzzle["falseSystem"];
-  };
+function buildSortPuzzle(insight: InsightByType<"SUPPLETIVE" | "GRIMM" | "COLLISION" | "PIE" | "PHANTOM_ROOT" | "DECEPTION" | "FALSE_FAMILY" | "BORROWED" | "TOPONYM">, date: string): Puzzle {
+  const { groups, pool, falseSystem } = insight.data;
   const normalizedGroups = groups.map((group) => {
     const neutralLabel = group.displayLabel ?? group.label ?? group.solutionLabel ?? group.id;
     return {
@@ -70,19 +59,16 @@ function buildSortPuzzle(insight: LinguisticInsight, date: string): Puzzle {
   };
 }
 
-function buildDeceptionPuzzle(insight: LinguisticInsight, date: string): Puzzle {
+function buildDeceptionPuzzle(insight: InsightByType<"DECEPTION">, date: string): Puzzle {
   return buildSortPuzzle(insight, date);
 }
 
-function buildFalseFamilyPuzzle(insight: LinguisticInsight, date: string): Puzzle {
+function buildFalseFamilyPuzzle(insight: InsightByType<"FALSE_FAMILY">, date: string): Puzzle {
   return buildSortPuzzle(insight, date);
 }
 
-function buildTimelinePuzzle(insight: LinguisticInsight, date: string): Puzzle {
-  const { timeline, word } = insight.data as {
-    timeline: Array<{ era: string; meaning: string; blank?: boolean }>;
-    word: string;
-  };
+function buildTimelinePuzzle(insight: InsightByType<"SEMANTIC">, date: string): Puzzle {
+  const { timeline, word } = insight.data;
   return {
     date,
     type: "SEMANTIC",
@@ -99,11 +85,8 @@ function buildTimelinePuzzle(insight: LinguisticInsight, date: string): Puzzle {
   };
 }
 
-function buildIdiomPuzzle(insight: LinguisticInsight, date: string): Puzzle {
-  const { phrase, origin } = insight.data as {
-    phrase: string;
-    origin: string;
-  };
+function buildIdiomPuzzle(insight: InsightByType<"IDIOM">, date: string): Puzzle {
+  const { phrase, origin } = insight.data;
   return {
     date,
     type: "IDIOM",
@@ -121,7 +104,7 @@ function buildIdiomPuzzle(insight: LinguisticInsight, date: string): Puzzle {
   };
 }
 
-function buildBorrowedPuzzle(insight: LinguisticInsight, date: string): Puzzle {
+function buildBorrowedPuzzle(insight: InsightByType<"BORROWED">, date: string): Puzzle {
   return buildSortPuzzle(insight, date);
 }
 
@@ -158,6 +141,9 @@ function assertPuzzleShape(puzzle: Puzzle): Puzzle {
 
 export function synthesizePuzzle(insight: LinguisticInsight, date: string): Puzzle {
   switch (insight.type) {
+    case "ROOT":
+      return assertPuzzleShape(buildRootPuzzle(insight, date));
+
     case "DECEPTION":
       return assertPuzzleShape(buildDeceptionPuzzle(insight, date));
 
@@ -179,10 +165,13 @@ export function synthesizePuzzle(insight: LinguisticInsight, date: string): Puzz
     case "SUPPLETIVE":
     case "COLLISION":
     case "PIE":
+    case "GRIMM":
     case "PHANTOM_ROOT":
       return assertPuzzleShape(buildSortPuzzle(insight, date));
 
-    default:
-      return assertPuzzleShape(buildRootPuzzle(insight, date));
+    default: {
+      const neverType: never = insight;
+      throw new Error(`Unsupported puzzle type: ${JSON.stringify(neverType)}`);
+    }
   }
 }

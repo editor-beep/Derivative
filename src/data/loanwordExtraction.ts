@@ -163,4 +163,4 @@ export const LOANWORD_EXTRACTION_POOL = [
 ];
 
 // Provenance annotations
-applyDatasetProvenance(LOANWORD_EXTRACTION_POOL as any[], "loanword_extraction");
+applyDatasetProvenance(LOANWORD_EXTRACTION_POOL, "loanword_extraction");

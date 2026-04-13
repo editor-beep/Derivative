@@ -696,7 +696,7 @@ export function applyLens(
     return { ...insight, lens: LENSES[0] };
   }
 
-  const out: LinguisticInsight = { ...insight, lens, data: { ...insight.data } };
+  const out = { ...insight, lens, data: { ...insight.data } } as LinguisticInsight;
 
   switch (lens.id) {
     case "DEFAULT":
@@ -738,6 +738,7 @@ export function applyLens(
       if (insight.type === "ROOT" && insight.data.impostors?.length) {
         const impostors = insight.data.impostors as string[];
         const impostor = impostors[Math.floor(r() * impostors.length)];
+        if (!impostor) return out;
         const pool = [...insight.words.slice(0, 5), impostor];
         out.data = { ...out.data, pool, impostor, targets: pool, required: [impostor] };
         out.tension =
@@ -770,7 +771,7 @@ export function applyLens(
     }
 
     case "REGISTER_SORT": {
-      if (insight.data.registers) {
+      if ("registers" in insight.data && insight.data.registers) {
         const regs = insight.data.registers as Record<string, string>;
         const formal = insight.words.filter(w => regs[w] === "formal");
         const everyday = insight.words.filter(w => regs[w] === "informal");

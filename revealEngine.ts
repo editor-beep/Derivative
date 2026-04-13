@@ -1,6 +1,6 @@
 // revealEngine.ts
 
-import { LinguisticInsight, LensId, Reveal } from "./types";
+import { InsightByType, LinguisticInsight, LensId, Reveal } from "./types";
 
 function lensNote(insight: LinguisticInsight): string | undefined {
   const notes: Partial<Record<LensId, string>> = {
@@ -46,13 +46,8 @@ function deceptionReveal(insight: LinguisticInsight): Reveal { return buildGroup
 
 function falseFamilyReveal(insight: LinguisticInsight): Reveal { return buildGroupReveal(insight, "FALSE FAMILY", 1); }
 
-function idiomReveal(insight: LinguisticInsight): Reveal {
-  const { phrase, origin, revealHeadline, revealBody } = insight.data as {
-    phrase: string;
-    origin: string;
-    revealHeadline: string;
-    revealBody: string;
-  };
+function idiomReveal(insight: InsightByType<"IDIOM">): Reveal {
+  const { phrase, origin, revealHeadline, revealBody } = insight.data;
   const words = phrase.split(" ");
   return {
     headline: revealHeadline,

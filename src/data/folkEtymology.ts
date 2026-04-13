@@ -241,4 +241,4 @@ export const FOLK_ETYMOLOGY_POOL = [
 ];
 
 // Provenance annotations
-applyDatasetProvenance(FOLK_ETYMOLOGY_POOL as any[], "folk_etymology");
+applyDatasetProvenance(FOLK_ETYMOLOGY_POOL, "folk_etymology");

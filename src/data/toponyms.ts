@@ -151,4 +151,4 @@ export const TOPONYM_POOL = [
 ];
 
 // Provenance annotations
-applyDatasetProvenance(TOPONYM_POOL as any[], "toponyms");
+applyDatasetProvenance(TOPONYM_POOL, "toponyms");
