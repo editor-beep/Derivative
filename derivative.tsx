@@ -2275,7 +2275,7 @@ export default function Derivative() {
 
     const sections: ShareSection[] = [
       { text: "◈ DERIVATIVE ◈\nThe Game of the Lingua Imperii", color: COLORS.gold },
-      { text: dateRoman, color: "#5ecece" },
+      { text: dateRoman, color: "#4ecfcf" },
       { text: iconRow, color: COLORS.gold },
       { text: tracker, color: COLORS.gold, isTracker: true },
       { text: url, color: COLORS.goldDim },
