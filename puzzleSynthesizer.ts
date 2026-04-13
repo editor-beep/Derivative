@@ -125,33 +125,64 @@ function buildBorrowedPuzzle(insight: LinguisticInsight, date: string): Puzzle {
   return buildSortPuzzle(insight, date);
 }
 
+function assertPuzzleShape(puzzle: Puzzle): Puzzle {
+  if (!puzzle.prompt || !puzzle.type) {
+    throw new Error(`Invalid puzzle core shape for ${puzzle.date}`);
+  }
+
+  switch (puzzle.type) {
+    case "ROOT":
+      if (!puzzle.targets?.length || !puzzle.required?.length || !puzzle.pool?.length) {
+        throw new Error(`Invalid ROOT puzzle shape for ${puzzle.date}`);
+      }
+      break;
+    case "SEMANTIC":
+      if (!puzzle.timeline?.length) {
+        throw new Error(`Invalid SEMANTIC puzzle shape for ${puzzle.date}`);
+      }
+      break;
+    case "IDIOM":
+      if (!puzzle.answer || !puzzle.word) {
+        throw new Error(`Invalid IDIOM puzzle shape for ${puzzle.date}`);
+      }
+      break;
+    default:
+      if (!puzzle.groups?.length || !puzzle.pool?.length) {
+        throw new Error(`Invalid ${puzzle.type} puzzle shape for ${puzzle.date}`);
+      }
+      break;
+  }
+
+  return puzzle;
+}
+
 export function synthesizePuzzle(insight: LinguisticInsight, date: string): Puzzle {
   switch (insight.type) {
     case "DECEPTION":
-      return buildDeceptionPuzzle(insight, date);
+      return assertPuzzleShape(buildDeceptionPuzzle(insight, date));
 
     case "FALSE_FAMILY":
-      return buildFalseFamilyPuzzle(insight, date);
+      return assertPuzzleShape(buildFalseFamilyPuzzle(insight, date));
 
     case "SEMANTIC":
-      return buildTimelinePuzzle(insight, date);
+      return assertPuzzleShape(buildTimelinePuzzle(insight, date));
 
     case "IDIOM":
-      return buildIdiomPuzzle(insight, date);
+      return assertPuzzleShape(buildIdiomPuzzle(insight, date));
 
     case "BORROWED":
-      return buildBorrowedPuzzle(insight, date);
+      return assertPuzzleShape(buildBorrowedPuzzle(insight, date));
 
     case "TOPONYM":
-      return buildSortPuzzle(insight, date);
+      return assertPuzzleShape(buildSortPuzzle(insight, date));
 
     case "SUPPLETIVE":
     case "COLLISION":
     case "PIE":
     case "PHANTOM_ROOT":
-      return buildSortPuzzle(insight, date);
+      return assertPuzzleShape(buildSortPuzzle(insight, date));
 
     default:
-      return buildRootPuzzle(insight, date);
+      return assertPuzzleShape(buildRootPuzzle(insight, date));
   }
 }
