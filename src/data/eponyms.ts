@@ -24,7 +24,7 @@ export const EPONYM_POOL = [
         id: "resistance_neutralized",
         label: "Named after reformers and resisters — then stripped of that charge",
         accepts: ["boycott", "bloomers", "maverick"],
-        related: ["gerrymander", "quisling"],
+        related: ["wellington", "bloomsbury"],
       },
     ],
     pool: ["sandwich", "cardigan", "silhouette", "leotard", "boycott", "bloomers", "maverick"],
