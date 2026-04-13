@@ -29,31 +29,22 @@ function defaultReveal(insight: LinguisticInsight): Reveal {
   };
 }
 
-function deceptionReveal(insight: LinguisticInsight): Reveal {
+function buildGroupReveal(insight: LinguisticInsight, label: string, offset: number): Reveal {
   const root = insight.root || "";
   const words = insight.words;
   return {
-    headline: `DECEPTION — ${root}`,
+    headline: `${label} — ${root}`,
     body: insight.tension,
     connections: words
       .slice(0, 4)
-      .map((w, i) => [w, words[(i + 2) % words.length]] as [string, string]),
+      .map((w, i) => [w, words[(i + offset) % words.length]] as [string, string]),
     lensNote: lensNote(insight),
   };
 }
 
-function falseFamilyReveal(insight: LinguisticInsight): Reveal {
-  const root = insight.root || "";
-  const words = insight.words;
-  return {
-    headline: `FALSE FAMILY — ${root}`,
-    body: insight.tension,
-    connections: words
-      .slice(0, 4)
-      .map((w, i) => [w, words[(i + 1) % words.length]] as [string, string]),
-    lensNote: lensNote(insight),
-  };
-}
+function deceptionReveal(insight: LinguisticInsight): Reveal { return buildGroupReveal(insight, "DECEPTION", 2); }
+
+function falseFamilyReveal(insight: LinguisticInsight): Reveal { return buildGroupReveal(insight, "FALSE FAMILY", 1); }
 
 function idiomReveal(insight: LinguisticInsight): Reveal {
   const { phrase, origin, revealHeadline, revealBody } = insight.data as {
@@ -75,31 +66,9 @@ function idiomReveal(insight: LinguisticInsight): Reveal {
   };
 }
 
-function toponymReveal(insight: LinguisticInsight): Reveal {
-  const root = insight.root || "";
-  const words = insight.words;
-  return {
-    headline: `TOPONYM — ${root}`,
-    body: insight.tension,
-    connections: words
-      .slice(0, 4)
-      .map((w, i) => [w, words[(i + 2) % words.length]] as [string, string]),
-    lensNote: lensNote(insight),
-  };
-}
+function toponymReveal(insight: LinguisticInsight): Reveal { return buildGroupReveal(insight, "TOPONYM", 2); }
 
-function borrowedReveal(insight: LinguisticInsight): Reveal {
-  const root = insight.root || "";
-  const words = insight.words;
-  return {
-    headline: `BORROWED — ${root}`,
-    body: insight.tension,
-    connections: words
-      .slice(0, 4)
-      .map((w, i) => [w, words[(i + 2) % words.length]] as [string, string]),
-    lensNote: lensNote(insight),
-  };
-}
+function borrowedReveal(insight: LinguisticInsight): Reveal { return buildGroupReveal(insight, "BORROWED", 2); }
 
 export function generateReveal(insight: LinguisticInsight): Reveal {
   switch (insight.type) {

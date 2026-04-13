@@ -2,16 +2,15 @@
 
 import { LinguisticInsight, Lens } from "./types";
 import { mulberry32 } from "./seed";
-import { FRENCH_VISUAL_FRAUD_POOL, FRENCH_DOUBLETS_POOL, FRENCH_FALSE_FRIENDS_POOL } from "./src/data/frenchFakeouts";
-import { NORSE_CONSONANT_POOL, NORSE_BORROWED_POOL } from "./src/data/norseCollisions";
-import { LOANWORD_EXTRACTION_POOL } from "./src/data/loanwordExtraction";
-import { EPONYM_POOL } from "./src/data/eponyms";
-import { MEANING_DRIFT_POOL } from "./src/data/meaningDrift";
-import { SUPPLETIVE_EXTENDED_POOL } from "./src/data/suppletiveParadigms";
-import { FOLK_ETYMOLOGY_POOL } from "./src/data/folkEtymology";
-import { ROOT_POOL } from "./src/data/roots";
-import { MEANING_DRIFT_POOL_2 } from "./src/data/meaningDrift2";
-import { TOPONYM_POOL } from "./src/data/toponyms";
+import {
+  ROOT_POOL,
+  MEANING_DRIFT_POOL, MEANING_DRIFT_POOL_2,
+  FRENCH_VISUAL_FRAUD_POOL, FRENCH_DOUBLETS_POOL, FRENCH_FALSE_FRIENDS_POOL,
+  NORSE_CONSONANT_POOL, NORSE_BORROWED_POOL,
+  LOANWORD_EXTRACTION_POOL, EPONYM_POOL,
+  SUPPLETIVE_EXTENDED_POOL, FOLK_ETYMOLOGY_POOL,
+  TOPONYM_POOL,
+} from "./src/data";
 
 // ── SUPPLETIVE DATA ───────────────────────────────────────────────────────────
 
