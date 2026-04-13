@@ -1,27 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { generateDailyPuzzle } from "./generator";
 import RootGraph from "./components/RootGraph";
-import type { PuzzleType, LensId, Reveal } from "./types";
+import type { PuzzleType, LensId, Reveal, PuzzleGroup, PuzzlePair, PuzzleTimelineItem } from "./types";
 import { getDifficulty, DIFFICULTY_META } from "./difficulty";
-
-type PuzzleGroup = {
-  id: string;
-  label: string;
-  accepts: string[];
-  related: string[];
-};
-
-type PuzzlePair = {
-  source: string;
-  target: string;
-  note?: string;
-};
-
-type PuzzleTimelineItem = {
-  era: string;
-  meaning: string;
-  blank?: boolean;
-};
+import { TYPE_LABELS, TYPE_SUBLABELS, COLORS, TYPE_COLORS, STORAGE_KEY, SPLASH_IMAGE } from "./constants";
 
 type Puzzle = {
   date: string;
@@ -66,83 +48,6 @@ type IdiomState = {
 
 type PuzzleState = RootState & SortState & AnswerState & IdiomState;
 
-const TYPE_LABELS: Record<string, string> = {
-  ROOT: "ROOT",
-  SUPPLETIVE: "SUPPLETIVE PAIR",
-  GRIMM: "SOUND SHIFT",
-  SEMANTIC: "SEMANTIC DRIFT",
-  COLLISION: "COLLISION",
-  PIE: "DEEP ROOT",
-  DECEPTION: "HIDDEN STRUCTURE",
-  FALSE_FAMILY: "FALSE FAMILY",
-  PHANTOM_ROOT: "INFERRED ROOT",
-  IDIOM: "IDIOM SYSTEM",
-  BORROWED: "BORROWED LAYER",
-  TOPONYM: "PLACE NAMES",
-};
-
-const TYPE_SUBLABELS: Record<string, string> = {
-  ROOT: "morphological family",
-  SUPPLETIVE: "broken paradigm",
-  GRIMM: "phonetic machinery",
-  SEMANTIC: "meaning drift",
-  COLLISION: "language contact",
-  PIE: "proto-layer",
-  DECEPTION: "hidden structure",
-  FALSE_FAMILY: "etymological imposture",
-  PHANTOM_ROOT: "reverse inference",
-  IDIOM: "fossilized ideology",
-  BORROWED: "colonial lexicon",
-  TOPONYM: "geographic extraction",
-};
-
-const COLORS = {
-  bg: "#070605",
-  bg2: "#0a0907",
-  surface: "#0d0b08",
-  surface2: "#141208",
-  surface3: "#1a160f",
-
-  gold: "#e8b84b",
-  goldDim: "#c8922a",
-  goldDark: "#7a5618",
-  goldLine: "rgba(232,184,75,0.28)",
-  goldGlow: "rgba(232,184,75,0.18)",
-
-  cyan: "#4ecfcf",
-  cyanDim: "#2a8f8f",
-  cyanGlow: "rgba(78,207,207,0.16)",
-  cyanLine: "rgba(78,207,207,0.32)",
-
-  red: "#8b3a3a",
-  redGlow: "rgba(139,58,58,0.22)",
-
-  textPrimary: "#e8d8b0",
-  textSecondary: "#9a8868",
-  textMuted: "#5a4a38",
-  textFaint: "#3a2e1c",
-
-  blackLine: "#1e1808",
-};
-
-const TYPE_COLORS: Record<string, string> = {
-  ROOT: COLORS.goldDim,
-  SUPPLETIVE: "#b87820",
-  GRIMM: COLORS.cyan,
-  SEMANTIC: "#d4732a",
-  COLLISION: "#8ab8b8",
-  PIE: COLORS.gold,
-  DECEPTION: "#d66a37",
-  FALSE_FAMILY: "#8f73db",
-  PHANTOM_ROOT: "#5bcf94",
-  IDIOM: "#c46eb0",
-  BORROWED: "#7ab87a",
-  TOPONYM: "#4db6ac",
-};
-
-const STORAGE_KEY = "derivative_v4";
-const SPLASH_IMAGE =
-  "https://github.com/user-attachments/assets/e6f5403b-5958-4d0e-8be4-439beb2b7a79";
 
 const load = () => {
   try {

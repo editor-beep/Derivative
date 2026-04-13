@@ -62,9 +62,9 @@ export interface Puzzle {
   pool?: string[];
   targets?: string[];
   required?: string[];
-  groups?: any[];
-  pairs?: any[];
-  timeline?: any[];
+  groups?: PuzzleGroup[];
+  pairs?: PuzzlePair[];
+  timeline?: PuzzleTimelineItem[];
 
   // IDIOM-specific
   fragments?: string[];
@@ -87,3 +87,22 @@ export interface Reveal {
   connections: [string, string][];
   lensNote?: string;
 }
+
+export type PuzzleGroup = {
+  id: string;
+  label: string;
+  accepts: string[];
+  related: string[];
+};
+
+export type PuzzlePair = {
+  source: string;
+  target: string;
+  note?: string;
+};
+
+export type PuzzleTimelineItem = {
+  era: string;
+  meaning: string;
+  blank?: boolean;
+};
