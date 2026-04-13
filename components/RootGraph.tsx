@@ -26,8 +26,8 @@ function computeOrbitRadius(words: string[]): number {
   const n = words.length;
   let needed = MIN_ORBIT_RADIUS;
   for (let i = 0; i < n; i++) {
-    const a = words[i];
-    const b = words[(i + 1) % n];
+    const a = words[i] ?? "";
+    const b = words[(i + 1) % n] ?? "";
     const halfA = Math.max(NODE_RADIUS, (a.length * CHAR_WIDTH_PX) / 2);
     const halfB = Math.max(NODE_RADIUS, (b.length * CHAR_WIDTH_PX) / 2);
     const r = (halfA + halfB + MIN_NODE_GAP) / (2 * Math.sin(Math.PI / n));

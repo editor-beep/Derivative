@@ -76,6 +76,9 @@ export interface Puzzle {
   date: string;
   type: PuzzleType;
   lensId: LensId;
+  root?: string;
+  lang?: string;
+  meaning?: string;
 
   prompt: string;
 
@@ -101,6 +104,36 @@ export interface Puzzle {
   };
 
   reveal: Reveal;
+}
+
+export interface PuzzleState {
+  found?: string[];
+  assigned?: Record<string, string>;
+  answers?: Record<number, string>;
+  sequence?: string[];
+  idiomFound?: number[];
+}
+
+export interface PuzzleProgressEntry {
+  state?: PuzzleState;
+  revealed?: boolean;
+}
+
+export interface ProgressStore {
+  _hasPlayed?: boolean;
+  [dateOrFlag: string]: PuzzleProgressEntry | boolean | undefined;
+}
+
+export interface RootInsightFragment {
+  metaphorSplit?: {
+    literal: string[];
+    abstract: string[];
+  };
+  entryPaths?: Record<string, "via_french" | "direct_latin" | string>;
+  impostors?: string[];
+  eras?: Record<string, string>;
+  decompositions?: Record<string, string>;
+  registers?: Record<string, "formal" | "informal" | "technical" | string>;
 }
 
 export interface FalseSystemConfig {
