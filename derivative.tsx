@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { generateDailyPuzzle } from "./generator";
 import RootGraph from "./components/RootGraph";
 import type { PuzzleType, LensId, Reveal, PuzzleGroup, PuzzlePair, PuzzleTimelineItem } from "./types";
-import { getDifficulty, DIFFICULTY_META } from "./difficulty";
+import { getDifficulty, DIFFICULTY_META, type DifficultyLevel } from "./difficulty";
 import { TYPE_LABELS, TYPE_SUBLABELS, COLORS, TYPE_COLORS, STORAGE_KEY, SPLASH_IMAGE } from "./constants";
 
 type Puzzle = {
