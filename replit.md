@@ -1,45 +1,34 @@
 # Derivative — Etymology English Game
 
 ## Overview
-A daily etymology-based word puzzle game built with React + TypeScript + Vite. Players explore the history of English words, their roots (Latin, Proto-Indo-European, etc.), and linguistic shifts like Grimm's Law.
+A daily etymology puzzle game built with React + TypeScript + Vite. The runtime puzzle pipeline selects a manifest entry for a date, synthesizes the puzzle, and generates reveal content.
 
 ## Project Structure
-- `src/App.tsx` — Main application component (the entire game logic and UI)
-- `src/main.tsx` — React entry point
-- `index.html` — HTML shell
-- `vite.config.ts` — Vite configuration (port 5000, host 0.0.0.0)
-- `public/` — Static assets (splash screen background image)
+- `App.tsx` — wrapper component that mounts the game shell.
+- `derivative.tsx` — main game shell and interaction flow.
+- `generator.ts` — daily puzzle generation pipeline coordinator.
+- `puzzleSynthesizer.ts` — insight → puzzle conversion.
+- `revealEngine.ts` — insight → reveal conversion.
+- `src/data/puzzleManifest.ts` — static manifest schedule.
+- `src/data/*` pools — source datasets (e.g. `roots.ts`, `meaningDrift.ts`, `suppletiveParadigms.ts`, `norseCollisions.ts`, `folkEtymology.ts`, `loanwordExtraction.ts`, `toponyms.ts`).
+- `src/main.tsx` — React entry point.
 
-## Tech Stack
-- **Framework:** React 19
-- **Language:** TypeScript
-- **Build Tool:** Vite 8
-- **Package Manager:** npm
+## How daily puzzle is generated
+`getPuzzleManifestEntry(date)` → `generateInsight(seed, indexes)` → `synthesizePuzzle` → `generateReveal`
 
-## Running the App
+Detailed flow:
+1. Lookup date row in `src/data/puzzleManifest.ts`.
+2. Hash a deterministic seed and call `generateInsight` with manifest indexes.
+3. Call `synthesizePuzzle` to create the playable puzzle object.
+4. Call `generateReveal` to attach reveal text/connections.
+
+## Known constraints
+- **Static manifest range:** playable dates are limited to the dates compiled into `src/data/puzzleManifest.ts`.
+- **Local-only progress:** progress is saved to browser `localStorage` via `STORAGE_KEY`, not synced to a backend.
+
+## Run commands
 ```bash
 npm run dev
-```
-Runs the dev server at http://0.0.0.0:5000
-
-## Building for Production
-```bash
 npm run build
+npm run preview
 ```
-Outputs static files to `dist/`
-
-## Game Features
-- **ROOT puzzles** — Find all words sharing a Latin/Greek root
-- **SUPPLETIVE puzzles** — Sort words by their true etymological origin (e.g., "go" vs "went")
-- **GRIMM puzzles** — Type the English equivalent of Latin words shifted by Grimm's Law
-- **SEMANTIC puzzles** — Fill in the meaning of a word at different historical eras
-- **COLLISION puzzles** — Sort Old Norse vs Old English words
-- **PIE puzzles** — Sort words by their Proto-Indo-European root
-
-## Puzzle Data
-All puzzle data is inlined in `src/App.tsx` as a `PUZZLES` array (January 2026 archive). Each puzzle is identified by date.
-
-## Deployment
-Configured as a static site deployment:
-- Build command: `npm run build`
-- Public directory: `dist`
