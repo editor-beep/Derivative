@@ -16,19 +16,22 @@ export const TOPONYM_POOL = [
     groups: [
       {
         id: "french",
-        label: "Named after French cities or regions",
+        displayLabel: "Textile lineage A",
+        solutionLabel: "Named after French cities or regions",
         accepts: ["denim", "gauze", "cambric"],
         related: ["voile", "chiffon"],
       },
       {
         id: "middle_east",
-        label: "Named after Middle Eastern / Silk Road cities",
+        displayLabel: "Textile lineage B",
+        solutionLabel: "Named after Middle Eastern / Silk Road cities",
         accepts: ["damask", "muslin"],
         related: ["taffeta", "satin"],
       },
       {
         id: "south_asia",
-        label: "Named after South Asian colonial trade ports",
+        displayLabel: "Textile lineage C",
+        solutionLabel: "Named after South Asian colonial trade ports",
         accepts: ["calico", "cashmere"],
         related: ["chintz", "madras"],
       },
@@ -50,19 +53,22 @@ export const TOPONYM_POOL = [
     groups: [
       {
         id: "french_italian",
-        label: "Named after French or Italian aristocratic estates / regions",
+        displayLabel: "Food origin set A",
+        solutionLabel: "Named after French or Italian aristocratic estates / regions",
         accepts: ["champagne", "cantaloupe", "mayonnaise"],
         related: ["brie", "burgundy"],
       },
       {
         id: "german",
-        label: "Named after German port cities",
+        displayLabel: "Food origin set B",
+        solutionLabel: "Named after German port cities",
         accepts: ["hamburger", "frankfurter"],
         related: ["berliner", "wiener"],
       },
       {
         id: "british",
-        label: "Named after British regional heritage sites",
+        displayLabel: "Food origin set C",
+        solutionLabel: "Named after British regional heritage sites",
         accepts: ["cheddar", "stilton"],
         related: ["worcestershire", "bakewell"],
       },
@@ -86,13 +92,15 @@ export const TOPONYM_POOL = [
     groups: [
       {
         id: "battle",
-        label: "Named after battle sites or military events",
+        displayLabel: "Conflict lineage A",
+        solutionLabel: "Named after battle sites or military events",
         accepts: ["bikini", "balaclava", "cardigan", "magenta"],
         related: ["alma", "inkerman"],
       },
       {
         id: "colonial",
-        label: "Named after colonial extraction sites",
+        displayLabel: "Conflict lineage B",
+        solutionLabel: "Named after colonial extraction sites",
         accepts: ["calico", "indigo"],
         related: ["tabasco", "chintz"],
       },
@@ -117,13 +125,15 @@ export const TOPONYM_POOL = [
     groups: [
       {
         id: "islands",
-        label: "Named after islands or island regions",
+        displayLabel: "Garment lineage A",
+        solutionLabel: "Named after islands or island regions",
         accepts: ["jersey", "bikini", "cashmere"],
         related: ["worsted", "angora"],
       },
       {
         id: "cities",
-        label: "Named after cities or urban enclaves",
+        displayLabel: "Garment lineage B",
+        solutionLabel: "Named after cities or urban enclaves",
         accepts: ["jeans", "denim", "tuxedo"],
         related: ["paisley", "dungarees"],
       },

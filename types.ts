@@ -98,6 +98,8 @@ export interface Reveal {
 export type PuzzleGroup = {
   id: string;
   label: string;
+  displayLabel?: string;
+  solutionLabel?: string;
   accepts: string[];
   related: string[];
 };
