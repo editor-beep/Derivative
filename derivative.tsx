@@ -1936,22 +1936,6 @@ const IdiomPuzzle = ({
       <SystemMesh intensity={0.85} />
 
       <div style={{ position: "relative", zIndex: 1 }}>
-        {/* Origin label */}
-        {puzzle.word && (
-          <div
-            style={{
-              ...S.mono,
-              fontSize: "0.62rem",
-              color: COLORS.textMuted,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              marginBottom: "0.75rem",
-            }}
-          >
-            origin — {puzzle.word}
-          </div>
-        )}
-
         {/* Assembled phrase display */}
         <div
           style={{
