@@ -194,7 +194,8 @@ export interface PuzzleProgressEntry {
 
 export interface ProgressStore {
   _hasPlayed?: boolean;
-  [dateOrFlag: string]: PuzzleProgressEntry | boolean | undefined;
+  discoveredSystems?: string[];
+  [dateOrFlag: string]: PuzzleProgressEntry | boolean | string[] | undefined;
 }
 
 export interface RootInsightFragment {
