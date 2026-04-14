@@ -1,0 +1,58 @@
+Here’s a clean, ready-to-paste “cheap ticket” you can give to the Replit agent:
+
+Ticket: Refactor insightEngine.ts into modular structure
+I have a large file insightEngine.ts (≈73KB) that mixes data and logic. I want to refactor it into a clean, maintainable structure.
+Desired Final Structure:
+src/
+├── insightEngine.ts          ← main orchestrator (keep small)
+├── types.ts
+├── lenses.ts
+├── utils/
+│   └── pick.ts
+├── data/                     ← all raw data pools
+│   ├── idiomPool.ts
+│   ├── borrowedPool.ts
+│   ├── suppletivePool.ts
+│   ├── semanticPool.ts
+│   ├── collisionPool.ts
+│   ├── deceptionPool.ts
+│   ├── falseFamilyPool.ts
+│   ├── toponymPool.ts
+│   ├── grimmPool.ts
+│   └── rootPool.ts
+└── generators/               ← one builder per puzzle type
+    ├── idiom.ts
+    ├── borrowed.ts
+    ├── suppletive.ts
+    ├── semantic.ts
+    ├── collision.ts
+    ├── deception.ts
+    ├── falseFamily.ts
+    ├── toponym.ts
+    └── root.ts
+Task:
+	1	Create the folder structure above.
+	2	Extract types → put all TypeScript interfaces/types into src/types.ts (SuppletiveEntry, SortPoolEntry, IdiomEntry, LinguisticInsight, Lens, etc.)
+	3	Move data:
+	◦	Split all the big XXX_POOL constants into the src/data/ files.
+	◦	Combine IDIOM_POOL and IDIOM_POOL_EXTENDED into one exported array in idiomPool.ts.
+	4	Create generators:
+	◦	One file per puzzle type in src/generators/
+	◦	Each should contain its buildXXXInsight() function.
+	◦	Use the existing pickAt logic.
+	5	Create utils/pick.ts with pick() and pickAt() functions.
+	6	Create lenses.ts with the LENSES array and the applyLens() function.
+	7	Update insightEngine.ts to:
+	◦	Import everything from the new locations.
+	◦	Define PUZZLE_SOURCES using the new generators.
+	◦	Keep generateInsight() function working exactly as before.
+	8	Make sure all imports are correct and the code still compiles/runs without behavior changes.
+Priority order (do in this sequence):
+	1	types.ts
+	2	utils/pick.ts
+	3	data/ files
+	4	generators/
+	5	lenses.ts
+	6	Final cleanup of insightEngine.ts
+Keep all original data exactly the same — do not change any content, just reorganize.
+Start by creating the folders and files. Let me know when you’re done or if you get stuck on any part.

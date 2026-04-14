@@ -1,0 +1,78 @@
+export const FALSE_FAMILY_POOL = [
+  {
+    root: "ear (two homonyms)",
+    lang: "Old English",
+    meaning: "accidental collision",
+    groups: [
+      {
+        id: "hear",
+        label: "ear (hearing organ) — OE ēare",
+        accepts: ["ear", "eardrum", "earlap", "aural"],
+        related: ["listen", "hearing"],
+      },
+      {
+        id: "grain",
+        label: "ear (of grain) — OE ēar",
+        accepts: ["earworm", "spike", "kernel"],
+        related: ["grain", "corn"],
+      },
+    ],
+    pool: [
+      "ear",
+      "eardrum",
+      "earlap",
+      "aural",
+      "earworm",
+      "spike",
+      "kernel",
+      "listen",
+      "hearing",
+      "grain",
+      "corn",
+    ],
+    tension:
+      "Two different Old English words — 'ēare' and 'ēar' — became identical in Modern English",
+  },
+  {
+    root: "sound (three homonyms)",
+    lang: "Latin + Old Norse + Old English",
+    meaning: "triple collision",
+    groups: [
+      {
+        id: "noise",
+        label: "sound (noise) — Latin sonus",
+        accepts: ["sonic", "resound", "resonance", "ultrasound"],
+        related: ["noise"],
+      },
+      {
+        id: "water",
+        label: "sound (water channel) — Old Norse sund",
+        accepts: ["fathom", "strait", "inlet"],
+        related: ["swim"],
+      },
+      {
+        id: "healthy",
+        label: "sound (healthy) — Old English gesund",
+        accepts: ["unsound", "soundly", "soundness"],
+        related: ["healthy"],
+      },
+    ],
+    pool: [
+      "sonic",
+      "resound",
+      "resonance",
+      "ultrasound",
+      "fathom",
+      "strait",
+      "inlet",
+      "unsound",
+      "soundly",
+      "soundness",
+      "noise",
+      "swim",
+      "healthy",
+    ],
+    tension:
+      "Three unrelated words — from Latin, Old Norse, and Old English — collapsed into 'sound'",
+  },
+];

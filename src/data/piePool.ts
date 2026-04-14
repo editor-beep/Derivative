@@ -1,0 +1,120 @@
+export const PIE_POOL = [
+  {
+    root: "*pṓds",
+    lang: "Proto-Indo-European",
+    meaning: "foot",
+    groups: [
+      {
+        id: "en",
+        label: "English / Germanic",
+        accepts: ["foot", "feet", "fetter", "fetch"],
+        related: ["footprint"],
+      },
+      {
+        id: "romance",
+        label: "Latin / Romance",
+        accepts: ["pedal", "pedestrian", "impede", "pedigree"],
+        related: ["tripod"],
+      },
+      {
+        id: "greek",
+        label: "Greek",
+        accepts: ["podium", "antipode", "octopus"],
+        related: ["arthropod"],
+      },
+    ],
+    pool: [
+      "foot",
+      "feet",
+      "fetter",
+      "fetch",
+      "pedal",
+      "pedestrian",
+      "impede",
+      "pedigree",
+      "podium",
+      "antipode",
+      "octopus",
+    ],
+    tension:
+      "One PIE root for 'foot' spawned cognates from Sanskrit 'pāda' to English 'foot'",
+  },
+  {
+    root: "*mātēr",
+    lang: "Proto-Indo-European",
+    meaning: "mother",
+    groups: [
+      {
+        id: "en",
+        label: "English / Germanic",
+        accepts: ["mother", "material", "matrix"],
+        related: ["maternal"],
+      },
+      {
+        id: "latin",
+        label: "Latin derivatives",
+        accepts: ["matron", "matrimony", "matter"],
+        related: ["materiel"],
+      },
+      {
+        id: "other",
+        label: "Other IE branches",
+        accepts: ["mater", "madre", "mere"],
+        related: ["meter"],
+      },
+    ],
+    pool: [
+      "mother",
+      "material",
+      "matrix",
+      "matron",
+      "matrimony",
+      "matter",
+      "mater",
+      "madre",
+      "mere",
+    ],
+    tension:
+      "The PIE word for mother is one of the most stable roots across all Indo-European languages",
+  },
+  {
+    root: "*weid-",
+    lang: "Proto-Indo-European",
+    meaning: "see, know",
+    groups: [
+      {
+        id: "en",
+        label: "Germanic / English",
+        accepts: ["wit", "wise", "wisdom", "witness"],
+        related: ["wizard"],
+      },
+      {
+        id: "latin",
+        label: "Latin",
+        accepts: ["vision", "video", "visit", "evident"],
+        related: ["idea"],
+      },
+      {
+        id: "greek",
+        label: "Greek",
+        accepts: ["idea", "history", "idol"],
+        related: ["kaleidoscope"],
+      },
+    ],
+    pool: [
+      "wit",
+      "wise",
+      "wisdom",
+      "witness",
+      "vision",
+      "video",
+      "visit",
+      "evident",
+      "idea",
+      "history",
+      "idol",
+    ],
+    tension:
+      "PIE *weid- (to see/know) underlies both 'wise' and 'video' — sight and knowledge as one",
+  },
+];
