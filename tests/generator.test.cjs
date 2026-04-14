@@ -155,3 +155,15 @@ test("eligible French collision rounds can emit deterministic counterpart prompt
     assert.equal(typeof pair.targetLabel, "string");
   }
 });
+
+test("collision counterpart direction can deterministically flip on other manifest days", () => {
+  const date = "2026-04-18"; // COLLISION entry with opposite seeded direction
+  const first = generateDailyPuzzle(date);
+  const second = generateDailyPuzzle(date);
+
+  assert.equal(first.type, "COLLISION");
+  assert.deepEqual(first, second, "same day output must remain deterministic");
+  assert.equal(first.prompt, "Given the Latin-descended form, provide the French-descended counterpart.");
+  assert.equal(first.counterpartPairs?.[0]?.sourceLabel, "Latin-descended");
+  assert.equal(first.counterpartPairs?.[0]?.targetLabel, "French-descended counterpart");
+});
