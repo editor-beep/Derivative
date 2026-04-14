@@ -15,19 +15,19 @@ export const BORROWED_POOL = [
     groups: [
       {
         id: "arabic",
-        label: "Arabic stream (al- prefix pattern)",
+        displayLabel: "Group A", solutionLabel: "Arabic stream (al- prefix pattern)",
         accepts: ["algebra", "algorithm", "alcohol", "cipher"],
         related: ["zero", "coffee"],
       },
       {
         id: "hindi",
-        label: "Hindi / Sanskrit stream",
+        displayLabel: "Group B", solutionLabel: "Hindi / Sanskrit stream",
         accepts: ["bungalow", "shampoo", "jungle", "thug"],
         related: ["avatar", "pundit"],
       },
       {
         id: "nahuatl",
-        label: "Nahuatl stream (Aztec)",
+        displayLabel: "Group C", solutionLabel: "Nahuatl stream (Aztec)",
         accepts: ["chocolate", "tomato", "avocado"],
         related: ["coyote", "chili"],
       },
@@ -55,19 +55,19 @@ export const BORROWED_POOL = [
     groups: [
       {
         id: "french",
-        label: "Norman French conquest layer",
+        displayLabel: "Group A", solutionLabel: "Norman French conquest layer",
         accepts: ["beef", "pork", "mutton", "venison"],
         related: ["veal", "poultry"],
       },
       {
         id: "old_english",
-        label: "Old English farming layer",
+        displayLabel: "Group B", solutionLabel: "Old English farming layer",
         accepts: ["cow", "pig", "sheep", "deer"],
         related: ["ox", "fowl"],
       },
       {
         id: "latin",
-        label: "Latin ecclesiastical layer",
+        displayLabel: "Group C", solutionLabel: "Latin ecclesiastical layer",
         accepts: ["scripture", "angel", "altar", "martyr"],
         related: ["saint", "bishop"],
       },
@@ -96,19 +96,19 @@ export const BORROWED_POOL = [
     groups: [
       {
         id: "stigma",
-        label: "Words that encode left = wrong",
+        displayLabel: "Group A", solutionLabel: "Words that encode left = wrong",
         accepts: ["sinister", "gauche", "awkward"],
         related: ["clumsy", "left-handed"],
       },
       {
         id: "origin",
-        label: "Neutral / directional origin words",
+        displayLabel: "Group B", solutionLabel: "Neutral / directional origin words",
         accepts: ["left", "port", "larboard"],
         related: ["leeward", "starboard"],
       },
       {
         id: "right",
-        label: "Words that encode right = correct",
+        displayLabel: "Group C", solutionLabel: "Words that encode right = correct",
         accepts: ["right", "dexterous", "adroit"],
         related: ["correct", "proper"],
       },
@@ -134,19 +134,19 @@ export const BORROWED_POOL = [
     groups: [
       {
         id: "body_to_machine",
-        label: "Body words applied to machines",
+        displayLabel: "Group A", solutionLabel: "Body words applied to machines",
         accepts: ["arm", "leg", "neck", "shoulder"],
         related: ["foot", "rib"],
       },
       {
         id: "machine_to_body",
-        label: "Machine words applied to bodies",
+        displayLabel: "Group B", solutionLabel: "Machine words applied to bodies",
         accepts: ["running", "firing", "pumping", "drive"],
         related: ["pressure", "tension"],
       },
       {
         id: "shared",
-        label: "Words that moved both directions",
+        displayLabel: "Group C", solutionLabel: "Words that moved both directions",
         accepts: ["joint", "valve", "channel", "system"],
         related: ["network", "trunk"],
       },

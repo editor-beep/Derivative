@@ -17,13 +17,13 @@ export const FOLK_ETYMOLOGY_POOL = [
     groups: [
       {
         id: "modern",
-        label: "Modern form (article absorbed the 'n')",
+        displayLabel: "Group A", solutionLabel: "Modern form (article absorbed the 'n')",
         accepts: ["apron", "nickname", "umpire", "newt", "auger"],
         related: ["adder", "orange"],
       },
       {
         id: "original",
-        label: "Original form (before misdivision)",
+        displayLabel: "Group B", solutionLabel: "Original form (before misdivision)",
         accepts: ["a napron", "an ekename", "a noumpere", "an ewt", "a nauger"],
         related: ["a nadder", "a norange"],
       },
@@ -39,13 +39,13 @@ export const FOLK_ETYMOLOGY_POOL = [
     groups: [
       {
         id: "modern",
-        label: "Modern form (after n-migration)",
+        displayLabel: "Group A", solutionLabel: "Modern form (after n-migration)",
         accepts: ["adder", "orange"],
         related: ["newt", "apron"],
       },
       {
         id: "original",
-        label: "Original form (before n-migration)",
+        displayLabel: "Group B", solutionLabel: "Original form (before n-migration)",
         accepts: ["nadder", "norange"],
         related: ["Arabic naranj", "Old English naeddre"],
       },
@@ -65,13 +65,13 @@ export const FOLK_ETYMOLOGY_POOL = [
     groups: [
       {
         id: "modern",
-        label: "Modern spelling (with inserted phantom letter)",
+        displayLabel: "Group A", solutionLabel: "Modern spelling (with inserted phantom letter)",
         accepts: ["island", "rhyme", "could", "scent", "ache"],
         related: ["debt", "doubt"],
       },
       {
         id: "original",
-        label: "Original spelling (before the insertion)",
+        displayLabel: "Group B", solutionLabel: "Original spelling (before the insertion)",
         accepts: ["iland", "rime", "coud", "sent", "ake"],
         related: ["dette", "doute"],
       },
@@ -87,13 +87,13 @@ export const FOLK_ETYMOLOGY_POOL = [
     groups: [
       {
         id: "modern",
-        label: "Latinized modern form",
+        displayLabel: "Group A", solutionLabel: "Latinized modern form",
         accepts: ["comptroller", "fault", "assault", "vault", "admiral"],
         related: ["advance", "advantage"],
       },
       {
         id: "original",
-        label: "Original French form (before the Latin repair)",
+        displayLabel: "Group B", solutionLabel: "Original French form (before the Latin repair)",
         accepts: ["controller", "faute", "assaut", "voute", "amir-al"],
         related: ["avancer", "avantage"],
       },
@@ -109,13 +109,13 @@ export const FOLK_ETYMOLOGY_POOL = [
     groups: [
       {
         id: "modern",
-        label: "Hellenized modern form",
+        displayLabel: "Group A", solutionLabel: "Hellenized modern form",
         accepts: ["ptarmigan", "abominable"],
         related: ["rhyme", "island"],
       },
       {
         id: "original",
-        label: "Original form (before the Greek cosplay)",
+        displayLabel: "Group B", solutionLabel: "Original form (before the Greek cosplay)",
         accepts: ["tarmachan (Gaelic)", "abominabilis (no h in Latin)"],
         related: ["tarmac", "abominate"],
       },
@@ -135,13 +135,13 @@ export const FOLK_ETYMOLOGY_POOL = [
     groups: [
       {
         id: "modern",
-        label: "Folk-reshaped English form",
+        displayLabel: "Group A", solutionLabel: "Folk-reshaped English form",
         accepts: ["cockroach", "crayfish", "bridegroom", "woodchuck", "wormwood"],
         related: ["sparrowgrass", "Jerusalem artichoke"],
       },
       {
         id: "source",
-        label: "Actual source word",
+        displayLabel: "Group B", solutionLabel: "Actual source word",
         accepts: ["cucaracha (Spanish)", "écrevisse (French)", "brydguma (OE — guma = man)", "otcheck (Algonquian)", "wermōd (OE — mind-preserver)"],
         related: ["asparagos", "girasole"],
       },
@@ -157,13 +157,13 @@ export const FOLK_ETYMOLOGY_POOL = [
     groups: [
       {
         id: "modern",
-        label: "Folk-reshaped English form",
+        displayLabel: "Group A", solutionLabel: "Folk-reshaped English form",
         accepts: ["penthouse", "shamefaced", "belfry", "hangnail", "curfew"],
         related: ["chaise lounge", "saltcellar"],
       },
       {
         id: "source",
-        label: "Actual source and original meaning",
+        displayLabel: "Group B", solutionLabel: "Actual source and original meaning",
         accepts: ["apentis (Anglo-Norman hang-on building)", "shamefast (fixed in shame)", "berfrey (siege tower)", "agnail (OE ang-naegl, painful spike)", "couvre-feu (cover the fire)"],
         related: ["chaise longue (long chair)", "saler (French salt-box)"],
       },
@@ -179,13 +179,13 @@ export const FOLK_ETYMOLOGY_POOL = [
     groups: [
       {
         id: "english",
-        label: "American English form",
+        displayLabel: "Group A", solutionLabel: "American English form",
         accepts: ["lariat", "buckaroo", "stampede", "vamoose", "ten-gallon hat"],
         related: ["mustang", "lasso", "cinch"],
       },
       {
         id: "source",
-        label: "Actual source word and meaning",
+        displayLabel: "Group B", solutionLabel: "Actual source word and meaning",
         accepts: ["la reata (the rope)", "vaquero (cow-man)", "estampida (crash/uproar)", "vamos (let's go)", "tan galán (so gallant/handsome)"],
         related: ["mesteño (stray)", "lazo (knot)", "cincha (girdle)"],
       },
@@ -201,13 +201,13 @@ export const FOLK_ETYMOLOGY_POOL = [
     groups: [
       {
         id: "english",
-        label: "English folk-reshaped form",
+        displayLabel: "Group A", solutionLabel: "English folk-reshaped form",
         accepts: ["sparrowgrass", "Jerusalem artichoke", "humble pie", "coldslaw", "chestnut"],
         related: ["rosemary", "dandelion"],
       },
       {
         id: "source",
-        label: "Actual source and real meaning",
+        displayLabel: "Group B", solutionLabel: "Actual source and real meaning",
         accepts: ["asparagos (Greek)", "girasole (Italian sunflower)", "umbles (deer innards)", "kool-sla (Dutch: cabbage salad)", "chesten-nut (nut of the chesten tree)"],
         related: ["ros marinus (dew of the sea)", "dent-de-lion (tooth of the lion)"],
       },
@@ -223,13 +223,13 @@ export const FOLK_ETYMOLOGY_POOL = [
     groups: [
       {
         id: "backformed",
-        label: "Back-formed singular (invented)",
+        displayLabel: "Group A", solutionLabel: "Back-formed singular (invented)",
         accepts: ["pea", "cherry", "sherry"],
         related: ["asset", "statistic"],
       },
       {
         id: "original",
-        label: "Original form (which was already singular)",
+        displayLabel: "Group B", solutionLabel: "Original form (which was already singular)",
         accepts: ["pease", "cherise", "sherris"],
         related: ["assets", "statistics"],
       },

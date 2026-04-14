@@ -10,19 +10,19 @@ export const SUPPLETIVE_POOL: SuppletiveEntry[] = [
     groups: [
       {
         id: "go",
-        label: "go (present)",
+        displayLabel: "Group A", solutionLabel: "go (present)",
         accepts: ["go", "goes", "going"],
         related: ["depart", "leave"],
       },
       {
         id: "went",
-        label: "went (past)",
+        displayLabel: "Group B", solutionLabel: "went (past)",
         accepts: ["went"],
         related: ["wended", "journeyed"],
       },
       {
         id: "gone",
-        label: "gone (participle)",
+        displayLabel: "Group C", solutionLabel: "gone (participle)",
         accepts: ["gone"],
         related: ["absent", "departed"],
       },
@@ -38,19 +38,19 @@ export const SUPPLETIVE_POOL: SuppletiveEntry[] = [
     groups: [
       {
         id: "pos",
-        label: "positive",
+        displayLabel: "Group A", solutionLabel: "positive",
         accepts: ["good", "well"],
         related: ["fine", "nice"],
       },
       {
         id: "comp",
-        label: "comparative",
+        displayLabel: "Group B", solutionLabel: "comparative",
         accepts: ["better", "worse"],
         related: ["superior", "inferior"],
       },
       {
         id: "sup",
-        label: "superlative",
+        displayLabel: "Group C", solutionLabel: "superlative",
         accepts: ["best", "worst"],
         related: ["optimal", "minimal"],
       },
@@ -66,19 +66,19 @@ export const SUPPLETIVE_POOL: SuppletiveEntry[] = [
     groups: [
       {
         id: "pres",
-        label: "present (be-root)",
+        displayLabel: "Group A", solutionLabel: "present (be-root)",
         accepts: ["be", "being", "been"],
         related: ["exist", "remain"],
       },
       {
         id: "am_is",
-        label: "present (es-root)",
+        displayLabel: "Group B", solutionLabel: "present (es-root)",
         accepts: ["am", "is", "are"],
         related: ["seems"],
       },
       {
         id: "past",
-        label: "past (wes-root)",
+        displayLabel: "Group C", solutionLabel: "past (wes-root)",
         accepts: ["was", "were"],
         related: ["existed"],
       },
@@ -103,14 +103,14 @@ export const SUPPLETIVE_POOL: SuppletiveEntry[] = [
     lang: "Old English + mixed comparatives",
     meaning: "false comparative system",
     groups: [
-      { id: "size", label: "size", accepts: ["small", "little"], related: [] },
+      { id: "size", displayLabel: "Group A", solutionLabel: "size", accepts: ["small", "little"], related: [] },
       {
         id: "quantity",
-        label: "quantity",
+        displayLabel: "Group B", solutionLabel: "quantity",
         accepts: ["fewer", "less"],
         related: [],
       },
-      { id: "intensity", label: "intensity", accepts: [], related: [] },
+      { id: "intensity", displayLabel: "Group C", solutionLabel: "intensity", accepts: [], related: [] },
     ],
     pool: ["little", "less", "least", "small", "fewer", "minimum"],
     tension:
