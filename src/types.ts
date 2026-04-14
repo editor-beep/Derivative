@@ -9,6 +9,8 @@ export type SuppletiveEntry = {
     label?: string;
     displayLabel?: string;
     solutionLabel?: string;
+    hint?: string;
+    hintLevel2?: string;
     accepts: string[];
     related: string[];
   }>;
@@ -28,6 +30,8 @@ export type SortPoolEntry = {
     label?: string;
     displayLabel?: string;
     solutionLabel?: string;
+    hint?: string;
+    hintLevel2?: string;
     accepts: string[];
     related: string[];
   }>;

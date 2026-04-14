@@ -1242,6 +1242,8 @@ const SortPuzzle = ({
   onState: (s: PuzzleState) => void;
   revealed: boolean;
 }) => {
+  const HINT_TRIGGER_WRONG_ASSIGNMENTS = 3;
+  const HINT_LEVEL2_TRIGGER_WRONG_ASSIGNMENTS = 6;
   const assigned = state?.assigned || {};
   const [dragWord, setDragWord] = useState<string | null>(null);
   const [dragOverGroup, setDragOverGroup] = useState<string | null>(null);
@@ -1249,6 +1251,8 @@ const SortPuzzle = ({
   const [flash, setFlash] = useState<null | { word: string; correct: boolean; bonus?: boolean; notInPool?: boolean }>(null);
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
   const [fracture, setFracture] = useState<string | null>(null);
+  const [wrongAssignments, setWrongAssignments] = useState(0);
+  const [hintStage, setHintStage] = useState<0 | 1 | 2>(0);
 
   const groups = puzzle.groups || [];
   const pool = puzzle.pool || [];
@@ -1256,7 +1260,19 @@ const SortPuzzle = ({
 
   useEffect(() => {
     setFracture(null);
+    setWrongAssignments(0);
+    setHintStage(0);
   }, [puzzle.date, puzzle.type]);
+
+  useEffect(() => {
+    if (hintStage < 1 && wrongAssignments >= HINT_TRIGGER_WRONG_ASSIGNMENTS) {
+      setHintStage(1);
+      return;
+    }
+    if (hintStage < 2 && wrongAssignments >= HINT_LEVEL2_TRIGGER_WRONG_ASSIGNMENTS) {
+      setHintStage(2);
+    }
+  }, [hintStage, wrongAssignments]);
 
   const unassigned = pool.filter((w) => !assigned[w]);
   const requiredByGroup = new Map(groups.map((group) => [group.id, new Set(group.accepts.filter((token) => pool.includes(token)))]));
@@ -1274,6 +1290,9 @@ const SortPuzzle = ({
     const newAssigned = { ...assigned, [word]: groupId };
     onState({ ...state, assigned: newAssigned });
     setFlash({ word, correct, bonus: grp.related.includes(word) });
+    if (!correct) {
+      setWrongAssignments((count) => count + 1);
+    }
     if (falseSystem?.decoys.includes(word)) {
       setFracture(falseSystem.breakMessage);
     }
@@ -1297,6 +1316,10 @@ const SortPuzzle = ({
       setInput("");
       setTimeout(() => setFlash(null), 1200);
     }
+  };
+
+  const revealNextHints = () => {
+    setHintStage((stage) => (stage >= 2 ? 2 : ((stage + 1) as 1 | 2)));
   };
 
   return (
@@ -1325,6 +1348,22 @@ const SortPuzzle = ({
         >
           {correctCount}/{totalRequired} assigned correctly
         </div>
+        {!revealed && groups.some((grp) => grp.hint || grp.hintLevel2) && (
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "0.75rem" }}>
+            <button
+              className="deriv-btn-secondary"
+              style={{ ...S.btnSm, padding: "0.26rem 0.55rem", fontSize: "0.58rem" }}
+              onClick={revealNextHints}
+            >
+              {hintStage === 0 ? "reveal hints" : hintStage === 1 ? "deepen hints" : "hints shown"}
+            </button>
+            {wrongAssignments >= HINT_TRIGGER_WRONG_ASSIGNMENTS && (
+              <span style={{ ...S.mono, fontSize: "0.56rem", color: COLORS.textFaint, letterSpacing: "0.08em" }}>
+                hints auto-enabled after {HINT_TRIGGER_WRONG_ASSIGNMENTS} wrong assignments
+              </span>
+            )}
+          </div>
+        )}
         {fracture && (
           <div
             className="red-shimmer"
@@ -1522,6 +1561,21 @@ const SortPuzzle = ({
                         </div>
                       );
                     })}
+                  </div>
+                )}
+
+                {!revealed && hintStage > 0 && (
+                  <div
+                    style={{
+                      marginTop: grpWords.length > 0 || isActive ? "0.5rem" : "0.35rem",
+                      fontSize: "0.66rem",
+                      color: COLORS.textMuted,
+                      lineHeight: 1.35,
+                    }}
+                  >
+                    {hintStage === 1
+                      ? grp.hint ?? "No extra hint for this group yet."
+                      : grp.hintLevel2 ?? grp.hint ?? "No extra hint for this group yet."}
                   </div>
                 )}
 
