@@ -74,7 +74,7 @@ function buildRootPuzzle(insight: InsightByType<"ROOT">, date: string): Puzzle {
 }
 
 function buildSortPuzzle(insight: InsightByType<"SUPPLETIVE" | "GRIMM" | "COLLISION" | "PIE" | "PHANTOM_ROOT" | "DECEPTION" | "FALSE_FAMILY" | "BORROWED" | "TOPONYM">, date: string): Puzzle {
-  const { groups, pool, falseSystem, questionPrompt, revealBody } = insight.data;
+  const { groups, pool, falseSystem, questionPrompt, revealBody, counterpartPairs } = insight.data;
   const normalizedGroups = groups.map((group) => {
     const neutralLabel = group.displayLabel ?? group.label ?? group.solutionLabel ?? group.id;
     return {
@@ -98,6 +98,7 @@ function buildSortPuzzle(insight: InsightByType<"SUPPLETIVE" | "GRIMM" | "COLLIS
     groups: normalizedGroups,
     pool,
     falseSystem,
+    counterpartPairs,
     meta: {
       root: insight.root,
       lang: insight.language,
@@ -185,6 +186,13 @@ function assertPuzzleShape(puzzle: Puzzle): Puzzle {
       }
       break;
     default:
+      if (
+        puzzle.type === "COLLISION" &&
+        puzzle.counterpartPairs?.length &&
+        (!puzzle.groups?.length || !puzzle.pool?.length)
+      ) {
+        throw new Error(`Invalid COLLISION puzzle shape for ${puzzle.date}`);
+      }
       if (!puzzle.groups?.length || !puzzle.pool?.length) {
         throw new Error(`Invalid ${puzzle.type} puzzle shape for ${puzzle.date}`);
       }

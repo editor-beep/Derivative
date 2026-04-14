@@ -133,3 +133,23 @@ test("prompt text is meaningfully different from reveal copy for representative 
     assertPromptAndRevealDiverge(puzzle, manifest);
   }
 });
+
+test("eligible French collision rounds can emit deterministic counterpart prompts", () => {
+  const date = "2026-01-04"; // COLLISION entryIdx 0 in manifest
+  const first = generateDailyPuzzle(date);
+  const second = generateDailyPuzzle(date);
+
+  assert.equal(first.type, "COLLISION");
+  assert.deepEqual(first, second, "same day output must remain deterministic");
+  assert.ok(Array.isArray(first.counterpartPairs), "counterpartPairs payload should exist for eligible french doublets");
+  assert.ok(first.counterpartPairs.length > 0, "counterpartPairs should be non-empty");
+  assert.match(first.prompt, /Given the (French|Latin)-descended form/i);
+
+  for (const pair of first.counterpartPairs) {
+    assert.equal(typeof pair.promptWord, "string");
+    assert.ok(pair.promptWord.length > 0);
+    assert.ok(Array.isArray(pair.expectedAnswers) && pair.expectedAnswers.length > 0);
+    assert.equal(typeof pair.sourceLabel, "string");
+    assert.equal(typeof pair.targetLabel, "string");
+  }
+});

@@ -37,6 +37,12 @@ type SortPoolEntry = {
   revealHeadline?: string;
   revealBody?: string;
   falseSystem?: FalseSystemConfig;
+  counterpartPairs?: Array<{
+    frenchWord: string;
+    latinWord: string;
+    frenchVariants?: string[];
+    latinVariants?: string[];
+  }>;
 };
 
 type RootPoolEntry = {
@@ -581,6 +587,27 @@ function buildSemanticShiftInsight(r: () => number, idx?: number): LinguisticIns
 function buildCollisionInsight(r: () => number, idx?: number): LinguisticInsight {
   const d = pickAt(COLLISION_POOL, r, idx) as SortPoolEntry;
   const copy = buildSortCopy(d);
+  const showFrenchPrompt = r() < 0.5;
+  const counterpartPairs = d.counterpartPairs?.map((pair) => {
+    const promptWord = showFrenchPrompt ? pair.frenchWord : pair.latinWord;
+    const expectedAnswers = showFrenchPrompt
+      ? [pair.latinWord, ...(pair.latinVariants || [])]
+      : [pair.frenchWord, ...(pair.frenchVariants || [])];
+    return {
+      promptWord,
+      expectedAnswers: [...new Set(expectedAnswers.map((answer) => answer.toLowerCase()))],
+      sourceLabel: showFrenchPrompt ? "French-descended" : "Latin-descended",
+      targetLabel: showFrenchPrompt ? "Latin-descended counterpart" : "French-descended counterpart",
+    };
+  });
+
+  const directionalPrompt =
+    d.counterpartPairs && d.counterpartPairs.length > 0
+      ? showFrenchPrompt
+        ? "Given the French-descended form, provide the Latin-descended counterpart."
+        : "Given the Latin-descended form, provide the French-descended counterpart."
+      : copy.questionPrompt;
+
   return {
     id: `collision-${d.root}`,
     type: "COLLISION",
@@ -589,7 +616,14 @@ function buildCollisionInsight(r: () => number, idx?: number): LinguisticInsight
     words: d.pool,
     meaning: d.meaning,
     tension: d.tension,
-    data: { groups: d.groups, pool: d.pool, questionPrompt: copy.questionPrompt, revealHeadline: copy.revealHeadline, revealBody: copy.revealBody }
+    data: {
+      groups: d.groups,
+      pool: d.pool,
+      counterpartPairs,
+      questionPrompt: directionalPrompt,
+      revealHeadline: copy.revealHeadline,
+      revealBody: d.revealBody ?? copy.revealBody,
+    }
   };
 }
 

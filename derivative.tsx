@@ -5,6 +5,7 @@ import type { Puzzle, PuzzleType, LensId, ProgressStore, PuzzleProgressEntry, Pu
 import { getDifficulty, DIFFICULTY_META, type DifficultyLevel } from "./difficulty";
 import { TYPE_LABELS, TYPE_SUBLABELS, COLORS, TYPE_COLORS, STORAGE_KEY, SPLASH_IMAGE } from "./constants";
 import { getUtcDateKey } from "./src/dateUtils";
+import { isCounterpartAnswerMatch } from "./src/counterpartValidation";
 
 const load = (): ProgressStore => {
   try {
@@ -1740,6 +1741,88 @@ const GrimmPuzzle = ({
   );
 };
 
+const CollisionCounterpartPuzzle = ({
+  puzzle,
+  state,
+  onState,
+  revealed,
+}: {
+  puzzle: Puzzle;
+  state: PuzzleState;
+  onState: (s: PuzzleState) => void;
+  revealed: boolean;
+}) => {
+  const answers = state?.answers || {};
+  const [inputs, setInputs] = useState<Record<number, string>>({});
+  const [feedback, setFeedback] = useState<Record<number, string | null>>({});
+  const counterpartPairs = puzzle.counterpartPairs || [];
+  const first = counterpartPairs[0];
+
+  const submit = (idx: number) => {
+    const value = (inputs[idx] || "").trim();
+    if (!value) return;
+    const pair = counterpartPairs[idx];
+    if (!pair) return;
+    const correct = isCounterpartAnswerMatch(value, pair.expectedAnswers);
+    const nextAnswers = { ...answers };
+    if (correct) nextAnswers[idx] = value.toLowerCase();
+    onState({ ...state, answers: nextAnswers });
+    setFeedback((prev) => ({ ...prev, [idx]: correct ? "correct" : "wrong" }));
+    if (correct) setInputs((prev) => ({ ...prev, [idx]: "" }));
+    setTimeout(() => setFeedback((prev) => ({ ...prev, [idx]: null })), 1200);
+  };
+
+  return (
+    <div style={{ position: "relative", border: `1px solid ${COLORS.blackLine}`, borderRadius: "4px", padding: "1rem", background: `linear-gradient(180deg, ${COLORS.surface2}, ${COLORS.surface})`, overflow: "hidden" }}>
+      <SystemMesh intensity={0.88} />
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <div style={{ ...S.mono, fontSize: "0.58rem", color: COLORS.textFaint, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
+          {Object.keys(answers).length}/{counterpartPairs.length} found
+        </div>
+        {first && (
+          <div style={{ marginBottom: "0.8rem", padding: "0.55rem 0.65rem", border: `1px solid ${COLORS.blackLine}`, borderRadius: "3px", background: "rgba(232,184,75,0.04)", color: COLORS.textMuted, fontSize: "0.72rem", lineHeight: 1.45 }}>
+            French forms often drop/smooth clusters; Latin learned forms preserve or restore them.
+          </div>
+        )}
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          {counterpartPairs.map((pair, idx) => {
+            const solved = !!answers[idx] || revealed;
+            const fb = feedback[idx];
+            return (
+              <div key={idx} style={{ display: "flex", alignItems: "center", gap: "10px", background: `linear-gradient(180deg, ${COLORS.surface2}, ${COLORS.surface})`, border: `1px solid ${COLORS.blackLine}`, borderRadius: "3px", padding: "0.6rem 0.75rem" }}>
+                <div style={{ flex: "0 0 220px", ...S.mono, fontSize: "0.78rem", color: COLORS.textSecondary, lineHeight: 1.4 }}>
+                  <span style={{ color: COLORS.textFaint, fontSize: "0.62rem", display: "block", marginBottom: "0.12rem" }}>{pair.sourceLabel}</span>
+                  {pair.promptWord}
+                </div>
+                <div style={{ ...S.mono, fontSize: "0.62rem", color: COLORS.textFaint, flexShrink: 0 }}>→</div>
+                {solved ? (
+                  <div style={{ ...S.mono, fontSize: "0.85rem", color: COLORS.gold, flex: 1 }}>
+                    {pair.expectedAnswers[0]}
+                    <span style={{ color: COLORS.textMuted, fontSize: "0.62rem", marginLeft: "0.5rem" }}>{pair.targetLabel}</span>
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", gap: "6px", flex: 1 }}>
+                    <input
+                      value={inputs[idx] || ""}
+                      onChange={(e) => setInputs((prev) => ({ ...prev, [idx]: e.target.value.toLowerCase() }))}
+                      onKeyDown={(e) => e.key === "Enter" && submit(idx)}
+                      placeholder={`${pair.targetLabel}…`}
+                      style={{ ...S.input, flex: 1, padding: "0.3rem 0.55rem", fontSize: "0.78rem", border: `1px solid ${fb === "wrong" ? COLORS.red : COLORS.blackLine}` }}
+                    />
+                    <button className="deriv-btn-primary" style={{ ...S.btnPrimary, padding: "0.3rem 0.55rem", fontSize: "0.62rem" }} onClick={() => submit(idx)}>
+                      →
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const SemanticPuzzle = ({
   puzzle,
   state,
@@ -2248,6 +2331,9 @@ export default function Derivative() {
     }
 
     if (["SUPPLETIVE", "PIE", "COLLISION", "DECEPTION", "FALSE_FAMILY", "PHANTOM_ROOT", "BORROWED", "TOPONYM"].includes(puzzle.type)) {
+      if (puzzle.type === "COLLISION" && puzzle.counterpartPairs?.length) {
+        return (puzzle.counterpartPairs || []).every((_, i) => puzzleState.answers?.[i]);
+      }
       const assigned = puzzleState.assigned || {};
       return (puzzle.groups || []).every((g) =>
         g.accepts.every((w) => assigned[w] === g.id)
@@ -2307,10 +2393,15 @@ export default function Derivative() {
       const found = puzzleState.found || [];
       tracker = (puzzle.required || []).map((w) => (found.includes(w) ? "◈" : "◇")).join("");
     } else if (["SUPPLETIVE", "PIE", "COLLISION", "DECEPTION", "FALSE_FAMILY", "PHANTOM_ROOT", "BORROWED", "TOPONYM"].includes(puzzle.type)) {
+      if (puzzle.type === "COLLISION" && puzzle.counterpartPairs?.length) {
+        const answers = puzzleState.answers || {};
+        tracker = (puzzle.counterpartPairs || []).map((_, i) => (answers[i] ? "◈" : "◇")).join("");
+      } else {
       const assigned = puzzleState.assigned || {};
       tracker = (puzzle.groups || [])
         .flatMap((g) => g.accepts.map((w) => (assigned[w] === g.id ? "◈" : "◇")))
         .join("");
+      }
     } else if (puzzle.type === "GRIMM") {
       const answers = puzzleState.answers || {};
       tracker = (puzzle.pairs || []).map((_, i) => (answers[i] ? "◈" : "◇")).join("");
@@ -2831,7 +2922,6 @@ export default function Derivative() {
     const isSortType = [
       "SUPPLETIVE",
       "PIE",
-      "COLLISION",
       "DECEPTION",
       "FALSE_FAMILY",
       "PHANTOM_ROOT",
@@ -2892,6 +2982,24 @@ export default function Derivative() {
           )}
 
           {isSortType && (
+            <SortPuzzle
+              puzzle={puzzle}
+              state={puzzleState}
+              onState={handlePuzzleState}
+              revealed={revealed}
+            />
+          )}
+
+          {puzzle.type === "COLLISION" && (puzzle.counterpartPairs?.length ?? 0) > 0 && (
+            <CollisionCounterpartPuzzle
+              puzzle={puzzle}
+              state={puzzleState}
+              onState={handlePuzzleState}
+              revealed={revealed}
+            />
+          )}
+
+          {puzzle.type === "COLLISION" && (puzzle.counterpartPairs?.length ?? 0) === 0 && (
             <SortPuzzle
               puzzle={puzzle}
               state={puzzleState}
