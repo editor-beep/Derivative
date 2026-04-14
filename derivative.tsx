@@ -1075,7 +1075,7 @@ const RootPuzzle = ({
       setFlash({ msg: required ? "accepted" : "related", ok: true, bonus: !required });
     } else {
       setShake(true);
-      setFlash({ msg: "not in this family", ok: false });
+      setFlash({ msg: "not in this puzzle", ok: false });
       setTimeout(() => setShake(false), 500);
     }
 
@@ -2437,6 +2437,7 @@ export default function Derivative() {
             }}
           >
             DERIVATIVE
+            <br>The Game of the Lingua Imperii</br>
           </div>
 
           {/* Separator */}
