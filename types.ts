@@ -66,6 +66,8 @@ export interface SortInsightData {
     label?: string;
     displayLabel?: string;
     solutionLabel?: string;
+    hint?: string;
+    hintLevel2?: string;
     accepts: string[];
     related: string[];
   }>;
@@ -214,6 +216,8 @@ export type PuzzleGroup = {
   label: string;
   displayLabel?: string;
   solutionLabel?: string;
+  hint?: string;
+  hintLevel2?: string;
   accepts: string[];
   related: string[];
 };
