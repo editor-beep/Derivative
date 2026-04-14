@@ -13,13 +13,13 @@ export const LOANWORD_EXTRACTION_POOL = [
     groups: [
       {
         id: "french_prestige",
-        label: "French prestige layer (upper-class register)",
+        displayLabel: "Group A", solutionLabel: "French prestige layer (upper-class register)",
         accepts: ["cuisine", "chauffeur", "bourgeois", "entrepreneur", "camouflage"],
         related: ["silhouette", "renaissance"],
       },
       {
         id: "english_base",
-        label: "Anglo-Saxon equivalent (working-class register)",
+        displayLabel: "Group B", solutionLabel: "Anglo-Saxon equivalent (working-class register)",
         accepts: ["cooking", "driver", "townsman", "undertaker", "disguise"],
         related: ["shadow", "rebirth"],
       },
@@ -35,13 +35,13 @@ export const LOANWORD_EXTRACTION_POOL = [
     groups: [
       {
         id: "military",
-        label: "Military and command vocabulary",
+        displayLabel: "Group A", solutionLabel: "Military and command vocabulary",
         accepts: ["admiral", "arsenal", "magazine", "cipher"],
         related: ["assassin", "caliber"],
       },
       {
         id: "commercial",
-        label: "Commercial and everyday vocabulary",
+        displayLabel: "Group B", solutionLabel: "Commercial and everyday vocabulary",
         accepts: ["coffee", "candy", "cotton", "safari"],
         related: ["sugar", "muslin"],
       },
@@ -57,13 +57,13 @@ export const LOANWORD_EXTRACTION_POOL = [
     groups: [
       {
         id: "landscape",
-        label: "Landscape words from Spanish/Mexican territories",
+        displayLabel: "Group A", solutionLabel: "Landscape words from Spanish/Mexican territories",
         accepts: ["canyon", "mesa", "sierra", "patio", "plaza"],
         related: ["arroyo", "chaparral"],
       },
       {
         id: "resistance",
-        label: "Political and conflict words from the same contact zone",
+        displayLabel: "Group B", solutionLabel: "Political and conflict words from the same contact zone",
         accepts: ["guerilla", "vigilante", "desperado", "embargo"],
         related: ["aficionado", "junta"],
       },
@@ -79,13 +79,13 @@ export const LOANWORD_EXTRACTION_POOL = [
     groups: [
       {
         id: "prestige",
-        label: "Italian artistic prestige vocabulary",
+        displayLabel: "Group A", solutionLabel: "Italian artistic prestige vocabulary",
         accepts: ["virtuoso", "solo", "scenario", "stanza", "studio"],
         related: ["opera", "sonnet"],
       },
       {
         id: "catastrophe",
-        label: "Italian disaster and exclusion vocabulary",
+        displayLabel: "Group B", solutionLabel: "Italian disaster and exclusion vocabulary",
         accepts: ["ghetto", "fiasco", "quarantine", "influenza"],
         related: ["malaria", "grotto"],
       },
@@ -101,13 +101,13 @@ export const LOANWORD_EXTRACTION_POOL = [
     groups: [
       {
         id: "emotional_states",
-        label: "Compound emotional states (no English equivalent)",
+        displayLabel: "Group A", solutionLabel: "Compound emotional states (no English equivalent)",
         accepts: ["schadenfreude", "wanderlust", "angst", "zeitgeist"],
         related: ["weltanschauung", "sturm und drang"],
       },
       {
         id: "cultural_concepts",
-        label: "Cultural and aesthetic categories",
+        displayLabel: "Group B", solutionLabel: "Cultural and aesthetic categories",
         accepts: ["kitsch", "doppelgänger", "poltergeist", "kindergarten"],
         related: ["bildungsroman", "leitmotif"],
       },
@@ -123,13 +123,13 @@ export const LOANWORD_EXTRACTION_POOL = [
     groups: [
       {
         id: "comfort",
-        label: "Comfort and lifestyle words brought back by colonists",
+        displayLabel: "Group A", solutionLabel: "Comfort and lifestyle words brought back by colonists",
         accepts: ["pajamas", "punch", "cushy", "khaki", "dungarees"],
         related: ["chintz", "bandana"],
       },
       {
         id: "control",
-        label: "Control and criminalization words from the same period",
+        displayLabel: "Group B", solutionLabel: "Control and criminalization words from the same period",
         accepts: ["loot", "dacoit", "nabob", "juggernaut"],
         related: ["thuggee", "sepoy"],
       },
@@ -145,13 +145,13 @@ export const LOANWORD_EXTRACTION_POOL = [
     groups: [
       {
         id: "yiddish_absorbed",
-        label: "Yiddish words now fully mainstream",
+        displayLabel: "Group A", solutionLabel: "Yiddish words now fully mainstream",
         accepts: ["glitch", "schmooze", "chutzpah", "klutz", "schmaltz"],
         related: ["spiel", "kvetch"],
       },
       {
         id: "yiddish_origin",
-        label: "What each word literally came from",
+        displayLabel: "Group B", solutionLabel: "What each word literally came from",
         accepts: ["glitshn (to slip/slide)", "shmusen (to chat)", "khutspe (insolence/nerve)", "klots (wooden block)", "shmalts (rendered fat)"],
         related: ["shpil (game/play)", "kvetsh (to squeeze)"],
       },

@@ -75,13 +75,15 @@ function buildRootPuzzle(insight: InsightByType<"ROOT">, date: string): Puzzle {
 
 function buildSortPuzzle(insight: InsightByType<"SUPPLETIVE" | "GRIMM" | "COLLISION" | "PIE" | "PHANTOM_ROOT" | "DECEPTION" | "FALSE_FAMILY" | "BORROWED" | "TOPONYM">, date: string): Puzzle {
   const { groups, pool, falseSystem, questionPrompt, revealBody } = insight.data;
-  const normalizedGroups = groups.map((group) => {
-    const neutralLabel = group.displayLabel ?? group.label ?? group.solutionLabel ?? group.id;
+  const normalizedGroups = groups.map((group, index) => {
+    const fallbackLabel = `Group ${String.fromCharCode(65 + index)}`;
+    const displayLabel = group.displayLabel ?? fallbackLabel;
+    const solutionLabel = group.solutionLabel ?? group.label ?? displayLabel;
     return {
       ...group,
-      label: neutralLabel,
-      displayLabel: neutralLabel,
-      solutionLabel: group.solutionLabel ?? neutralLabel,
+      label: displayLabel,
+      displayLabel,
+      solutionLabel,
     };
   });
   return {

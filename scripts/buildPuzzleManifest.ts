@@ -1,4 +1,10 @@
 import { PUZZLE_MANIFEST } from "../src/data/puzzleManifest";
+import { NORSE_BORROWED_POOL, NORSE_CONSONANT_POOL } from "../src/data/norseCollisions";
+import { FOLK_ETYMOLOGY_POOL } from "../src/data/folkEtymology";
+import { LOANWORD_EXTRACTION_POOL } from "../src/data/loanwordExtraction";
+import { BORROWED_POOL } from "../src/data/borrowedPool";
+import { FALSE_FAMILY_POOL } from "../src/data/falseFamilyPool";
+import { SUPPLETIVE_POOL } from "../src/data/suppletivePool";
 
 const EXPECTED_DAYS = 3650;
 const EXACT_REPEAT_GAP_DAYS = 45;
@@ -56,4 +62,31 @@ function validate(): void {
   console.log(`Manifest OK: ${PUZZLE_MANIFEST.length} entries validated.`);
 }
 
+function validateSortLabels(): void {
+  const pools = [
+    { name: "NORSE_CONSONANT_POOL", entries: NORSE_CONSONANT_POOL },
+    { name: "NORSE_BORROWED_POOL", entries: NORSE_BORROWED_POOL },
+    { name: "FOLK_ETYMOLOGY_POOL", entries: FOLK_ETYMOLOGY_POOL },
+    { name: "LOANWORD_EXTRACTION_POOL", entries: LOANWORD_EXTRACTION_POOL },
+    { name: "BORROWED_POOL", entries: BORROWED_POOL },
+    { name: "FALSE_FAMILY_POOL", entries: FALSE_FAMILY_POOL },
+    { name: "SUPPLETIVE_POOL", entries: SUPPLETIVE_POOL },
+  ];
+
+  for (const pool of pools) {
+    pool.entries.forEach((entry, entryIndex) => {
+      entry.groups.forEach((group, groupIndex) => {
+        if (!group.displayLabel?.trim() || !group.solutionLabel?.trim()) {
+          fail(
+            `sort-label contract violated in ${pool.name}[${entryIndex}] (${entry.root}) group "${group.id}" at index ${groupIndex}`,
+          );
+        }
+      });
+    });
+  }
+
+  console.log("Sort label contract OK.");
+}
+
 validate();
+validateSortLabels();

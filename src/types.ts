@@ -6,7 +6,9 @@ export type SuppletiveEntry = {
   meaning: string;
   groups: Array<{
     id: string;
-    label: string;
+    label?: string;
+    displayLabel?: string;
+    solutionLabel?: string;
     accepts: string[];
     related: string[];
   }>;
