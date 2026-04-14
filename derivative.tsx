@@ -28,7 +28,7 @@ const isPuzzleProgressEntry = (value: ProgressStore[string]): value is PuzzlePro
 const getPuzzleForDate = (dateStr: string): Puzzle | null => {
   try {
     if (!puzzleCache[dateStr]) {
-      puzzleCache[dateStr] = generateDailyPuzzle(dateStr) as Puzzle;
+      puzzleCache[dateStr] = generateDailyPuzzle(dateStr) as unknown as Puzzle;
     }
     return puzzleCache[dateStr] || null;
   } catch {
