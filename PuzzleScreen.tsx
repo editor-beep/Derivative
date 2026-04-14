@@ -9,12 +9,14 @@ type PuzzleScreenProps = {
 export default function PuzzleScreen({ puzzle }: PuzzleScreenProps) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [evaluations, setEvaluations] = useState<boolean[]>([]);
+  const [streak, setStreak] = useState(0);
   const [feedbackState, setFeedbackState] = useState<"correct" | "incorrect" | null>(null);
   const [correctAnswerHint, setCorrectAnswerHint] = useState<string | null>(null);
 
   useEffect(() => {
     setCurrentStepIndex(0);
     setEvaluations([]);
+    setStreak(0);
     setFeedbackState(null);
     setCorrectAnswerHint(null);
   }, [puzzle]);
@@ -30,6 +32,7 @@ export default function PuzzleScreen({ puzzle }: PuzzleScreenProps) {
 
     const isCorrect = selected === currentStep.correct;
     setEvaluations((prev) => [...prev, isCorrect]);
+    setStreak((prev) => (isCorrect ? prev + 1 : 0));
     setFeedbackState(isCorrect ? "correct" : "incorrect");
     setCorrectAnswerHint(isCorrect ? null : currentStep.correct);
 
@@ -51,6 +54,8 @@ export default function PuzzleScreen({ puzzle }: PuzzleScreenProps) {
 
   return (
     <View style={styles.container}>
+      <Text style={[styles.streakText, feedbackState === "correct" && styles.streakTextHot]}>🔥 {streak}</Text>
+
       {currentStep.type === "CLASSIFY" && (
         <View style={styles.stepContent}>
           <Text style={styles.word}>{currentStep.word}</Text>
@@ -183,6 +188,13 @@ const styles = StyleSheet.create({
   doneText: {
     fontSize: 24,
     fontWeight: "700",
+  },
+  streakText: {
+    fontSize: 20,
+    fontWeight: "700",
+  },
+  streakTextHot: {
+    color: "#EA580C",
   },
   metaText: {
     fontSize: 14,
