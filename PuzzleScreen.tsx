@@ -9,10 +9,14 @@ type PuzzleScreenProps = {
 export default function PuzzleScreen({ puzzle }: PuzzleScreenProps) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [evaluations, setEvaluations] = useState<boolean[]>([]);
+  const [feedbackState, setFeedbackState] = useState<"correct" | "incorrect" | null>(null);
+  const [correctAnswerHint, setCorrectAnswerHint] = useState<string | null>(null);
 
   useEffect(() => {
     setCurrentStepIndex(0);
     setEvaluations([]);
+    setFeedbackState(null);
+    setCorrectAnswerHint(null);
   }, [puzzle]);
 
   const currentStep = useMemo<Step | undefined>(() => puzzle.steps[currentStepIndex], [puzzle.steps, currentStepIndex]);
@@ -22,11 +26,18 @@ export default function PuzzleScreen({ puzzle }: PuzzleScreenProps) {
   };
 
   const handleOptionSelect = (selected: string) => {
-    if (!currentStep || currentStep.type === "INFO") return;
+    if (!currentStep || currentStep.type === "INFO" || feedbackState) return;
 
     const isCorrect = selected === currentStep.correct;
     setEvaluations((prev) => [...prev, isCorrect]);
-    advanceStep();
+    setFeedbackState(isCorrect ? "correct" : "incorrect");
+    setCorrectAnswerHint(isCorrect ? null : currentStep.correct);
+
+    setTimeout(() => {
+      setFeedbackState(null);
+      setCorrectAnswerHint(null);
+      advanceStep();
+    }, 420);
   };
 
   if (!currentStep) {
@@ -45,11 +56,21 @@ export default function PuzzleScreen({ puzzle }: PuzzleScreenProps) {
           <Text style={styles.word}>{currentStep.word}</Text>
           <View style={styles.options}>
             {currentStep.options.map((option) => (
-              <Pressable key={option} style={styles.optionButton} onPress={() => handleOptionSelect(option)}>
+              <Pressable
+                key={option}
+                style={[
+                  styles.optionButton,
+                  feedbackState === "correct" && styles.optionButtonCorrect,
+                  feedbackState === "incorrect" && styles.optionButtonIncorrect,
+                ]}
+                disabled={feedbackState !== null}
+                onPress={() => handleOptionSelect(option)}
+              >
                 <Text style={styles.optionText}>{option}</Text>
               </Pressable>
             ))}
           </View>
+          {correctAnswerHint && <Text style={styles.correctHint}>Correct answer: {correctAnswerHint}</Text>}
         </View>
       )}
 
@@ -58,11 +79,21 @@ export default function PuzzleScreen({ puzzle }: PuzzleScreenProps) {
           <Text style={styles.prompt}>What system are you detecting?</Text>
           <View style={styles.options}>
             {currentStep.options.map((option) => (
-              <Pressable key={option} style={styles.optionButton} onPress={() => handleOptionSelect(option)}>
+              <Pressable
+                key={option}
+                style={[
+                  styles.optionButton,
+                  feedbackState === "correct" && styles.optionButtonCorrect,
+                  feedbackState === "incorrect" && styles.optionButtonIncorrect,
+                ]}
+                disabled={feedbackState !== null}
+                onPress={() => handleOptionSelect(option)}
+              >
                 <Text style={styles.optionText}>{option}</Text>
               </Pressable>
             ))}
           </View>
+          {correctAnswerHint && <Text style={styles.correctHint}>Correct answer: {correctAnswerHint}</Text>}
         </View>
       )}
 
@@ -116,9 +147,22 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#999",
   },
+  optionButtonCorrect: {
+    backgroundColor: "#D1FAE5",
+    borderColor: "#16A34A",
+  },
+  optionButtonIncorrect: {
+    backgroundColor: "#FEE2E2",
+    borderColor: "#DC2626",
+  },
   optionText: {
     fontSize: 16,
     textAlign: "center",
+  },
+  correctHint: {
+    fontSize: 14,
+    color: "#B91C1C",
+    fontWeight: "600",
   },
   infoText: {
     fontSize: 18,
