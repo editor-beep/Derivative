@@ -2454,6 +2454,9 @@ export default function Derivative() {
       Object.keys(s.assigned || {}).length > 0
     )
       return "partial";
+    if (puz.type === "COLLISION" && (puz.counterpartPairs?.length ?? 0) > 0 && Object.keys(s.answers || {}).length > 0) {
+      return "partial";
+    }
     if (puz.type === "GRIMM" && Object.keys(s.answers || {}).length > 0) return "partial";
     if (puz.type === "SEMANTIC" && Object.keys(s.answers || {}).length > 0) return "partial";
     if (puz.type === "IDIOM" && (s.idiomFound || []).length > 0) return "partial";

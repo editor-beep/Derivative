@@ -143,7 +143,9 @@ test("eligible French collision rounds can emit deterministic counterpart prompt
   assert.deepEqual(first, second, "same day output must remain deterministic");
   assert.ok(Array.isArray(first.counterpartPairs), "counterpartPairs payload should exist for eligible french doublets");
   assert.ok(first.counterpartPairs.length > 0, "counterpartPairs should be non-empty");
-  assert.match(first.prompt, /Given the (French|Latin)-descended form/i);
+  assert.equal(first.prompt, "Given the French-descended form, provide the Latin-descended counterpart.");
+  assert.equal(first.counterpartPairs[0].sourceLabel, "French-descended");
+  assert.equal(first.counterpartPairs[0].targetLabel, "Latin-descended counterpart");
 
   for (const pair of first.counterpartPairs) {
     assert.equal(typeof pair.promptWord, "string");

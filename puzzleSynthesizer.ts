@@ -186,13 +186,6 @@ function assertPuzzleShape(puzzle: Puzzle): Puzzle {
       }
       break;
     default:
-      if (
-        puzzle.type === "COLLISION" &&
-        puzzle.counterpartPairs?.length &&
-        (!puzzle.groups?.length || !puzzle.pool?.length)
-      ) {
-        throw new Error(`Invalid COLLISION puzzle shape for ${puzzle.date}`);
-      }
       if (!puzzle.groups?.length || !puzzle.pool?.length) {
         throw new Error(`Invalid ${puzzle.type} puzzle shape for ${puzzle.date}`);
       }
