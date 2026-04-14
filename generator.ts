@@ -4,6 +4,7 @@ import { hashString } from "./seed";
 import { generateInsight } from "./insightEngine";
 import { synthesizePuzzle } from "./puzzleSynthesizer";
 import { generateReveal } from "./revealEngine";
+import { buildPlayablePuzzle } from "./playablePuzzleBuilder";
 import { getPuzzleManifestEntry } from "./src/data/puzzleManifest";
 
 export function generateDailyPuzzle(date: string) {
@@ -21,7 +22,8 @@ export function generateDailyPuzzle(date: string) {
   });
 
   const puzzle = synthesizePuzzle(insight, date);
-  puzzle.reveal = generateReveal(insight);
+  const playable = buildPlayablePuzzle(puzzle);
+  playable.reveal = generateReveal(insight);
 
-  return puzzle;
+  return playable;
 }
