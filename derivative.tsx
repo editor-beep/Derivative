@@ -1244,6 +1244,7 @@ const SortPuzzle = ({
 }) => {
   const assigned = state?.assigned || {};
   const [dragWord, setDragWord] = useState<string | null>(null);
+  const [dragOverGroup, setDragOverGroup] = useState<string | null>(null);
   const [input, setInput] = useState("");
   const [flash, setFlash] = useState<null | { word: string; correct: boolean; bonus?: boolean; notInPool?: boolean }>(null);
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
@@ -1377,7 +1378,12 @@ const SortPuzzle = ({
                 <div
                   key={w}
                   draggable
-                  onDragStart={() => setDragWord(w)}
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData("text/plain", w);
+                    e.dataTransfer.effectAllowed = "move";
+                    setDragWord(w);
+                  }}
+                  onDragEnd={() => setDragWord(null)}
                   className="cyan-shimmer"
                   style={{
                     ...S.mono,
@@ -1389,6 +1395,8 @@ const SortPuzzle = ({
                     color: COLORS.cyan,
                     cursor: "grab",
                     userSelect: "none",
+                    opacity: dragWord === w ? 0.4 : 1,
+                    transition: "opacity 0.1s ease",
                   }}
                 >
                   {w}
@@ -1408,11 +1416,25 @@ const SortPuzzle = ({
             return (
               <div
                 key={grp.id}
-                onDragOver={(e) => e.preventDefault()}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.dataTransfer.dropEffect = "move";
+                }}
+                onDragEnter={(e) => {
+                  e.preventDefault();
+                  setDragOverGroup(grp.id);
+                }}
+                onDragLeave={(e) => {
+                  if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                    setDragOverGroup(null);
+                  }
+                }}
                 onDrop={(e) => {
                   e.preventDefault();
-                  if (dragWord) {
-                    assign(dragWord, grp.id);
+                  setDragOverGroup(null);
+                  const word = e.dataTransfer.getData("text/plain") || dragWord;
+                  if (word) {
+                    assign(word, grp.id);
                     setDragWord(null);
                   }
                 }}
@@ -1421,12 +1443,20 @@ const SortPuzzle = ({
                   background: isActive
                     ? `linear-gradient(180deg, ${COLORS.surface3}, ${COLORS.surface})`
                     : `linear-gradient(180deg, ${COLORS.surface2}, ${COLORS.surface})`,
-                  border: `1px solid ${isActive ? COLORS.goldDim : "rgba(232,184,75,0.15)"}`,
+                  border: `1px solid ${
+                    dragOverGroup === grp.id
+                      ? COLORS.cyan
+                      : isActive
+                      ? COLORS.goldDim
+                      : "rgba(232,184,75,0.15)"
+                  }`,
                   borderRadius: "3px",
                   padding: "0.65rem 0.75rem",
                   cursor: "pointer",
                   transition: "all 0.15s ease",
-                  boxShadow: isActive
+                  boxShadow: dragOverGroup === grp.id
+                    ? `0 0 16px rgba(78,207,207,0.18)`
+                    : isActive
                     ? `0 0 20px ${COLORS.goldGlow}`
                     : "0 0 0 rgba(0,0,0,0)",
                 }}
