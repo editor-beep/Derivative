@@ -109,6 +109,10 @@ export const FRENCH_DOUBLETS_POOL = [
     root: "regalis / legalis",
     lang: "Latin → Old French + Latin",
     meaning: "authority",
+    counterpartPairs: [
+      { frenchWord: "royal", latinWord: "regal", frenchVariants: ["royal"], latinVariants: ["regal"] },
+      { frenchWord: "loyal", latinWord: "legal", frenchVariants: ["loyal"], latinVariants: ["legal"] },
+    ],
     groups: [
       {
         id: "french",
@@ -124,6 +128,10 @@ export const FRENCH_DOUBLETS_POOL = [
       },
     ],
     pool: ["royal", "loyal", "regal", "legal"],
+    questionPrompt:
+      "French forms often drop or smooth consonant clusters, while learned Latin forms retain or restore them. Given the French-descended form, provide the Latin-descended counterpart.",
+    revealBody:
+      "French erosion vs Latin retention/repair: royal → regal, loyal → legal. The doublets encode two entry routes from related Latin material.",
     tension:
       "Royal and regal share the same Latin root — one drifted through French courts as a feeling, the other stayed in Latin as a statute.",
   },
@@ -131,6 +139,10 @@ export const FRENCH_DOUBLETS_POOL = [
     root: "caput / capitaneus",
     lang: "Latin → Old French + English",
     meaning: "head / leader",
+    counterpartPairs: [
+      { frenchWord: "chief", latinWord: "captain", frenchVariants: ["chief"], latinVariants: ["captain"] },
+      { frenchWord: "chieftain", latinWord: "capital", frenchVariants: ["chieftain"], latinVariants: ["capital"] },
+    ],
     groups: [
       {
         id: "french",
@@ -146,6 +158,10 @@ export const FRENCH_DOUBLETS_POOL = [
       },
     ],
     pool: ["chief", "chieftain", "captain", "capital", "chef"],
+    questionPrompt:
+      "French forms often drop or smooth consonant clusters, while learned Latin forms preserve or rebuild them. Given the French-descended form, provide the Latin-descended counterpart.",
+    revealBody:
+      "French erosion vs Latin retention/repair: chief → captain, chieftain → capital (in this puzzle's pairing set). One stream is courtly/French; the other is learned/Latinate.",
     tension:
       "Chief leads the army in French; captain leads it in Latin. Chef commands the kitchen. All three heads share the same Latin skull.",
   },
@@ -153,6 +169,10 @@ export const FRENCH_DOUBLETS_POOL = [
     root: "caballarius",
     lang: "Latin → Old French + Medieval Latin",
     meaning: "horse / mounted warrior",
+    counterpartPairs: [
+      { frenchWord: "chivalry", latinWord: "cavalry", frenchVariants: ["chivalry"], latinVariants: ["cavalry"] },
+      { frenchWord: "cavalier", latinWord: "cavalcade", frenchVariants: ["cavalier"], latinVariants: ["cavalcade"] },
+    ],
     groups: [
       {
         id: "french",
@@ -168,6 +188,10 @@ export const FRENCH_DOUBLETS_POOL = [
       },
     ],
     pool: ["chivalry", "cavalier", "cavalry", "cavalcade"],
+    questionPrompt:
+      "French forms often smooth clusters and syllables; Latin learned forms tend to preserve or restore them. Given the French-descended form, provide the Latin-descended counterpart.",
+    revealBody:
+      "French erosion vs Latin retention/repair: chivalry → cavalry, cavalier → cavalcade. English kept both channels, with different registers and meanings.",
     tension:
       "Cavalry is what horses do in battle; chivalry is the moral code that justified doing it — same root, one pragmatic, one idealized.",
   },
@@ -192,6 +216,35 @@ export const FRENCH_DOUBLETS_POOL = [
     pool: ["hotel", "channel", "hospital", "canal"],
     tension:
       "Hotel and hospital are the same building — one for the rich who travel, one for the sick who can't. Channel and canal are the same cut through earth.",
+  },
+  {
+    root: "securus",
+    lang: "Latin → Old French + learned Latin",
+    meaning: "safe / untroubled",
+    counterpartPairs: [
+      { frenchWord: "sure", latinWord: "secure", frenchVariants: ["sure"], latinVariants: ["secure"] },
+    ],
+    groups: [
+      {
+        id: "french",
+        label: "French stream (everyday confidence)",
+        accepts: ["sure"],
+        related: ["surely", "assure"],
+      },
+      {
+        id: "latin",
+        label: "Latin-learned stream (formal security)",
+        accepts: ["secure"],
+        related: ["security", "securitize"],
+      },
+    ],
+    pool: ["sure", "secure"],
+    questionPrompt:
+      "French forms often smooth consonants while learned Latin forms retain or rebuild them. Given the French-descended form, provide the Latin-descended counterpart.",
+    revealBody:
+      "French erosion vs Latin retention/repair: sure → secure. English keeps both descendants, split by register and formality.",
+    tension:
+      "Sure and secure share Latin securus: one arrived through French smoothing, the other through learned Latin retention.",
   },
   {
     root: "pauper / Germanic *warjan",

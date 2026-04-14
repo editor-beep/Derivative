@@ -41,6 +41,27 @@ test("schema assertions enforce required shape per puzzle type", () => {
     ).type,
     "DECEPTION",
   );
+  assert.equal(
+    synthesizePuzzle(
+      {
+        ...baseInsight("COLLISION"),
+        data: {
+          groups: [{ id: "french", accepts: ["sure"], related: [] }, { id: "latin", accepts: ["secure"], related: [] }],
+          pool: ["sure", "secure"],
+          counterpartPairs: [
+            {
+              promptWord: "sure",
+              expectedAnswers: ["secure"],
+              sourceLabel: "French-descended",
+              targetLabel: "Latin-descended counterpart",
+            },
+          ],
+        },
+      },
+      "2026-01-04",
+    ).type,
+    "COLLISION",
+  );
 
   assert.throws(
     () => synthesizePuzzle({ ...baseInsight("SEMANTIC"), data: { timeline: [], word: "x" } }, "2026-01-05"),

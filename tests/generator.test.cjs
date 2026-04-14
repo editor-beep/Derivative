@@ -133,3 +133,37 @@ test("prompt text is meaningfully different from reveal copy for representative 
     assertPromptAndRevealDiverge(puzzle, manifest);
   }
 });
+
+test("eligible French collision rounds can emit deterministic counterpart prompts", () => {
+  const date = "2026-01-04"; // COLLISION entryIdx 0 in manifest
+  const first = generateDailyPuzzle(date);
+  const second = generateDailyPuzzle(date);
+
+  assert.equal(first.type, "COLLISION");
+  assert.deepEqual(first, second, "same day output must remain deterministic");
+  assert.ok(Array.isArray(first.counterpartPairs), "counterpartPairs payload should exist for eligible french doublets");
+  assert.ok(first.counterpartPairs.length > 0, "counterpartPairs should be non-empty");
+  assert.equal(first.prompt, "Given the French-descended form, provide the Latin-descended counterpart.");
+  assert.equal(first.counterpartPairs[0].sourceLabel, "French-descended");
+  assert.equal(first.counterpartPairs[0].targetLabel, "Latin-descended counterpart");
+
+  for (const pair of first.counterpartPairs) {
+    assert.equal(typeof pair.promptWord, "string");
+    assert.ok(pair.promptWord.length > 0);
+    assert.ok(Array.isArray(pair.expectedAnswers) && pair.expectedAnswers.length > 0);
+    assert.equal(typeof pair.sourceLabel, "string");
+    assert.equal(typeof pair.targetLabel, "string");
+  }
+});
+
+test("collision counterpart direction can deterministically flip on other manifest days", () => {
+  const date = "2026-04-18"; // COLLISION entry with opposite seeded direction
+  const first = generateDailyPuzzle(date);
+  const second = generateDailyPuzzle(date);
+
+  assert.equal(first.type, "COLLISION");
+  assert.deepEqual(first, second, "same day output must remain deterministic");
+  assert.equal(first.prompt, "Given the Latin-descended form, provide the French-descended counterpart.");
+  assert.equal(first.counterpartPairs?.[0]?.sourceLabel, "Latin-descended");
+  assert.equal(first.counterpartPairs?.[0]?.targetLabel, "French-descended counterpart");
+});

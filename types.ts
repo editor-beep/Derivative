@@ -75,6 +75,7 @@ export interface SortInsightData {
   questionPrompt?: string;
   revealHeadline?: string;
   revealBody?: string;
+  counterpartPairs?: CounterpartPrompt[];
 }
 
 export interface SemanticInsightData {
@@ -150,6 +151,7 @@ export interface Puzzle {
   pairs?: PuzzlePair[];
   timeline?: PuzzleTimelineItem[];
   falseSystem?: FalseSystemConfig;
+  counterpartPairs?: CounterpartPrompt[];
 
   // IDIOM-specific
   fragments?: string[];
@@ -222,6 +224,13 @@ export type PuzzlePair = {
   source: string;
   target: string;
   note?: string;
+};
+
+export type CounterpartPrompt = {
+  promptWord: string;
+  expectedAnswers: string[];
+  sourceLabel: string;
+  targetLabel: string;
 };
 
 export type PuzzleTimelineItem = {
