@@ -5,12 +5,14 @@ import type { Puzzle, PuzzleType, LensId, ProgressStore, PuzzleProgressEntry, Pu
 import { getDifficulty, DIFFICULTY_META, type DifficultyLevel } from "./difficulty";
 import { TYPE_LABELS, TYPE_SUBLABELS, COLORS, TYPE_COLORS, STORAGE_KEY, SPLASH_IMAGE } from "./constants";
 import { getUtcDateKey } from "./src/dateUtils";
+import { hydrateProgressStore, withDiscoveredSystem } from "./progressSystems";
 
 const load = (): ProgressStore => {
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") as ProgressStore;
+    const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") as ProgressStore;
+    return hydrateProgressStore(parsed);
   } catch {
-    return {};
+    return hydrateProgressStore({});
   }
 };
 
@@ -23,7 +25,7 @@ const save = (data: ProgressStore): void => {
 const puzzleCache: Record<string, Puzzle | undefined> = {};
 
 const isPuzzleProgressEntry = (value: ProgressStore[string]): value is PuzzleProgressEntry =>
-  typeof value === "object" && value !== null;
+  typeof value === "object" && value !== null && !Array.isArray(value);
 
 const getPuzzleForDate = (dateStr: string): Puzzle | null => {
   try {
@@ -2363,8 +2365,16 @@ export default function Derivative() {
     setView("game");
   };
 
-  const updProgress = (dateStr: string, newState: PuzzleState, newRevealed: boolean) => {
-    const next = { ...progress, [dateStr]: { state: newState, revealed: newRevealed } };
+  const updProgress = (dateStr: string, newState: PuzzleState, newRevealed: boolean, discoveredType?: PuzzleType) => {
+    const baseNext = { ...progress, [dateStr]: { state: newState, revealed: newRevealed } };
+    let next = baseNext;
+    if (discoveredType) {
+      const discovery = withDiscoveredSystem(baseNext, discoveredType);
+      next = discovery.nextStore;
+      if (discovery.wasAdded && discovery.uncoveredSystem) {
+        console.log(`You uncovered: ${discovery.uncoveredSystem}`);
+      }
+    }
     setProgress(next);
     save(next);
   };
@@ -2372,7 +2382,8 @@ export default function Derivative() {
   const handlePuzzleState = (newState: PuzzleState) => {
     if (!selDate) return;
     setPuzzleState(newState);
-    updProgress(selDate, newState, revealed);
+    const unlockedByCompletion = puzzle && isComplete(newState);
+    updProgress(selDate, newState, revealed, unlockedByCompletion ? puzzle.type : undefined);
   };
 
   const handleWordFound = (word: string, _isRequired: boolean) => {
@@ -2381,44 +2392,45 @@ export default function Derivative() {
     const newFound = current.includes(word) ? current : [...current, word];
     const nextState = { ...puzzleState, found: newFound };
     setPuzzleState(nextState);
-    updProgress(selDate, nextState, revealed);
+    const unlockedByCompletion = puzzle && isComplete(nextState);
+    updProgress(selDate, nextState, revealed, unlockedByCompletion ? puzzle.type : undefined);
   };
 
   const handleReveal = () => {
-    if (!selDate) return;
+    if (!selDate || !puzzle) return;
     setRevealed(true);
-    updProgress(selDate, puzzleState, true);
+    updProgress(selDate, puzzleState, true, puzzle.type);
   };
 
-  const isComplete = () => {
+  const isComplete = (state: PuzzleState = puzzleState) => {
     if (!puzzle) return false;
 
     if (puzzle.type === "ROOT") {
-      return (puzzle.required || []).every((w) => (puzzleState.found || []).includes(w));
+      return (puzzle.required || []).every((w) => (state.found || []).includes(w));
     }
 
     if (puzzle.type === "GRIMM") {
-      return (puzzle.pairs || []).every((_, i) => puzzleState.answers?.[i]);
+      return (puzzle.pairs || []).every((_, i) => state.answers?.[i]);
     }
 
     if (puzzle.type === "SEMANTIC") {
       const blanks = (puzzle.timeline || []).filter((t) => t.blank);
-      return blanks.every((_, i) => puzzleState.answers?.[i]);
+      return blanks.every((_, i) => state.answers?.[i]);
     }
 
     if (["SUPPLETIVE", "PIE", "COLLISION", "DECEPTION", "FALSE_FAMILY", "PHANTOM_ROOT", "BORROWED", "TOPONYM"].includes(puzzle.type)) {
-      const assigned = puzzleState.assigned || {};
+      const assigned = state.assigned || {};
       return (puzzle.groups || []).every((g) =>
         g.accepts.every((w) => assigned[w] === g.id)
       );
     }
     if (puzzle.type === "MATCH") {
-      const assigned = puzzleState.assigned || {};
+      const assigned = state.assigned || {};
       return (puzzle.pairs || []).every((pair) => assigned[pair.source] === pair.target);
     }
 
     if (puzzle.type === "IDIOM") {
-      const idiomFound: number[] = puzzleState.idiomFound || [];
+      const idiomFound: number[] = state.idiomFound || [];
       return idiomFound.length === (puzzle.answer || "").split(" ").length;
     }
 
