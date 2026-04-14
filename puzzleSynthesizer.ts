@@ -165,6 +165,31 @@ function buildBorrowedPuzzle(insight: InsightByType<"BORROWED">, date: string): 
   return buildSortPuzzle(insight, date);
 }
 
+function buildMatchPuzzle(insight: InsightByType<"MATCH">, date: string): Puzzle {
+  const { pairs, pool, questionPrompt, revealBody } = insight.data;
+  return {
+    date,
+    type: "MATCH",
+    lensId: lensId(insight),
+    prompt: guardPrompt({
+      type: insight.type,
+      id: insight.id,
+      prompt: questionPrompt,
+      revealBody,
+      fallback: "Match each word to its historical gloss.",
+    }),
+    pairs,
+    pool,
+    meta: {
+      root: insight.root,
+      lang: insight.language,
+      meaning: insight.meaning,
+      lensLabel: lensLabel(insight),
+    },
+    reveal: { headline: "", body: "", connections: [] },
+  };
+}
+
 function assertPuzzleShape(puzzle: Puzzle): Puzzle {
   if (!puzzle.prompt || !puzzle.type) {
     throw new Error(`Invalid puzzle core shape for ${puzzle.date}`);
@@ -184,6 +209,11 @@ function assertPuzzleShape(puzzle: Puzzle): Puzzle {
     case "IDIOM":
       if (!puzzle.answer || !puzzle.word) {
         throw new Error(`Invalid IDIOM puzzle shape for ${puzzle.date}`);
+      }
+      break;
+    case "MATCH":
+      if (!puzzle.pairs?.length || !puzzle.pool?.length) {
+        throw new Error(`Invalid MATCH puzzle shape for ${puzzle.date}`);
       }
       break;
     default:
@@ -215,6 +245,9 @@ export function synthesizePuzzle(insight: LinguisticInsight, date: string): Puzz
 
     case "BORROWED":
       return assertPuzzleShape(buildBorrowedPuzzle(insight, date));
+
+    case "MATCH":
+      return assertPuzzleShape(buildMatchPuzzle(insight, date));
 
     case "TOPONYM":
       return assertPuzzleShape(buildSortPuzzle(insight, date));

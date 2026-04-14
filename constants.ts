@@ -19,6 +19,7 @@ export const TYPE_LABELS: Record<PuzzleType, string> = {
   IDIOM: "IDIOM SYSTEM",
   BORROWED: "BORROWED LAYER",
   TOPONYM: "PLACE NAMES",
+  MATCH: "WORD ↔ GLOSS",
 };
 
 export const TYPE_SUBLABELS: Record<PuzzleType, string> = {
@@ -34,6 +35,7 @@ export const TYPE_SUBLABELS: Record<PuzzleType, string> = {
   IDIOM: "fossilized ideology",
   BORROWED: "colonial lexicon",
   TOPONYM: "geographic extraction",
+  MATCH: "concept matching",
 };
 
 export const COLORS = {
@@ -78,4 +80,5 @@ export const TYPE_COLORS: Record<PuzzleType, string> = {
   IDIOM: "#c46eb0",
   BORROWED: "#7ab87a",
   TOPONYM: "#4db6ac",
+  MATCH: "#63b3ed",
 };

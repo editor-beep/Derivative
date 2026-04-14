@@ -2,8 +2,9 @@ import { FRENCH_FALSE_FRIENDS_POOL } from "./frenchFakeouts";
 import { NORSE_BORROWED_POOL } from "./norseCollisions";
 import { LOANWORD_EXTRACTION_POOL } from "./loanwordExtraction";
 import { EPONYM_POOL } from "./eponyms";
+import type { SortPoolEntry } from "../types";
 
-export const BORROWED_POOL = [
+export const BORROWED_POOL: SortPoolEntry[] = [
   ...FRENCH_FALSE_FRIENDS_POOL,
   ...NORSE_BORROWED_POOL,
   ...LOANWORD_EXTRACTION_POOL,
@@ -169,3 +170,11 @@ export const BORROWED_POOL = [
       "The Industrial Revolution didn't just use machine metaphors for bodies — it worked both ways. We now speak of the body's 'systems' and 'drive' as if it were built, not born.",
   },
 ];
+
+export const BORROWED_MATCH_POOL = BORROWED_POOL.filter(
+  (entry) => Array.isArray(entry.matchPairs) && entry.matchPairs.length > 0,
+);
+
+export const BORROWED_SORT_POOL = BORROWED_POOL.filter(
+  (entry) => !entry.matchPairs?.length,
+);

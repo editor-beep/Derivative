@@ -18,19 +18,20 @@ export const LENSES: Lens[] = [
       "IDIOM",
       "BORROWED",
       "TOPONYM",
+      "MATCH",
     ],
   },
   {
     id: "METAPHOR_DRIFT",
     label: "The Abstraction",
     sublabel: "when roots lose their body",
-    applicableTo: ["ROOT", "BORROWED", "SEMANTIC", "TOPONYM"],
+    applicableTo: ["ROOT", "BORROWED", "MATCH", "SEMANTIC", "TOPONYM"],
   },
   {
     id: "ETYMOLOGY_FILTER",
     label: "The Path",
     sublabel: "French vs. Latin vs. direct",
-    applicableTo: ["ROOT", "COLLISION", "BORROWED", "TOPONYM"],
+    applicableTo: ["ROOT", "COLLISION", "BORROWED", "MATCH", "TOPONYM"],
   },
   {
     id: "FALSE_TWIN",
@@ -54,7 +55,7 @@ export const LENSES: Lens[] = [
     id: "REGISTER_SORT",
     label: "The Class Marker",
     sublabel: "formal vs. everyday vs. technical",
-    applicableTo: ["BORROWED", "COLLISION", "FALSE_FAMILY", "TOPONYM"],
+    applicableTo: ["BORROWED", "MATCH", "COLLISION", "FALSE_FAMILY", "TOPONYM"],
   },
   {
     id: "SOUND_TRACE",

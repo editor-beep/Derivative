@@ -93,7 +93,7 @@ export const PUZZLE_SOURCES: readonly PuzzleSource[] = [
     builderType: "BORROWED",
     builder: buildBorrowedInsight,
     entryCount: BORROWED_POOL.length,
-    lensRule: (lens) => lens.applicableTo.includes("BORROWED"),
+    lensRule: (lens) => lens.applicableTo.includes("BORROWED") || lens.applicableTo.includes("MATCH"),
   },
   {
     builderType: "TOPONYM",

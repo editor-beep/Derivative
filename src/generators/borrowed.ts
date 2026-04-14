@@ -9,6 +9,27 @@ export function buildBorrowedInsight(
 ): LinguisticInsight {
   const d = pickAt(BORROWED_POOL, r, idx) as SortPoolEntry;
   const copy = buildSortCopy(d);
+  const matchPairs = d.matchPairs;
+  const isMatch = !!matchPairs?.length;
+  if (isMatch) {
+    return {
+      id: `borrowed-${d.root.slice(0, 14).replace(/\s/g, "-")}`,
+      type: "MATCH",
+      root: d.root,
+      language: d.lang,
+      words: d.pool,
+      meaning: d.meaning,
+      tension: d.tension,
+      data: {
+        pairs: matchPairs || [],
+        pool: d.pool,
+        questionPrompt: copy.questionPrompt,
+        revealHeadline: copy.revealHeadline,
+        revealBody: copy.revealBody,
+      },
+    };
+  }
+
   return {
     id: `borrowed-${d.root.slice(0, 14).replace(/\s/g, "-")}`,
     type: "BORROWED",

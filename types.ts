@@ -12,7 +12,8 @@ export type PuzzleType =
   | "PHANTOM_ROOT"
   | "IDIOM"
   | "BORROWED"
-  | "TOPONYM";
+  | "TOPONYM"
+  | "MATCH";
 
 export type LensId =
   | "DEFAULT"
@@ -84,6 +85,14 @@ export interface SemanticInsightData {
   word: string;
 }
 
+export interface MatchInsightData {
+  pairs: PuzzlePair[];
+  pool: string[];
+  questionPrompt?: string;
+  revealHeadline?: string;
+  revealBody?: string;
+}
+
 export interface IdiomInsightData {
   phrase: string;
   fragments: string[];
@@ -106,6 +115,7 @@ export type InsightDataByType = {
   IDIOM: IdiomInsightData;
   BORROWED: SortInsightData;
   TOPONYM: SortInsightData;
+  MATCH: MatchInsightData;
 };
 
 export interface LinguisticInsightBase<TType extends PuzzleType> {
