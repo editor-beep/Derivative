@@ -95,7 +95,7 @@ function buildSortPuzzle(insight: InsightByType<"SUPPLETIVE" | "GRIMM" | "COLLIS
       id: insight.id,
       prompt: questionPrompt,
       revealBody,
-      fallback: "Sort the words into their hidden historical groups.",
+      fallback: "There is a hidden system here. Find it.",
     }),
     groups: normalizedGroups,
     pool,
