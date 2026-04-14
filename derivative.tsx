@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
 import { generateDailyPuzzle } from "./generator";
 import RootGraph from "./components/RootGraph";
-import type { Puzzle, PuzzleType, LensId, ProgressStore, PuzzleProgressEntry, PuzzleState } from "./types";
+import type { Puzzle, PuzzleType, LensId, ProgressStore, PuzzleProgressEntry, PuzzleState, Step } from "./types";
 import { getDifficulty, DIFFICULTY_META, type DifficultyLevel } from "./difficulty";
 import { TYPE_LABELS, TYPE_SUBLABELS, COLORS, TYPE_COLORS, STORAGE_KEY, SPLASH_IMAGE } from "./constants";
 import { getUtcDateKey } from "./src/dateUtils";
@@ -1346,6 +1346,8 @@ const RootPuzzle = ({
   );
 };
 
+type ClassifyStep = Extract<Step, { type: "CLASSIFY" }>;
+
 const StepPuzzle = ({
   puzzle,
   state,
@@ -1357,9 +1359,9 @@ const StepPuzzle = ({
   onState: (s: PuzzleState) => void;
   revealed: boolean;
 }) => {
-  const steps = puzzle.steps || [];
-  const stepAnswers = state.stepAnswers || {};
-  const [flash, setFlash] = useState(null);
+  const steps: Step[] = puzzle.steps || [];
+  const stepAnswers: Record<number, string> = state.stepAnswers || {};
+  const [flash, setFlash] = useState<{ correct: boolean; text: string } | null>(null);
   const [locked, setLocked] = useState(false);
 
   useEffect(() => {
@@ -1369,19 +1371,22 @@ const StepPuzzle = ({
 
   const currentIdx = steps.findIndex((_, i) => stepAnswers[i] === undefined);
   const allDone = steps.length > 0 && currentIdx === -1;
-  const currentStep = allDone ? null : (steps[currentIdx] ?? null);
+  const currentStep: Step | null = allDone ? null : (steps[currentIdx] ?? null);
 
-  const classifyEntries = steps.map((s, i) => ({ s, i })).filter(({ s }) => s.type === "CLASSIFY");
+  const classifyEntries = steps.reduce<Array<{ s: ClassifyStep; i: number }>>(
+    (acc, s, i) => { if (s.type === "CLASSIFY") acc.push({ s, i }); return acc; },
+    []
+  );
   const totalClassify = classifyEntries.length;
   const correctClassify = classifyEntries.filter(({ s, i }) => stepAnswers[i] === s.correct).length;
   const answeredCount = Object.keys(stepAnswers).length;
   const progressPct = steps.length > 0 ? (answeredCount / steps.length) * 100 : 0;
 
-  const submitAnswer = (answer) => {
-    if (locked || currentIdx === -1) return;
-    const step = steps[currentIdx];
-    const isCorrect = answer === step.correct;
-    setFlash({ correct: isCorrect, text: isCorrect ? "correct" : `wrong — ${step.correct}` });
+  const submitAnswer = (answer: string): void => {
+    if (locked || currentIdx === -1 || !currentStep) return;
+    const correct = "correct" in currentStep ? currentStep.correct : "";
+    const isCorrect = answer === correct;
+    setFlash({ correct: isCorrect, text: isCorrect ? "correct" : `wrong — ${correct}` });
     setLocked(true);
     setTimeout(() => {
       setFlash(null);
@@ -1390,7 +1395,7 @@ const StepPuzzle = ({
     }, 900);
   };
 
-  const cardStyle = {
+  const cardStyle: React.CSSProperties = {
     position: "relative",
     border: `1px solid ${COLORS.blackLine}`,
     borderRadius: "4px",
@@ -1398,6 +1403,22 @@ const StepPuzzle = ({
     background: `linear-gradient(180deg, ${COLORS.surface2}, ${COLORS.surface})`,
     overflow: "hidden",
   };
+
+  const renderOptions = (options: string[]) => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "7px" }}>
+      {options.map((opt: string) => (
+        <button
+          key={opt}
+          disabled={locked}
+          onClick={() => submitAnswer(opt)}
+          className="deriv-btn"
+          style={{ ...S.btnSm, width: "100%", textAlign: "left", padding: "0.6rem 0.9rem", fontSize: "0.72rem", opacity: locked ? 0.55 : 1, cursor: locked ? "default" : "pointer", letterSpacing: "0.04em" }}
+        >
+          {opt}
+        </button>
+      ))}
+    </div>
+  );
 
   if (allDone || revealed) {
     return (
@@ -1465,19 +1486,7 @@ const StepPuzzle = ({
             <div style={{ fontSize: "2rem", fontWeight: 600, color: COLORS.textPrimary, letterSpacing: "0.03em", marginBottom: "1.4rem", textShadow: "0 0 20px rgba(232,184,75,0.12)" }}>
               {currentStep.word}
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "7px" }}>
-              {currentStep.options.map((opt) => (
-                <button
-                  key={opt}
-                  disabled={locked}
-                  onClick={() => submitAnswer(opt)}
-                  className="deriv-btn"
-                  style={{ ...S.btnSm, width: "100%", textAlign: "left", padding: "0.6rem 0.9rem", fontSize: "0.72rem", opacity: locked ? 0.55 : 1, cursor: locked ? "default" : "pointer", letterSpacing: "0.04em" }}
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>
+            {renderOptions(currentStep.options)}
           </>
         )}
 
@@ -1486,23 +1495,11 @@ const StepPuzzle = ({
             <div style={{ ...S.mono, fontSize: "0.54rem", color: COLORS.textFaint, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
               what system underlies these words?
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "7px" }}>
-              {currentStep.options.map((opt) => (
-                <button
-                  key={opt}
-                  disabled={locked}
-                  onClick={() => submitAnswer(opt)}
-                  className="deriv-btn"
-                  style={{ ...S.btnSm, width: "100%", textAlign: "left", padding: "0.6rem 0.9rem", fontSize: "0.72rem", opacity: locked ? 0.55 : 1, cursor: locked ? "default" : "pointer", letterSpacing: "0.04em" }}
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>
+            {renderOptions(currentStep.options)}
           </>
         )}
 
-        {flash && (
+        {flash !== null && (
           <div style={{ ...S.mono, fontSize: "0.63rem", letterSpacing: "0.1em", textTransform: "uppercase", color: flash.correct ? COLORS.gold : COLORS.red, marginTop: "0.9rem" }}>
             {flash.text}
           </div>
@@ -2403,7 +2400,11 @@ export default function Derivative() {
       tracker = (puzzle.required || []).map((w) => (found.includes(w) ? "◈" : "◇")).join("");
     } else if (["SUPPLETIVE", "PIE", "COLLISION", "DECEPTION", "FALSE_FAMILY", "PHANTOM_ROOT", "BORROWED", "TOPONYM"].includes(puzzle.type)) {
       const sa = puzzleState.stepAnswers || {};
-      const sortSteps = (puzzle.steps || []).map((s, i) => ({ s, i })).filter(({ s }) => s.type === "CLASSIFY");
+      type _CS = Extract<Step, { type: "CLASSIFY" }>;
+      const sortSteps = (puzzle.steps || []).reduce<Array<{ s: _CS; i: number }>>(
+        (acc, s, i) => { if (s.type === "CLASSIFY") acc.push({ s, i }); return acc; },
+        []
+      );
       tracker = sortSteps.map(({ s, i }) => (sa[i] === s.correct ? "◈" : "◇")).join("");
     } else if (puzzle.type === "MATCH") {
       const assigned = puzzleState.assigned || {};

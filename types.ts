@@ -177,7 +177,7 @@ export interface Puzzle {
   };
 
   reveal: Reveal;
-  steps?: any[];
+  steps?: Step[];
 }
 
 export interface PuzzleState {
@@ -224,6 +224,11 @@ export interface Reveal {
   connections: [string, string][];
   lensNote?: string;
 }
+
+export type Step =
+  | { type: "CLASSIFY"; word: string; options: string[]; correct: string }
+  | { type: "GUESS_SYSTEM"; options: string[]; correct: string }
+  | { type: "INFO"; text: string };
 
 export type PuzzleGroup = {
   id: string;

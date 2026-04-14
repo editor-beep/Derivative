@@ -1,27 +1,12 @@
-import { Puzzle, PuzzleType, Reveal } from "./types";
+import { Puzzle, PuzzleType, Reveal, Step } from "./types";
+
+export type { Step };
 
 export type PlayablePuzzle = {
   steps: Step[];
   reveal: Reveal;
   meta?: any;
 };
-
-export type Step =
-  | {
-      type: "CLASSIFY";
-      word: string;
-      options: string[];
-      correct: string;
-    }
-  | {
-      type: "GUESS_SYSTEM";
-      options: string[];
-      correct: string;
-    }
-  | {
-      type: "INFO";
-      text: string;
-    };
 
 const SORT_TYPES: PuzzleType[] = [
   "SUPPLETIVE",
