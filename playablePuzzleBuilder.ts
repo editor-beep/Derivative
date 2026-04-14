@@ -127,7 +127,37 @@ function buildSortPlayablePuzzle(puzzle: Puzzle): PlayablePuzzle {
 
 export function buildPlayablePuzzle(puzzle: Puzzle): PlayablePuzzle {
   if (SORT_TYPES.includes(puzzle.type)) {
-    return buildSortPlayablePuzzle(puzzle);
+    const playable = buildSortPlayablePuzzle(puzzle);
+    const classifyCount = playable.steps.filter((step) => step.type === "CLASSIFY").length;
+    const firstGuessIndex = playable.steps.findIndex((step) => step.type === "GUESS_SYSTEM");
+
+    if (firstGuessIndex !== -1) {
+      const classifyBeforeFirstGuess = playable.steps
+        .slice(0, firstGuessIndex)
+        .filter((step) => step.type === "CLASSIFY").length;
+
+      if (classifyBeforeFirstGuess < 3) {
+        const guessStep = playable.steps[firstGuessIndex];
+        if (!guessStep || guessStep.type !== "GUESS_SYSTEM") {
+          return playable;
+        }
+        const reorderedSteps = playable.steps.filter((_, index) => index !== firstGuessIndex);
+        const targetIndex = classifyCount < 3 ? reorderedSteps.length : reorderedSteps.findIndex((step, index) => {
+          if (step.type !== "CLASSIFY") {
+            return false;
+          }
+          const classifyBefore = reorderedSteps
+            .slice(0, index + 1)
+            .filter((candidate) => candidate.type === "CLASSIFY").length;
+          return classifyBefore === 3;
+        }) + 1;
+
+        reorderedSteps.splice(targetIndex, 0, guessStep);
+        playable.steps = reorderedSteps;
+      }
+    }
+
+    return playable;
   }
 
   return {
