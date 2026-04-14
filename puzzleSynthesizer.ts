@@ -1,5 +1,7 @@
 // puzzleSynthesizer.ts
 
+import { hashString, mulberry32 } from "./seed";
+import { CLASSIFICATION_DECOY_POOLS, ClassificationDecoyType } from "./src/data/classificationDecoyPools";
 import { InsightByType, LinguisticInsight, LensId, Puzzle } from "./types";
 
 function lensId(insight: LinguisticInsight): LensId {
@@ -8,6 +10,79 @@ function lensId(insight: LinguisticInsight): LensId {
 
 function lensLabel(insight: LinguisticInsight): string | undefined {
   return insight.lens?.label;
+}
+
+
+
+const CLASSIFICATION_DECOY_TYPES = new Set<ClassificationDecoyType>([
+  "COLLISION",
+  "SUPPLETIVE",
+  "BORROWED",
+  "FALSE_FAMILY",
+]);
+
+function seededShuffle(values: string[], seed: string): string[] {
+  const r = mulberry32(hashString(seed));
+  return [...values]
+    .map((value, index) => ({ value, score: r() + index / 10_000 }))
+    .sort((a, b) => a.score - b.score)
+    .map(({ value }) => value);
+}
+
+function injectClassificationDecoys(
+  insight: InsightByType<
+    "SUPPLETIVE" | "GRIMM" | "COLLISION" | "PIE" | "PHANTOM_ROOT" | "DECEPTION" | "FALSE_FAMILY" | "BORROWED" | "TOPONYM"
+  >,
+  date: string,
+): { pool: string[]; falseSystem: Puzzle["falseSystem"] } {
+  const sourcePool = insight.data.pool ?? [];
+  const baseFalseSystem = insight.data.falseSystem;
+  if (!CLASSIFICATION_DECOY_TYPES.has(insight.type as ClassificationDecoyType)) {
+    return {
+      pool: sourcePool,
+      falseSystem: baseFalseSystem,
+    };
+  }
+
+  const acceptedTerms = new Set(insight.data.groups.flatMap((group) => group.accepts));
+  const availableDecoys = CLASSIFICATION_DECOY_POOLS[insight.type as ClassificationDecoyType].filter(
+    (token) => !acceptedTerms.has(token) && !sourcePool.includes(token),
+  );
+
+  if (!availableDecoys.length) {
+    return {
+      pool: sourcePool,
+      falseSystem: baseFalseSystem,
+    };
+  }
+
+  const shuffled = seededShuffle(availableDecoys, `${date}:${insight.id}:${insight.type}:decoys`);
+  const countSeed = hashString(`${date}:${insight.id}:decoy-count`);
+  const targetCount = 1 + (countSeed % 2);
+  const injected = shuffled.slice(0, Math.min(targetCount, shuffled.length));
+
+  if (!injected.length) {
+    return {
+      pool: sourcePool,
+      falseSystem: baseFalseSystem,
+    };
+  }
+
+  const authoredDecoys = baseFalseSystem?.decoys ?? [];
+  const mergedDecoys = Array.from(new Set([...authoredDecoys, ...injected]));
+
+  return {
+    pool: [...sourcePool, ...injected],
+    falseSystem: {
+      decoys: mergedDecoys,
+      breakMessage:
+        baseFalseSystem?.breakMessage ??
+        "SYSTEM FRACTURE: one or more tokens are bait and do not belong to any true bucket.",
+      revealTruth:
+        baseFalseSystem?.revealTruth ??
+        "Some pool items are deliberate decoys: near-matches that mimic the visible pattern without fitting the historical system.",
+    },
+  };
 }
 
 const claimByType: Partial<Record<LinguisticInsight["type"], string>> = {
@@ -87,7 +162,8 @@ function buildRootPuzzle(insight: InsightByType<"ROOT">, date: string): Puzzle {
 }
 
 function buildSortPuzzle(insight: InsightByType<"SUPPLETIVE" | "GRIMM" | "COLLISION" | "PIE" | "PHANTOM_ROOT" | "DECEPTION" | "FALSE_FAMILY" | "BORROWED" | "TOPONYM">, date: string): Puzzle {
-  const { groups, pool, falseSystem, questionPrompt, revealBody } = insight.data;
+  const { groups, questionPrompt, revealBody } = insight.data;
+  const { pool, falseSystem } = injectClassificationDecoys(insight, date);
   const normalizedGroups = groups.map((group, index) => {
     const fallbackLabel = `Group ${String.fromCharCode(65 + index)}`;
     const displayLabel = group.displayLabel ?? fallbackLabel;
