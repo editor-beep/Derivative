@@ -152,11 +152,11 @@ export const LOANWORD_EXTRACTION_POOL = [
       {
         id: "yiddish_origin",
         displayLabel: "Group B", solutionLabel: "What each word literally came from",
-        accepts: ["glitshn (to slip/slide)", "shmusen (to chat)", "khutspe (insolence/nerve)", "klots (wooden block)", "shmalts (rendered fat)"],
-        related: ["shpil (game/play)", "kvetsh (to squeeze)"],
+        accepts: ["glitshn", "shmusen", "khutspe", "klots", "shmalts"],
+        related: ["to slip/slide", "to chat", "insolence/nerve", "wooden block", "rendered fat", "shpil (game/play)", "kvetsh (to squeeze)"],
       },
     ],
-    pool: ["glitch", "schmooze", "chutzpah", "klutz", "schmaltz"],
+    pool: ["glitch", "schmooze", "chutzpah", "klutz", "schmaltz", "glitshn", "shmusen", "khutspe", "klots", "shmalts"],
     tension:
       "Glitch is now the universal word for a software hiccup — it started as Yiddish 'glitshn' (to slip). Chutzpah, schmooze, klutz entered American English through immigrant communities in New York, at the same time those communities faced housing discrimination, university quotas, and professional exclusion. The language absorbed the vocabulary faster than the society accepted the people.",
   },

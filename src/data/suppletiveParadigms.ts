@@ -14,19 +14,19 @@ export const SUPPLETIVE_EXTENDED_POOL = [
       {
         id: "positive",
         label: "positive (little)",
-        accepts: ["little", "small", "tiny"],
+        accepts: ["little", "small"],
         related: ["few", "slight"],
       },
       {
         id: "comparative",
         label: "comparative (less) — alien root",
-        accepts: ["less", "lesser", "fewer"],
+        accepts: ["less", "fewer"],
         related: ["minus", "smaller"],
       },
       {
         id: "superlative",
         label: "superlative (least) — alien root",
-        accepts: ["least", "minimum", "fewest"],
+        accepts: ["least", "minimum"],
         related: ["minimal", "slightest"],
       },
     ],
@@ -82,13 +82,13 @@ export const SUPPLETIVE_EXTENDED_POOL = [
       {
         id: "comparative",
         label: "comparative (nearer)",
-        accepts: ["nearer", "closer"],
+        accepts: ["nearer"],
         related: ["more proximate"],
       },
       {
         id: "superlative",
         label: "superlative (next) — disguised survivor",
-        accepts: ["next", "nearest", "nighest"],
+        accepts: ["next"],
         related: ["closest", "immediately following"],
       },
     ],
@@ -154,7 +154,7 @@ export const SUPPLETIVE_EXTENDED_POOL = [
       {
         id: "comparative",
         label: "comparative (later)",
-        accepts: ["later", "afterward"],
+        accepts: ["later"],
         related: ["subsequently", "following"],
       },
       {
@@ -278,7 +278,7 @@ export const SUPPLETIVE_EXTENDED_POOL = [
       {
         id: "singular",
         label: "singular (person) — from Latin persona",
-        accepts: ["person", "individual", "human"],
+        accepts: ["person", "individual"],
         related: ["persona", "character"],
       },
       {
@@ -323,7 +323,7 @@ export const SUPPLETIVE_EXTENDED_POOL = [
       {
         id: "present",
         label: "present (see)",
-        accepts: ["see", "sees", "seeing"],
+        accepts: ["see"],
         related: ["observe", "look"],
       },
       {
@@ -351,7 +351,7 @@ export const SUPPLETIVE_EXTENDED_POOL = [
       {
         id: "present",
         label: "present (do)",
-        accepts: ["do", "does", "doing"],
+        accepts: ["do", "does"],
         related: ["perform", "execute"],
       },
       {
@@ -401,7 +401,7 @@ export const SUPPLETIVE_EXTENDED_POOL = [
       {
         id: "present",
         label: "present (tell) — i-mutation vowel",
-        accepts: ["tell", "tells", "telling"],
+        accepts: ["tell", "tells"],
         related: ["narrate", "recount"],
       },
       {
@@ -423,7 +423,7 @@ export const SUPPLETIVE_EXTENDED_POOL = [
       {
         id: "present",
         label: "present (seek) — k-form",
-        accepts: ["seek", "seeks", "seeking"],
+        accepts: ["seek"],
         related: ["search", "look for", "beseech"],
       },
       {

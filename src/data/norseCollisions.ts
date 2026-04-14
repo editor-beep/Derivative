@@ -118,8 +118,8 @@ export const NORSE_BORROWED_POOL = [
       {
         id: "english",
         displayLabel: "Group B", solutionLabel: "English equivalents",
-        accepts: ["hill", "stream", "lake", "valley", "ravine", "headland", "bay", "island", "village", "town"],
-        related: ["moor", "cliff"],
+        accepts: ["hill", "stream", "lake", "valley", "ravine"],
+        related: ["headland", "bay", "island", "village", "town", "moor", "cliff"],
       },
     ],
     pool: ["fell", "beck", "tarn", "dale", "gill", "ness", "wick", "holm", "thorp", "by", "hill", "stream", "lake", "valley", "ravine"],
@@ -140,8 +140,8 @@ export const NORSE_BORROWED_POOL = [
       {
         id: "concept",
         displayLabel: "Group B", solutionLabel: "What each word originally meant",
-        accepts: ["things laid down", "house-bound one", "fee-layer (partner)", "to distinguish", "stronghold of mind", "formal debt", "grief-sorrow", "crooked", "having luck", "recognized stranger"],
-        related: ["judgment", "serf"],
+        accepts: [],
+        related: ["things laid down", "house-bound one", "fee-layer (partner)", "to distinguish", "stronghold of mind", "formal debt", "grief-sorrow", "crooked", "having luck", "recognized stranger", "judgment", "serf"],
       },
     ],
     pool: ["law", "husband", "fellow", "skill", "trust", "loan", "anger", "wrong", "happy", "guest"],
@@ -162,8 +162,8 @@ export const NORSE_BORROWED_POOL = [
       {
         id: "oe_loser",
         displayLabel: "Group B", solutionLabel: "Old English loser (what we no longer say)",
-        accepts: ["nim", "starve (any death)", "heaven (physical)", "limb (specific)", "hide (human)", "clepe", "smite", "sick (mental)", "unfair", "wish (lack)"],
-        related: ["yclept", "slay"],
+        accepts: ["nim", "clepe", "smite"],
+        related: ["starve (any death)", "heaven (physical)", "limb (specific)", "hide (human)", "sick (mental)", "unfair", "wish (lack)", "yclept", "slay"],
       },
     ],
     pool: ["take", "die", "sky", "leg", "skin", "call", "hit", "ill", "ugly", "want", "nim", "clepe", "smite"],
@@ -184,8 +184,8 @@ export const NORSE_BORROWED_POOL = [
       {
         id: "origin",
         displayLabel: "Group B", solutionLabel: "What displaced or what the Norse word replaced",
-        accepts: ["ey (Saxon form)", "seax (Saxon blade)", "bread type", "sack", "stool", "opening", "tied", "level", "catch/seize", "vind-auga (wind-eye)"],
-        related: ["hlaef", "dwellan"],
+        accepts: [],
+        related: ["ey (Saxon form)", "seax (Saxon blade)", "bread type", "sack", "stool", "opening", "tied", "level", "catch/seize", "vind-auga (wind-eye)", "hlaef", "dwellan"],
       },
     ],
     pool: ["egg", "knife", "cake", "bag", "seat", "gap", "loose", "flat", "get", "window"],
