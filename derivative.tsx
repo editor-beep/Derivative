@@ -1384,7 +1384,11 @@ const StepPuzzle = ({
 
   const submitAnswer = (answer: string): void => {
     if (locked || currentIdx === -1 || !currentStep) return;
-    const correct = "correct" in currentStep ? currentStep.correct : "";
+    if (currentStep.type === "INFO") {
+      onState({ ...state, stepAnswers: { ...stepAnswers, [currentIdx]: "__info__" } });
+      return;
+    }
+    const correct = currentStep.correct;
     const isCorrect = answer === correct;
     setFlash({ correct: isCorrect, text: isCorrect ? "correct" : `wrong — ${correct}` });
     setLocked(true);
@@ -1496,6 +1500,21 @@ const StepPuzzle = ({
               what system underlies these words?
             </div>
             {renderOptions(currentStep.options)}
+          </>
+        )}
+
+        {currentStep.type === "INFO" && (
+          <>
+            <div style={{ ...S.mono, fontSize: "0.72rem", color: COLORS.textSecondary, lineHeight: 1.6, padding: "0.75rem 0 1rem" }}>
+              {currentStep.text}
+            </div>
+            <button
+              onClick={() => submitAnswer("__info__")}
+              className="deriv-btn"
+              style={{ ...S.btnSm, padding: "0.5rem 1.1rem", fontSize: "0.68rem", letterSpacing: "0.06em" }}
+            >
+              continue
+            </button>
           </>
         )}
 
