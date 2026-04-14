@@ -21,6 +21,21 @@ type SuppletiveEntry = {
   groups: Array<{ id: string; label: string; accepts: string[]; related: string[] }>;
   pool: string[];
   tension: string;
+  questionPrompt?: string;
+  revealBody?: string;
+  falseSystem?: FalseSystemConfig;
+};
+
+type SortPoolEntry = {
+  root: string;
+  lang: string;
+  meaning: string;
+  groups: Array<{ id: string; label?: string; displayLabel?: string; solutionLabel?: string; accepts: string[]; related: string[] }>;
+  pool: string[];
+  tension: string;
+  questionPrompt?: string;
+  revealHeadline?: string;
+  revealBody?: string;
   falseSystem?: FalseSystemConfig;
 };
 
@@ -307,6 +322,7 @@ const IDIOM_POOL = [
     origin: "Hebrew Bible",
     lang: "Ecclesiastes → Latin Vulgate → English",
     fragments: ["nothing", "new", "under", "the", "sun"],
+    questionPrompt: "Reassemble the idiom about repetition and time.",
     tension: "An ancient theological claim about cyclical time — not progress — dressed as modern resignation",
     revealHeadline: "biblical repetition disguised as inevitability",
     revealBody: "From Ecclesiastes 1:9. What reads as world-weariness is a cosmological argument: time is circular, not linear. Progress is an illusion. The phrase carries a complete model of history inside six words."
@@ -316,6 +332,7 @@ const IDIOM_POOL = [
     origin: "Benjamin Franklin",
     lang: "18th-century capitalist metaphor → cliché",
     fragments: ["time", "is", "money"],
+    questionPrompt: "Rebuild the idiom that prices every minute.",
     tension: "A conceptual metaphor that hardwired capitalist value into the English language itself",
     revealHeadline: "capitalism embedded in the grammar of time",
     revealBody: "Franklin's 1748 'Advice to a Young Tradesman' didn't invent the idea — it crystallized it. Once time IS money, it can be spent, saved, wasted, or stolen. The metaphor restructures how English speakers experience duration."
@@ -325,6 +342,7 @@ const IDIOM_POOL = [
     origin: "battlefield surgery",
     lang: "19th-century military → general English",
     fragments: ["bite", "the", "bullet"],
+    questionPrompt: "Assemble the idiom for enduring something painful.",
     tension: "A phrase born from pre-anesthetic surgery — endurance through literal agony — now used for minor inconveniences",
     revealHeadline: "surgical agony compressed into casual advice",
     revealBody: "Soldiers bit a bullet or leather strap during field surgery to endure pain without anesthetic. The idiom carries an entire pre-modern medical world. When we say it about filling out forms, we are invoking that world."
@@ -334,6 +352,7 @@ const IDIOM_POOL = [
     origin: "pre-electric lamp work",
     lang: "17th-century English → common idiom",
     fragments: ["burning", "the", "midnight", "oil"],
+    questionPrompt: "Rebuild the idiom for working late into the night.",
     tension: "An idiom that makes no literal sense in the electric age — it preserves the memory of candle and lamp work",
     revealHeadline: "fossil of pre-electric labor",
     revealBody: "Oil lamps were the only light source for night work before electricity. The phrase dates to Francis Quarles (1635). Every time it is used, it conjures a vanished economy of light, scarcity, and physical effort."
@@ -343,6 +362,7 @@ const IDIOM_POOL = [
     origin: "theater superstition",
     lang: "early 20th-century stage slang",
     fragments: ["break", "a", "leg"],
+    questionPrompt: "Assemble the stage-world idiom used before a performance.",
     tension: "Theater's inverted blessing — say the opposite of what you mean to fool the jealous spirits",
     revealHeadline: "apotropaic magic disguised as encouragement",
     revealBody: "Wishing good luck was considered dangerous — it could attract bad luck. So actors said the opposite. The phrase reveals a surviving layer of folk magic inside modern secular speech, operating below conscious awareness."
@@ -352,6 +372,7 @@ const IDIOM_POOL = [
     origin: "disputed — WWII ammunition belts",
     lang: "mid-20th-century American English",
     fragments: ["the", "whole", "nine", "yards"],
+    questionPrompt: "Rebuild the idiom that means total commitment.",
     tension: "One of the most hotly contested idioms in English — nobody knows where the nine yards came from",
     revealHeadline: "completeness encoded in an unknown unit",
     revealBody: "The most cited origin: WWII fighter pilots received 27 feet (nine yards) of ammunition belt — firing it all meant total commitment. Other theories cite coal, concrete, kilts, burial shrouds. The phrase survives despite — or because of — its opacity."
@@ -361,6 +382,7 @@ const IDIOM_POOL = [
     origin: "medieval market fraud",
     lang: "18th-century English",
     fragments: ["let", "the", "cat", "out", "of", "the", "bag"],
+    questionPrompt: "Assemble the idiom for accidentally revealing a secret.",
     tension: "A market scam where a cat was substituted for a piglet — revealing the trick became the idiom for revelation",
     revealHeadline: "a medieval con trick frozen into language",
     revealBody: "Unscrupulous traders would substitute a cat for a piglet in a sealed bag. If the buyer opened the bag — let the cat out — the deception was exposed. The phrase preserves a specific pre-industrial fraud."
@@ -488,6 +510,14 @@ function pickAt<T>(arr: T[], r: () => number, idx?: number): T {
   return item;
 }
 
+function buildSortCopy(d: SortPoolEntry): { questionPrompt: string; revealBody: string; revealHeadline?: string } {
+  const prompt =
+    d.questionPrompt ??
+    `Sort the words by hidden lineage: ${d.root}.`;
+  const revealBody = d.revealBody ?? d.tension;
+  return { questionPrompt: prompt, revealBody, revealHeadline: d.revealHeadline };
+}
+
 // ── BUILDERS ──────────────────────────────────────────────────────────────────
 
 function buildRootInsight(r: () => number, idx?: number): LinguisticInsight {
@@ -513,7 +543,8 @@ function buildRootInsight(r: () => number, idx?: number): LinguisticInsight {
 }
 
 function buildSuppletiveInsight(r: () => number, idx?: number): LinguisticInsight {
-  const d = pickAt(SUPPLETIVE_POOL, r, idx);
+  const d = pickAt(SUPPLETIVE_POOL, r, idx) as SortPoolEntry;
+  const copy = buildSortCopy(d);
   return {
     id: `suppletive-${d.root}`,
     type: "SUPPLETIVE",
@@ -522,7 +553,14 @@ function buildSuppletiveInsight(r: () => number, idx?: number): LinguisticInsigh
     words: d.pool,
     meaning: d.meaning,
     tension: d.tension,
-    data: { groups: d.groups, pool: d.pool, falseSystem: d.falseSystem }
+    data: {
+      groups: d.groups,
+      pool: d.pool,
+      falseSystem: d.falseSystem,
+      questionPrompt: copy.questionPrompt,
+      revealHeadline: copy.revealHeadline,
+      revealBody: copy.revealBody,
+    }
   };
 }
 
@@ -541,7 +579,8 @@ function buildSemanticShiftInsight(r: () => number, idx?: number): LinguisticIns
 }
 
 function buildCollisionInsight(r: () => number, idx?: number): LinguisticInsight {
-  const d = pickAt(COLLISION_POOL, r, idx);
+  const d = pickAt(COLLISION_POOL, r, idx) as SortPoolEntry;
+  const copy = buildSortCopy(d);
   return {
     id: `collision-${d.root}`,
     type: "COLLISION",
@@ -550,12 +589,13 @@ function buildCollisionInsight(r: () => number, idx?: number): LinguisticInsight
     words: d.pool,
     meaning: d.meaning,
     tension: d.tension,
-    data: { groups: d.groups, pool: d.pool }
+    data: { groups: d.groups, pool: d.pool, questionPrompt: copy.questionPrompt, revealHeadline: copy.revealHeadline, revealBody: copy.revealBody }
   };
 }
 
 function buildDeceptionInsight(r: () => number, idx?: number): LinguisticInsight {
-  const d = pickAt(DECEPTION_POOL, r, idx);
+  const d = pickAt(DECEPTION_POOL, r, idx) as SortPoolEntry;
+  const copy = buildSortCopy(d);
   return {
     id: `deception-${d.root}`,
     type: "DECEPTION",
@@ -564,12 +604,13 @@ function buildDeceptionInsight(r: () => number, idx?: number): LinguisticInsight
     words: d.pool,
     meaning: d.meaning,
     tension: d.tension,
-    data: { groups: d.groups, pool: d.pool }
+    data: { groups: d.groups, pool: d.pool, questionPrompt: copy.questionPrompt, revealHeadline: copy.revealHeadline, revealBody: copy.revealBody }
   };
 }
 
 function buildFalseFamilyInsight(r: () => number, idx?: number): LinguisticInsight {
-  const d = pickAt(FALSE_FAMILY_POOL, r, idx);
+  const d = pickAt(FALSE_FAMILY_POOL, r, idx) as SortPoolEntry;
+  const copy = buildSortCopy(d);
   return {
     id: `false-family-${d.root}`,
     type: "FALSE_FAMILY",
@@ -578,7 +619,7 @@ function buildFalseFamilyInsight(r: () => number, idx?: number): LinguisticInsig
     words: d.pool,
     meaning: d.meaning,
     tension: d.tension,
-    data: { groups: d.groups, pool: d.pool }
+    data: { groups: d.groups, pool: d.pool, questionPrompt: copy.questionPrompt, revealHeadline: copy.revealHeadline, revealBody: copy.revealBody }
   };
 }
 
@@ -598,6 +639,7 @@ function buildIdiomInsight(r: () => number, idx?: number): LinguisticInsight {
       phrase: d.phrase,
       fragments: shuffled,
       origin: d.origin,
+      questionPrompt: d.questionPrompt,
       revealHeadline: d.revealHeadline,
       revealBody: d.revealBody
     }
@@ -605,7 +647,8 @@ function buildIdiomInsight(r: () => number, idx?: number): LinguisticInsight {
 }
 
 function buildBorrowedInsight(r: () => number, idx?: number): LinguisticInsight {
-  const d = pickAt(BORROWED_POOL, r, idx);
+  const d = pickAt(BORROWED_POOL, r, idx) as SortPoolEntry;
+  const copy = buildSortCopy(d);
   return {
     id: `borrowed-${d.root.slice(0, 14).replace(/\s/g, "-")}`,
     type: "BORROWED",
@@ -614,12 +657,13 @@ function buildBorrowedInsight(r: () => number, idx?: number): LinguisticInsight 
     words: d.pool,
     meaning: d.meaning,
     tension: d.tension,
-    data: { groups: d.groups, pool: d.pool }
+    data: { groups: d.groups, pool: d.pool, questionPrompt: copy.questionPrompt, revealHeadline: copy.revealHeadline, revealBody: copy.revealBody }
   };
 }
 
 function buildToponymInsight(r: () => number, idx?: number): LinguisticInsight {
-  const d = pickAt(TOPONYM_POOL, r, idx);
+  const d = pickAt(TOPONYM_POOL, r, idx) as SortPoolEntry;
+  const copy = buildSortCopy(d);
   return {
     id: `toponym-${d.root.slice(0, 14).replace(/\s/g, "-")}`,
     type: "TOPONYM",
@@ -628,7 +672,7 @@ function buildToponymInsight(r: () => number, idx?: number): LinguisticInsight {
     words: d.pool,
     meaning: d.meaning,
     tension: d.tension,
-    data: { groups: d.groups, pool: d.pool }
+    data: { groups: d.groups, pool: d.pool, questionPrompt: copy.questionPrompt, revealHeadline: copy.revealHeadline, revealBody: copy.revealBody }
   };
 }
 

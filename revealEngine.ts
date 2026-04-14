@@ -20,8 +20,12 @@ function defaultReveal(insight: LinguisticInsight): Reveal {
   const lang = insight.language || "unknown";
   const sample = insight.words.slice(0, 6);
   return {
-    headline: `${root.toUpperCase()} — ${lang}`,
-    body: insight.tension,
+    headline: insight.type !== "ROOT" && "revealHeadline" in insight.data && typeof insight.data.revealHeadline === "string"
+      ? insight.data.revealHeadline
+      : `${root.toUpperCase()} — ${lang}`,
+    body: insight.type !== "ROOT" && "revealBody" in insight.data && typeof insight.data.revealBody === "string"
+      ? insight.data.revealBody
+      : insight.tension,
     connections: sample
       .slice(0, 3)
       .map((w, i) => [w, sample[i + 1] ?? root] as [string, string]),
@@ -33,8 +37,12 @@ function buildGroupReveal(insight: LinguisticInsight, label: string, offset: num
   const root = insight.root || "";
   const words = insight.words;
   return {
-    headline: `${label} — ${root}`,
-    body: insight.tension,
+    headline: "revealHeadline" in insight.data && typeof insight.data.revealHeadline === "string"
+      ? insight.data.revealHeadline
+      : `${label} — ${root}`,
+    body: "revealBody" in insight.data && typeof insight.data.revealBody === "string"
+      ? insight.data.revealBody
+      : insight.tension,
     connections: words
       .slice(0, 4)
       .map((w, i) => [w, words[(i + offset) % words.length]] as [string, string]),

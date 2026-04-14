@@ -484,5 +484,14 @@ export const SUPPLETIVE_EXTENDED_POOL = [
   },
 ];
 
+for (const entry of SUPPLETIVE_EXTENDED_POOL) {
+  if (!("questionPrompt" in entry)) {
+    (entry as { questionPrompt?: string }).questionPrompt = `Sort forms in the "${entry.root}" paradigm without assuming regular inflection.`;
+  }
+  if (!("revealBody" in entry)) {
+    (entry as { revealBody?: string; tension: string }).revealBody = entry.tension;
+  }
+}
+
 // Provenance annotations
 applyDatasetProvenance(SUPPLETIVE_EXTENDED_POOL, "suppletive_paradigms");
