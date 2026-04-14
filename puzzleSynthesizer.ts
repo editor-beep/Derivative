@@ -10,6 +10,18 @@ function lensLabel(insight: LinguisticInsight): string | undefined {
   return insight.lens?.label;
 }
 
+const claimByType: Partial<Record<LinguisticInsight["type"], string>> = {
+  BORROWED: "Prestige reshapes language.",
+  COLLISION: "Language is conquest.",
+  SUPPLETIVE: "Power rewrites grammar.",
+  FALSE_FAMILY: "Similarity is not truth.",
+  SEMANTIC: "Meaning shifts over time.",
+};
+
+function claimForInsight(insight: LinguisticInsight): string {
+  return claimByType[insight.type] ?? "Words carry layered histories.";
+}
+
 function normalizeCopy(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 }
@@ -64,6 +76,7 @@ function buildRootPuzzle(insight: InsightByType<"ROOT">, date: string): Puzzle {
     required,
     pool: targets,
     meta: {
+      claim: claimForInsight(insight),
       root: insight.root,
       lang: insight.language,
       meaning: insight.meaning,
@@ -101,6 +114,7 @@ function buildSortPuzzle(insight: InsightByType<"SUPPLETIVE" | "GRIMM" | "COLLIS
     pool,
     falseSystem,
     meta: {
+      claim: claimForInsight(insight),
       root: insight.root,
       lang: insight.language,
       meaning: insight.meaning,
@@ -127,6 +141,7 @@ function buildTimelinePuzzle(insight: InsightByType<"SEMANTIC">, date: string): 
     prompt: `Trace the semantic drift of "${word}"`,
     timeline,
     meta: {
+      claim: claimForInsight(insight),
       root: insight.root,
       lang: insight.language,
       meaning: insight.meaning,
@@ -152,6 +167,7 @@ function buildIdiomPuzzle(insight: InsightByType<"IDIOM">, date: string): Puzzle
     answer: phrase,
     word: origin,
     meta: {
+      claim: claimForInsight(insight),
       root: origin,
       lang: insight.language,
       meaning: insight.meaning,
@@ -181,6 +197,7 @@ function buildMatchPuzzle(insight: InsightByType<"MATCH">, date: string): Puzzle
     pairs,
     pool,
     meta: {
+      claim: claimForInsight(insight),
       root: insight.root,
       lang: insight.language,
       meaning: insight.meaning,

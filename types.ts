@@ -169,6 +169,7 @@ export interface Puzzle {
   word?: string;
 
   meta: {
+    claim: string;
     root?: string;
     lang?: string;
     meaning?: string;
