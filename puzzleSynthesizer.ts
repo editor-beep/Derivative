@@ -10,6 +10,49 @@ function lensLabel(insight: LinguisticInsight): string | undefined {
   return insight.lens?.label;
 }
 
+function normalizeCopy(text: string): string {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function diceCoefficient(a: string, b: string): number {
+  if (!a || !b) return 0;
+  if (a === b) return 1;
+  const grams = (s: string) => {
+    const out = new Set<string>();
+    for (let i = 0; i < s.length - 1; i += 1) out.add(s.slice(i, i + 2));
+    return out;
+  };
+  const aGrams = grams(a);
+  const bGrams = grams(b);
+  let overlap = 0;
+  aGrams.forEach((g) => {
+    if (bGrams.has(g)) overlap += 1;
+  });
+  return (2 * overlap) / (aGrams.size + bGrams.size);
+}
+
+function guardPrompt({
+  type,
+  id,
+  prompt,
+  revealBody,
+  fallback,
+}: {
+  type: string;
+  id: string;
+  prompt?: string;
+  revealBody?: string;
+  fallback: string;
+}): string {
+  const safePrompt = prompt?.trim() || fallback;
+  const promptNorm = normalizeCopy(safePrompt);
+  const revealNorm = normalizeCopy(revealBody ?? "");
+  const isTooSimilar = !!revealNorm && (promptNorm === revealNorm || diceCoefficient(promptNorm, revealNorm) >= 0.9);
+  if (!isTooSimilar) return safePrompt;
+  console.warn(`[content-guard] Prompt matched reveal copy for ${type}:${id}. Replaced with generic non-spoiler prompt.`);
+  return fallback;
+}
+
 function buildRootPuzzle(insight: InsightByType<"ROOT">, date: string): Puzzle {
   const { targets, required } = insight.data;
   return {
@@ -31,7 +74,7 @@ function buildRootPuzzle(insight: InsightByType<"ROOT">, date: string): Puzzle {
 }
 
 function buildSortPuzzle(insight: InsightByType<"SUPPLETIVE" | "GRIMM" | "COLLISION" | "PIE" | "PHANTOM_ROOT" | "DECEPTION" | "FALSE_FAMILY" | "BORROWED" | "TOPONYM">, date: string): Puzzle {
-  const { groups, pool, falseSystem } = insight.data;
+  const { groups, pool, falseSystem, questionPrompt, revealBody } = insight.data;
   const normalizedGroups = groups.map((group) => {
     const neutralLabel = group.displayLabel ?? group.label ?? group.solutionLabel ?? group.id;
     return {
@@ -45,7 +88,13 @@ function buildSortPuzzle(insight: InsightByType<"SUPPLETIVE" | "GRIMM" | "COLLIS
     date,
     type: insight.type,
     lensId: lensId(insight),
-    prompt: insight.tension,
+    prompt: guardPrompt({
+      type: insight.type,
+      id: insight.id,
+      prompt: questionPrompt,
+      revealBody,
+      fallback: "Sort the words into their hidden historical groups.",
+    }),
     groups: normalizedGroups,
     pool,
     falseSystem,
@@ -86,12 +135,18 @@ function buildTimelinePuzzle(insight: InsightByType<"SEMANTIC">, date: string): 
 }
 
 function buildIdiomPuzzle(insight: InsightByType<"IDIOM">, date: string): Puzzle {
-  const { phrase, origin } = insight.data;
+  const { phrase, origin, questionPrompt, revealBody } = insight.data;
   return {
     date,
     type: "IDIOM",
     lensId: lensId(insight),
-    prompt: insight.tension,
+    prompt: guardPrompt({
+      type: insight.type,
+      id: insight.id,
+      prompt: questionPrompt,
+      revealBody,
+      fallback: "Reassemble the idiom from the fragments.",
+    }),
     answer: phrase,
     word: origin,
     meta: {

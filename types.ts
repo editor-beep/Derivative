@@ -72,6 +72,9 @@ export interface SortInsightData {
   pool: string[];
   falseSystem?: FalseSystemConfig;
   registers?: Record<string, "formal" | "informal" | "technical" | string>;
+  questionPrompt?: string;
+  revealHeadline?: string;
+  revealBody?: string;
 }
 
 export interface SemanticInsightData {
@@ -83,6 +86,7 @@ export interface IdiomInsightData {
   phrase: string;
   fragments: string[];
   origin: string;
+  questionPrompt?: string;
   revealHeadline: string;
   revealBody: string;
 }
