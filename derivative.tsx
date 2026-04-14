@@ -1259,10 +1259,11 @@ const SortPuzzle = ({
   }, [puzzle.date, puzzle.type]);
 
   const unassigned = pool.filter((w) => !assigned[w]);
-  const totalRequired = groups.flatMap((g) => g.accepts).length;
+  const requiredByGroup = new Map(groups.map((group) => [group.id, new Set(group.accepts.filter((token) => pool.includes(token)))]));
+  const totalRequired = Array.from(requiredByGroup.values()).reduce((sum, required) => sum + required.size, 0);
   const correctCount = Object.entries(assigned).filter(([w, g]) => {
-    const grp = groups.find((gr) => gr.id === g);
-    return grp && (grp.accepts.includes(w) || grp.related.includes(w));
+    const required = requiredByGroup.get(g);
+    return required?.has(w);
   }).length;
 
   const assign = (word: string, groupId: string) => {

@@ -24,8 +24,8 @@ export const FOLK_ETYMOLOGY_POOL = [
       {
         id: "original",
         displayLabel: "Group B", solutionLabel: "Original form (before misdivision)",
-        accepts: ["a napron", "an ekename", "a noumpere", "an ewt", "a nauger"],
-        related: ["a nadder", "a norange"],
+        accepts: ["napron", "ekename", "noumpere", "ewt", "nauger"],
+        related: ["a napron", "an ekename", "a noumpere", "an ewt", "a nauger", "a nadder", "a norange"],
       },
     ],
     pool: ["apron", "nickname", "umpire", "newt", "auger", "napron", "ekename", "noumpere", "ewt", "nauger"],
@@ -94,11 +94,11 @@ export const FOLK_ETYMOLOGY_POOL = [
       {
         id: "original",
         displayLabel: "Group B", solutionLabel: "Original French form (before the Latin repair)",
-        accepts: ["controller", "faute", "assaut", "voute", "amir-al"],
+        accepts: ["controller", "faute", "assaut", "voute", "amiral"],
         related: ["avancer", "avantage"],
       },
     ],
-    pool: ["comptroller", "fault", "assault", "vault", "admiral", "controller", "faute", "assaut", "voute"],
+    pool: ["comptroller", "fault", "assault", "vault", "admiral", "controller", "faute", "assaut", "voute", "amiral"],
     tension:
       "Comptroller is 'controller' wearing a false Latin degree — the 'comp' was inserted to suggest a link to French 'compte' (account) that was never there. Fault gained an 'l' to resemble Latin 'fallere'; the French had already dropped it.",
   },
@@ -116,11 +116,11 @@ export const FOLK_ETYMOLOGY_POOL = [
       {
         id: "original",
         displayLabel: "Group B", solutionLabel: "Original form (before the Greek cosplay)",
-        accepts: ["tarmachan (Gaelic)", "abominabilis (no h in Latin)"],
-        related: ["tarmac", "abominate"],
+        accepts: ["tarmachan", "abominabilis"],
+        related: ["Gaelic source", "no h in Latin", "tarmac", "abominate"],
       },
     ],
-    pool: ["ptarmigan", "abominable", "tarmachan"],
+    pool: ["ptarmigan", "abominable", "tarmachan", "abominabilis"],
     tension:
       "Ptarmigan is a Gaelic word given a Greek-style silent 'pt' to make it look scholarly. Abominable was spelled 'abhominable' for centuries because scholars thought it meant 'away from man' (ab-homine) — it doesn't.",
   },
@@ -142,11 +142,11 @@ export const FOLK_ETYMOLOGY_POOL = [
       {
         id: "source",
         displayLabel: "Group B", solutionLabel: "Actual source word",
-        accepts: ["cucaracha (Spanish)", "écrevisse (French)", "brydguma (OE — guma = man)", "otcheck (Algonquian)", "wermōd (OE — mind-preserver)"],
-        related: ["asparagos", "girasole"],
+        accepts: ["cucaracha", "écrevisse", "brydguma", "otcheck", "wermōd"],
+        related: ["Spanish source", "French source", "OE — guma = man", "Algonquian source", "OE — mind-preserver", "asparagos", "girasole"],
       },
     ],
-    pool: ["cockroach", "crayfish", "bridegroom", "woodchuck", "wormwood", "cucaracha", "écrevisse"],
+    pool: ["cockroach", "crayfish", "bridegroom", "woodchuck", "wormwood", "cucaracha", "écrevisse", "brydguma", "otcheck", "wermōd"],
     tension:
       "Cockroach has nothing to do with cocks or roaches — it's Spanish 'cucaracha' forced into familiar English shapes. Bridegroom's 'groom' replaced 'guma' (man) because 'guma' died out. Woodchuck is pure phonetic mimicry of an Algonquian word.",
   },
@@ -164,11 +164,11 @@ export const FOLK_ETYMOLOGY_POOL = [
       {
         id: "source",
         displayLabel: "Group B", solutionLabel: "Actual source and original meaning",
-        accepts: ["apentis (Anglo-Norman hang-on building)", "shamefast (fixed in shame)", "berfrey (siege tower)", "agnail (OE ang-naegl, painful spike)", "couvre-feu (cover the fire)"],
-        related: ["chaise longue (long chair)", "saler (French salt-box)"],
+        accepts: ["apentis", "shamefast", "berfrey", "agnail", "couvre-feu"],
+        related: ["Anglo-Norman hang-on building", "fixed in shame", "siege tower", "OE ang-naegl, painful spike", "cover the fire", "chaise longue (long chair)", "saler (French salt-box)"],
       },
     ],
-    pool: ["penthouse", "shamefaced", "belfry", "hangnail", "curfew", "apentis", "berfrey", "agnail"],
+    pool: ["penthouse", "shamefaced", "belfry", "hangnail", "curfew", "apentis", "shamefast", "berfrey", "agnail", "couvre-feu"],
     tension:
       "Penthouse was never a top-floor luxury apartment — it was a lean-to shed that 'hangs' against a wall. Curfew meant 'cover the fire' at bedtime; we forgot the fire and only remembered the time. Belfry only got its bells because we started putting bells in siege towers.",
   },
@@ -180,17 +180,17 @@ export const FOLK_ETYMOLOGY_POOL = [
       {
         id: "english",
         displayLabel: "Group A", solutionLabel: "American English form",
-        accepts: ["lariat", "buckaroo", "stampede", "vamoose", "ten-gallon hat"],
-        related: ["mustang", "lasso", "cinch"],
+        accepts: ["lariat", "buckaroo", "stampede", "vamoose"],
+        related: ["ten-gallon hat", "mustang", "lasso", "cinch"],
       },
       {
         id: "source",
         displayLabel: "Group B", solutionLabel: "Actual source word and meaning",
-        accepts: ["la reata (the rope)", "vaquero (cow-man)", "estampida (crash/uproar)", "vamos (let's go)", "tan galán (so gallant/handsome)"],
-        related: ["mesteño (stray)", "lazo (knot)", "cincha (girdle)"],
+        accepts: ["la reata", "vaquero", "estampida", "vamos", "tan galán"],
+        related: ["the rope", "cow-man", "crash/uproar", "let's go", "so gallant/handsome", "mesteño (stray)", "lazo (knot)", "cincha (girdle)"],
       },
     ],
-    pool: ["lariat", "buckaroo", "stampede", "vamoose", "mustang", "lasso", "cinch", "la reata", "vaquero", "estampida"],
+    pool: ["lariat", "buckaroo", "stampede", "vamoose", "mustang", "lasso", "cinch", "la reata", "vaquero", "estampida", "vamos", "tan galán"],
     tension:
       "The ten-gallon hat holds no gallons — 'tan galán' meant 'so gallant' in Spanish. Buckaroo is 'vaquero' chewed up and re-spat in a Texas accent. Lariat is 'la reata' with the article welded onto the noun.",
   },
@@ -208,11 +208,11 @@ export const FOLK_ETYMOLOGY_POOL = [
       {
         id: "source",
         displayLabel: "Group B", solutionLabel: "Actual source and real meaning",
-        accepts: ["asparagos (Greek)", "girasole (Italian sunflower)", "umbles (deer innards)", "kool-sla (Dutch: cabbage salad)", "chesten-nut (nut of the chesten tree)"],
-        related: ["ros marinus (dew of the sea)", "dent-de-lion (tooth of the lion)"],
+        accepts: ["asparagos", "girasole", "umbles", "kool-sla", "chesten-nut"],
+        related: ["Greek source", "Italian sunflower", "deer innards", "Dutch: cabbage salad", "nut of the chesten tree", "ros marinus (dew of the sea)", "dent-de-lion (tooth of the lion)"],
       },
     ],
-    pool: ["sparrowgrass", "Jerusalem artichoke", "humble pie", "coldslaw", "chestnut", "asparagos", "girasole", "kool-sla"],
+    pool: ["sparrowgrass", "Jerusalem artichoke", "humble pie", "coldslaw", "chestnut", "asparagos", "girasole", "kool-sla", "umbles", "chesten-nut"],
     tension:
       "Jerusalem artichoke has nothing to do with Jerusalem — 'girasole' (sunflower in Italian) sounded like 'Jerusalem' to English ears. Humble pie was 'umble' pie (made from deer innards); the humiliation was added by folk etymology. Coleslaw was always cabbage.",
   },
