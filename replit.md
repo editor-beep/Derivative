@@ -16,13 +16,23 @@ A daily etymology puzzle game built with React + TypeScript + Vite. The runtime 
 - `src/main.tsx` — React entry point.
 
 ## How daily puzzle is generated
-`getPuzzleManifestEntry(date)` → `generateInsight(seed, indexes)` → `synthesizePuzzle` → `generateReveal`
+`getPuzzleManifestEntry(date)` → `generateInsight(seed, indexes)` → `synthesizePuzzle` → `buildPlayablePuzzle` → merge → `generateReveal`
 
 Detailed flow:
 1. Lookup date row in `src/data/puzzleManifest.ts`.
 2. Hash a deterministic seed and call `generateInsight` with manifest indexes.
-3. Call `synthesizePuzzle` to create the playable puzzle object.
-4. Call `generateReveal` to attach reveal text/connections.
+3. Call `synthesizePuzzle` to create the raw `Puzzle` object.
+4. Call `buildPlayablePuzzle` to generate `steps: Step[]` (CLASSIFY / GUESS_SYSTEM / INFO).
+5. Merge: `generator.ts` returns `{ ...puzzle, steps: playable.steps, reveal: generateReveal(insight) }`.
+6. `derivative.tsx` gets a full `Puzzle` with an attached `steps` array.
+
+## Gameplay modes
+- **Sort-type puzzles** (SUPPLETIVE, COLLISION, PIE, GRIMM, BORROWED, TOPONYM, DECEPTION, FALSE_FAMILY, PHANTOM_ROOT): rendered by `StepPuzzle` — words appear one at a time, player picks a group (CLASSIFY step), periodic system-guess question (GUESS_SYSTEM step). Progress tracked in `PuzzleState.stepAnswers: Record<number, string>`.
+- **ROOT**: `RootPuzzle` — free-text word discovery.
+- **SEMANTIC**: `SemanticPuzzle` — timeline blank-fill.
+- **IDIOM**: `IdiomPuzzle` — phrase reconstruction.
+- **MATCH**: `MatchPuzzle` — pair matching.
+- **GRIMM**: `GrimmPuzzle` — sound-shift pair matching.
 
 ## Known constraints
 - **Static manifest range:** playable dates are limited to the dates compiled into `src/data/puzzleManifest.ts`.

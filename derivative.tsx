@@ -1346,436 +1346,166 @@ const RootPuzzle = ({
   );
 };
 
-const SortPuzzle = ({
+const StepPuzzle = ({
   puzzle,
   state,
   onState,
   revealed,
-  timedSettings,
 }: {
   puzzle: Puzzle;
   state: PuzzleState;
   onState: (s: PuzzleState) => void;
   revealed: boolean;
-  timedSettings: TimedModeSettings;
 }) => {
-  const HINT_TRIGGER_WRONG_ASSIGNMENTS = 3;
-  const HINT_LEVEL2_TRIGGER_WRONG_ASSIGNMENTS = 6;
-  const assigned = state?.assigned || {};
-  const [dragWord, setDragWord] = useState<string | null>(null);
-  const [dragOverGroup, setDragOverGroup] = useState<string | null>(null);
-  const [input, setInput] = useState("");
-  const [flash, setFlash] = useState<null | { word: string; correct: boolean; bonus?: boolean; notInPool?: boolean }>(null);
-  const [activeGroup, setActiveGroup] = useState<string | null>(null);
-  const [fracture, setFracture] = useState<string | null>(null);
-  const [wrongAssignments, setWrongAssignments] = useState(0);
-  const [hintStage, setHintStage] = useState<0 | 1 | 2>(0);
-
-  const groups = puzzle.groups || [];
-  const pool = puzzle.pool || [];
-  const falseSystem = puzzle.falseSystem;
+  const steps = puzzle.steps || [];
+  const stepAnswers = state.stepAnswers || {};
+  const [flash, setFlash] = useState(null);
+  const [locked, setLocked] = useState(false);
 
   useEffect(() => {
-    setFracture(null);
-    setWrongAssignments(0);
-    setHintStage(0);
+    setFlash(null);
+    setLocked(false);
   }, [puzzle.date, puzzle.type]);
 
-  useEffect(() => {
-    if (hintStage < 1 && wrongAssignments >= HINT_TRIGGER_WRONG_ASSIGNMENTS) {
-      setHintStage(1);
-      return;
-    }
-    if (hintStage < 2 && wrongAssignments >= HINT_LEVEL2_TRIGGER_WRONG_ASSIGNMENTS) {
-      setHintStage(2);
-    }
-  }, [hintStage, wrongAssignments]);
+  const currentIdx = steps.findIndex((_, i) => stepAnswers[i] === undefined);
+  const allDone = steps.length > 0 && currentIdx === -1;
+  const currentStep = allDone ? null : (steps[currentIdx] ?? null);
 
-  const handleTimedFailure = () => {
-    setWrongAssignments((count) => count + 1);
-    setFlash({ word: "timer", correct: false });
-    setTimeout(() => setFlash(null), 1200);
+  const classifyEntries = steps.map((s, i) => ({ s, i })).filter(({ s }) => s.type === "CLASSIFY");
+  const totalClassify = classifyEntries.length;
+  const correctClassify = classifyEntries.filter(({ s, i }) => stepAnswers[i] === s.correct).length;
+  const answeredCount = Object.keys(stepAnswers).length;
+  const progressPct = steps.length > 0 ? (answeredCount / steps.length) * 100 : 0;
+
+  const submitAnswer = (answer) => {
+    if (locked || currentIdx === -1) return;
+    const step = steps[currentIdx];
+    const isCorrect = answer === step.correct;
+    setFlash({ correct: isCorrect, text: isCorrect ? "correct" : `wrong — ${step.correct}` });
+    setLocked(true);
+    setTimeout(() => {
+      setFlash(null);
+      setLocked(false);
+      onState({ ...state, stepAnswers: { ...stepAnswers, [currentIdx]: answer } });
+    }, 900);
   };
 
-  const { remainingSec, startInteraction, resetInteraction } = useTimedInteraction({
-    ...timedSettings,
-    onTimeout: handleTimedFailure,
-    resetKey: `${puzzle.date}-${puzzle.type}-sort`,
-  });
-
-  const unassigned = pool.filter((w) => !assigned[w]);
-  const requiredByGroup = new Map(groups.map((group) => [group.id, new Set(group.accepts.filter((token) => pool.includes(token)))]));
-  const totalRequired = Array.from(requiredByGroup.values()).reduce((sum, required) => sum + required.size, 0);
-  const correctCount = Object.entries(assigned).filter(([w, g]) => {
-    const required = requiredByGroup.get(g);
-    return required?.has(w);
-  }).length;
-
-  const assign = (word: string, groupId: string) => {
-    if (!word || !groupId) return;
-    resetInteraction();
-    const grp = groups.find((g) => g.id === groupId);
-    if (!grp) return;
-    const correct = grp.accepts.includes(word) || grp.related.includes(word);
-    const newAssigned = { ...assigned, [word]: groupId };
-    onState({ ...state, assigned: newAssigned });
-    setFlash({ word, correct, bonus: grp.related.includes(word) });
-    if (!correct) {
-      setWrongAssignments((count) => count + 1);
-    }
-    if (falseSystem?.decoys.includes(word)) {
-      setFracture(falseSystem.breakMessage);
-    }
-    setTimeout(() => setFlash(null), 1200);
+  const cardStyle = {
+    position: "relative",
+    border: `1px solid ${COLORS.blackLine}`,
+    borderRadius: "4px",
+    padding: "1rem",
+    background: `linear-gradient(180deg, ${COLORS.surface2}, ${COLORS.surface})`,
+    overflow: "hidden",
   };
 
-  const unassign = (word: string) => {
-    const next = { ...assigned };
-    delete next[word];
-    onState({ ...state, assigned: next });
-  };
+  if (allDone || revealed) {
+    return (
+      <div style={cardStyle}>
+        <SystemMesh intensity={0.85} />
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ ...S.mono, fontSize: "0.56rem", letterSpacing: "0.14em", textTransform: "uppercase", color: COLORS.textFaint, marginBottom: "0.85rem" }}>
+            {correctClassify} / {totalClassify} classified correctly
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+            {classifyEntries.map(({ s: step, i }) => {
+              const answer = stepAnswers[i];
+              const isCorrect = answer === step.correct;
+              return (
+                <div
+                  key={step.word + i}
+                  style={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    gap: "0.65rem",
+                    padding: "0.35rem 0.6rem",
+                    borderRadius: "3px",
+                    background: isCorrect ? "rgba(232,184,75,0.07)" : "rgba(139,58,58,0.07)",
+                    border: `1px solid ${isCorrect ? "rgba(232,184,75,0.18)" : "rgba(139,58,58,0.18)"}`,
+                  }}
+                >
+                  <span style={{ ...S.mono, fontSize: "0.82rem", color: COLORS.textPrimary, minWidth: "80px" }}>{step.word}</span>
+                  <span style={{ ...S.mono, fontSize: "0.55rem", color: COLORS.textFaint }}>→</span>
+                  <span style={{ ...S.mono, fontSize: "0.65rem", color: isCorrect ? COLORS.gold : COLORS.red, flex: 1 }}>
+                    {answer || "—"}
+                    {revealed && !isCorrect && (
+                      <span style={{ color: COLORS.textFaint, marginLeft: "0.5rem" }}>(was: {step.correct})</span>
+                    )}
+                  </span>
+                  <span style={{ fontSize: "0.7rem", color: isCorrect ? COLORS.gold : COLORS.red }}>{isCorrect ? "✓" : "✗"}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-  const handleTextSubmit = () => {
-    if (!activeGroup || !input.trim()) return;
-    const w = input.trim().toLowerCase();
-    if (pool.includes(w) && !assigned[w]) {
-      assign(w, activeGroup);
-      setInput("");
-    } else {
-      setFlash({ word: w, correct: false, notInPool: true });
-      setInput("");
-      setTimeout(() => setFlash(null), 1200);
-    }
-  };
-
-  const revealNextHints = () => {
-    setHintStage((stage) => (stage >= 2 ? 2 : ((stage + 1) as 1 | 2)));
-  };
+  if (!currentStep) return null;
 
   return (
-    <div
-      style={{
-        position: "relative",
-        border: `1px solid ${COLORS.blackLine}`,
-        borderRadius: "4px",
-        padding: "1rem",
-        background: `linear-gradient(180deg, ${COLORS.surface2}, ${COLORS.surface})`,
-        overflow: "hidden",
-      }}
-    >
+    <div style={cardStyle}>
       <SystemMesh intensity={0.92} />
-
       <div style={{ position: "relative", zIndex: 1 }}>
-        <div
-          style={{
-            ...S.mono,
-            fontSize: "0.58rem",
-            color: COLORS.textFaint,
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            marginBottom: "0.75rem",
-          }}
-        >
-          {correctCount}/{totalRequired} assigned correctly
+        <div style={{ marginBottom: "1.1rem" }}>
+          <div style={{ ...S.mono, fontSize: "0.54rem", color: COLORS.textFaint, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: "0.3rem" }}>
+            step {answeredCount + 1} of {steps.length}
+          </div>
+          <div style={{ height: "2px", background: "rgba(232,184,75,0.12)", borderRadius: "1px" }}>
+            <div style={{ height: "100%", width: `${progressPct}%`, background: COLORS.goldDim, borderRadius: "1px", transition: "width 0.35s ease" }} />
+          </div>
         </div>
-        {!revealed && groups.some((grp) => grp.hint || grp.hintLevel2) && (
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "0.75rem" }}>
-            <button
-              className="deriv-btn-secondary"
-              style={{ ...S.btnSm, padding: "0.26rem 0.55rem", fontSize: "0.58rem" }}
-              onClick={revealNextHints}
-            >
-              {hintStage === 0 ? "reveal hints" : hintStage === 1 ? "deepen hints" : "hints shown"}
-            </button>
-            {wrongAssignments >= HINT_TRIGGER_WRONG_ASSIGNMENTS && (
-              <span style={{ ...S.mono, fontSize: "0.56rem", color: COLORS.textFaint, letterSpacing: "0.08em" }}>
-                hints auto-enabled after {HINT_TRIGGER_WRONG_ASSIGNMENTS} wrong assignments
-              </span>
-            )}
-          </div>
-        )}
-        {fracture && (
-          <div
-            className="red-shimmer"
-            style={{
-              ...S.mono,
-              fontSize: "0.62rem",
-              letterSpacing: "0.11em",
-              textTransform: "uppercase",
-              color: COLORS.red,
-              border: `1px solid ${COLORS.red}`,
-              background: "rgba(139,58,58,0.10)",
-              borderRadius: "2px",
-              padding: "0.42rem 0.5rem",
-              marginBottom: "0.7rem",
-            }}
-          >
-            {fracture}
-          </div>
-        )}
-        {revealed && fracture && falseSystem?.revealTruth && (
-          <div
-            style={{
-              fontSize: "0.74rem",
-              color: COLORS.textMuted,
-              borderLeft: `2px solid ${COLORS.goldDark}`,
-              paddingLeft: "0.65rem",
-              marginBottom: "0.7rem",
-              lineHeight: 1.5,
-            }}
-          >
-            {falseSystem.revealTruth}
-          </div>
-        )}
 
-        {!revealed && unassigned.length > 0 && (
-          <div style={{ marginBottom: "1rem" }}>
-            <div
-              style={{
-                ...S.mono,
-                fontSize: "0.58rem",
-                color: COLORS.textFaint,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                marginBottom: "0.4rem",
-              }}
-            >
-              word pool
+        {currentStep.type === "CLASSIFY" && (
+          <>
+            <div style={{ ...S.mono, fontSize: "0.54rem", color: COLORS.textFaint, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
+              classify this word
             </div>
-
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-              {unassigned.map((w) => (
-                <div
-                  key={w}
-                  draggable
-                  onDragStart={(e) => {
-                    startInteraction();
-                    e.dataTransfer.setData("text/plain", w);
-                    e.dataTransfer.effectAllowed = "move";
-                    setDragWord(w);
-                  }}
-                  onDragEnd={() => setDragWord(null)}
-                  className="cyan-shimmer"
-                  style={{
-                    ...S.mono,
-                    fontSize: "0.8rem",
-                    padding: "0.3rem 0.65rem",
-                    borderRadius: "2px",
-                    background: "rgba(78,207,207,0.06)",
-                    border: `1px solid rgba(78,207,207,0.22)`,
-                    color: COLORS.cyan,
-                    cursor: "grab",
-                    userSelect: "none",
-                    opacity: dragWord === w ? 0.4 : 1,
-                    transition: "opacity 0.1s ease",
-                  }}
+            <div style={{ fontSize: "2rem", fontWeight: 600, color: COLORS.textPrimary, letterSpacing: "0.03em", marginBottom: "1.4rem", textShadow: "0 0 20px rgba(232,184,75,0.12)" }}>
+              {currentStep.word}
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "7px" }}>
+              {currentStep.options.map((opt) => (
+                <button
+                  key={opt}
+                  disabled={locked}
+                  onClick={() => submitAnswer(opt)}
+                  className="deriv-btn"
+                  style={{ ...S.btnSm, width: "100%", textAlign: "left", padding: "0.6rem 0.9rem", fontSize: "0.72rem", opacity: locked ? 0.55 : 1, cursor: locked ? "default" : "pointer", letterSpacing: "0.04em" }}
                 >
-                  {w}
-                </div>
+                  {opt}
+                </button>
               ))}
             </div>
-          </div>
+          </>
         )}
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "0.75rem" }}>
-          {groups.map((grp) => {
-            const grpWords = Object.entries(assigned)
-              .filter(([, g]) => g === grp.id)
-              .map(([w]) => w);
-            const isActive = activeGroup === grp.id;
-
-            return (
-              <div
-                key={grp.id}
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  e.dataTransfer.dropEffect = "move";
-                }}
-                onDragEnter={(e) => {
-                  e.preventDefault();
-                  setDragOverGroup(grp.id);
-                }}
-                onDragLeave={(e) => {
-                  if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-                    setDragOverGroup(null);
-                  }
-                }}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  setDragOverGroup(null);
-                  const word = e.dataTransfer.getData("text/plain") || dragWord;
-                  if (word) {
-                    assign(word, grp.id);
-                    setDragWord(null);
-                  }
-                }}
-                onClick={() => setActiveGroup(isActive ? null : grp.id)}
-                style={{
-                  background: isActive
-                    ? `linear-gradient(180deg, ${COLORS.surface3}, ${COLORS.surface})`
-                    : `linear-gradient(180deg, ${COLORS.surface2}, ${COLORS.surface})`,
-                  border: `1px solid ${
-                    dragOverGroup === grp.id
-                      ? COLORS.cyan
-                      : isActive
-                      ? COLORS.goldDim
-                      : "rgba(232,184,75,0.15)"
-                  }`,
-                  borderRadius: "3px",
-                  padding: "0.65rem 0.75rem",
-                  cursor: "pointer",
-                  transition: "all 0.15s ease",
-                  boxShadow: dragOverGroup === grp.id
-                    ? `0 0 16px rgba(78,207,207,0.18)`
-                    : isActive
-                    ? `0 0 20px ${COLORS.goldGlow}`
-                    : "0 0 0 rgba(0,0,0,0)",
-                }}
-              >
-                <div
-                  style={{
-                    ...S.mono,
-                    fontSize: "0.65rem",
-                    color: isActive ? COLORS.gold : COLORS.textMuted,
-                    letterSpacing: "0.1em",
-                    marginBottom: grpWords.length > 0 ? "0.5rem" : "0",
-                  }}
+        {currentStep.type === "GUESS_SYSTEM" && (
+          <>
+            <div style={{ ...S.mono, fontSize: "0.54rem", color: COLORS.textFaint, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
+              what system underlies these words?
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "7px" }}>
+              {currentStep.options.map((opt) => (
+                <button
+                  key={opt}
+                  disabled={locked}
+                  onClick={() => submitAnswer(opt)}
+                  className="deriv-btn"
+                  style={{ ...S.btnSm, width: "100%", textAlign: "left", padding: "0.6rem 0.9rem", fontSize: "0.72rem", opacity: locked ? 0.55 : 1, cursor: locked ? "default" : "pointer", letterSpacing: "0.04em" }}
                 >
-                  {revealed ? grp.solutionLabel ?? grp.label : grp.displayLabel ?? grp.label}
-                </div>
-
-                {grpWords.length > 0 && (
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
-                    {grpWords.map((w) => {
-                      const correct = grp.accepts.includes(w);
-                      const related = grp.related.includes(w);
-                      const wrong = !correct && !related;
-                      const color = revealed
-                        ? correct
-                          ? COLORS.gold
-                          : related
-                          ? COLORS.cyan
-                          : COLORS.red
-                        : COLORS.textSecondary;
-
-                      return (
-                        <div
-                          key={w}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (!revealed) unassign(w);
-                          }}
-                          style={{
-                            ...S.mono,
-                            fontSize: "0.75rem",
-                            padding: "0.22rem 0.55rem",
-                            borderRadius: "2px",
-                            background: revealed
-                              ? correct
-                                ? "rgba(232,184,75,0.10)"
-                                : related
-                                ? "rgba(78,207,207,0.10)"
-                                : "rgba(139,58,58,0.14)"
-                              : COLORS.blackLine,
-                            border: revealed
-                              ? correct
-                                ? `1px solid ${COLORS.goldDim}`
-                                : related
-                                ? `1px solid ${COLORS.cyan}`
-                                : `1px solid ${COLORS.red}`
-                              : `1px solid ${COLORS.goldDark}`,
-                            color,
-                            cursor: revealed ? "default" : "pointer",
-                          }}
-                        >
-                          {w}
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-
-                {!revealed && hintStage > 0 && (
-                  <div
-                    style={{
-                      marginTop: grpWords.length > 0 || isActive ? "0.5rem" : "0.35rem",
-                      fontSize: "0.66rem",
-                      color: COLORS.textMuted,
-                      lineHeight: 1.35,
-                    }}
-                  >
-                    {hintStage === 1
-                      ? grp.hint ?? "No extra hint for this group yet."
-                      : grp.hintLevel2 ?? grp.hint ?? "No extra hint for this group yet."}
-                  </div>
-                )}
-
-                {isActive && !revealed && (
-                  <div
-                    style={{ display: "flex", gap: "6px", marginTop: "0.5rem" }}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <input
-                      value={input}
-                      onChange={(e) => {
-                        startInteraction();
-                        setInput(e.target.value.toLowerCase());
-                      }}
-                      onKeyDown={(e) => e.key === "Enter" && handleTextSubmit()}
-                      placeholder="type a word…"
-                      style={{
-                        ...S.input,
-                        fontSize: "0.78rem",
-                        flex: 1,
-                        padding: "0.3rem 0.55rem",
-                      }}
-                    />
-                    <button
-                      className="deriv-btn-primary"
-                      style={{ ...S.btnPrimary, padding: "0.3rem 0.65rem", fontSize: "0.65rem" }}
-                      onClick={handleTextSubmit}
-                    >
-                      add
-                    </button>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+                  {opt}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
 
         {flash && (
-          <div
-            style={{
-              ...S.mono,
-              fontSize: "0.65rem",
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              color: flash.notInPool
-                ? COLORS.red
-                : flash.correct
-                ? flash.bonus
-                  ? COLORS.cyan
-                  : COLORS.gold
-                : COLORS.red,
-              marginBottom: "0.5rem",
-            }}
-          >
-            {flash.notInPool ? "not in the pool" : flash.correct ? (flash.bonus ? "related" : "correct") : "wrong group"}
+          <div style={{ ...S.mono, fontSize: "0.63rem", letterSpacing: "0.1em", textTransform: "uppercase", color: flash.correct ? COLORS.gold : COLORS.red, marginTop: "0.9rem" }}>
+            {flash.text}
           </div>
-        )}
-
-        {!revealed && (
-          <>
-            <div style={{ ...S.mono, fontSize: "0.6rem", color: COLORS.textFaint, marginTop: "0.25rem" }}>
-              drag words into a group, or click a group then type
-            </div>
-            {timedSettings.timedMode && (
-              <div style={{ ...S.mono, fontSize: "0.55rem", color: COLORS.textMuted, marginTop: "0.2rem", letterSpacing: "0.1em" }}>
-                time left: {remainingSec ?? timedSettings.timeLimitSec}s
-              </div>
-            )}
-          </>
         )}
       </div>
     </div>
@@ -2609,10 +2339,10 @@ export default function Derivative() {
     }
 
     if (["SUPPLETIVE", "PIE", "COLLISION", "DECEPTION", "FALSE_FAMILY", "PHANTOM_ROOT", "BORROWED", "TOPONYM"].includes(puzzle.type)) {
-      const assigned = state.assigned || {};
-      return (puzzle.groups || []).every((g) =>
-        g.accepts.every((w) => assigned[w] === g.id)
-      );
+      const steps = puzzle.steps || [];
+      const sa = state.stepAnswers || {};
+      const classifyIdxs = steps.map((s, i) => ({ s, i })).filter(({ s }) => s.type === "CLASSIFY").map(({ i }) => i);
+      return classifyIdxs.length > 0 && classifyIdxs.every((i) => sa[i] !== undefined);
     }
     if (puzzle.type === "MATCH") {
       const assigned = state.assigned || {};
@@ -2672,10 +2402,9 @@ export default function Derivative() {
       const found = puzzleState.found || [];
       tracker = (puzzle.required || []).map((w) => (found.includes(w) ? "◈" : "◇")).join("");
     } else if (["SUPPLETIVE", "PIE", "COLLISION", "DECEPTION", "FALSE_FAMILY", "PHANTOM_ROOT", "BORROWED", "TOPONYM"].includes(puzzle.type)) {
-      const assigned = puzzleState.assigned || {};
-      tracker = (puzzle.groups || [])
-        .flatMap((g) => g.accepts.map((w) => (assigned[w] === g.id ? "◈" : "◇")))
-        .join("");
+      const sa = puzzleState.stepAnswers || {};
+      const sortSteps = (puzzle.steps || []).map((s, i) => ({ s, i })).filter(({ s }) => s.type === "CLASSIFY");
+      tracker = sortSteps.map(({ s, i }) => (sa[i] === s.correct ? "◈" : "◇")).join("");
     } else if (puzzle.type === "MATCH") {
       const assigned = puzzleState.assigned || {};
       tracker = (puzzle.pairs || []).map((pair) => (assigned[pair.source] === pair.target ? "◈" : "◇")).join("");
@@ -2728,7 +2457,7 @@ export default function Derivative() {
     if (puz.type === "ROOT" && (s.found || []).length > 0) return "partial";
     if (
       ["SUPPLETIVE", "PIE", "COLLISION", "DECEPTION", "FALSE_FAMILY", "PHANTOM_ROOT", "BORROWED", "TOPONYM"].includes(puz.type) &&
-      Object.keys(s.assigned || {}).length > 0
+      Object.keys(s.stepAnswers || {}).length > 0
     )
       return "partial";
     if (puz.type === "GRIMM" && Object.keys(s.answers || {}).length > 0) return "partial";
@@ -2805,7 +2534,8 @@ export default function Derivative() {
             }}
           >
             DERIVATIVE
-            <br>The Game of the Lingua Imperii</br>
+            <br />
+            The Game of the Lingua Imperii
           </div>
 
           {/* Separator */}
@@ -3286,12 +3016,11 @@ export default function Derivative() {
           )}
 
           {isSortType && (
-            <SortPuzzle
+            <StepPuzzle
               puzzle={puzzle}
               state={puzzleState}
               onState={handlePuzzleState}
               revealed={revealed}
-              timedSettings={timedSettings}
             />
           )}
 

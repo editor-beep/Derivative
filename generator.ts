@@ -23,7 +23,7 @@ export function generateDailyPuzzle(date: string) {
 
   const puzzle = synthesizePuzzle(insight, date);
   const playable = buildPlayablePuzzle(puzzle);
-  playable.reveal = generateReveal(insight);
+  const reveal = generateReveal(insight);
 
-  return playable;
+  return { ...puzzle, steps: playable.steps, reveal };
 }

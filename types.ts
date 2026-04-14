@@ -177,6 +177,7 @@ export interface Puzzle {
   };
 
   reveal: Reveal;
+  steps?: any[];
 }
 
 export interface PuzzleState {
@@ -185,6 +186,7 @@ export interface PuzzleState {
   answers?: Record<number, string>;
   sequence?: string[];
   idiomFound?: number[];
+  stepAnswers?: Record<number, string>;
 }
 
 export interface PuzzleProgressEntry {
