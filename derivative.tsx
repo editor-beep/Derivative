@@ -293,6 +293,7 @@ const TYPE_ICONS: Record<PuzzleType, ({ color }: { color: string }) => ReactElem
   IDIOM: IconIdiom,
   BORROWED: IconBorrowed,
   TOPONYM: IconToponym,
+  MATCH: IconSemantic,
 };
 
 const TYPE_SHARE_ICONS: Record<PuzzleType, string> = {
@@ -308,6 +309,7 @@ const TYPE_SHARE_ICONS: Record<PuzzleType, string> = {
   DECEPTION: "≢",
   FALSE_FAMILY: "≁",
   PHANTOM_ROOT: "∅",
+  MATCH: "⇄",
 };
 
 const DIFFICULTY_SHARE_ICONS: Record<DifficultyLevel, string> = {
@@ -1641,6 +1643,79 @@ const SortPuzzle = ({
   );
 };
 
+const MatchPuzzle = ({
+  puzzle,
+  state,
+  onState,
+  revealed,
+}: {
+  puzzle: Puzzle;
+  state: PuzzleState;
+  onState: (s: PuzzleState) => void;
+  revealed: boolean;
+}) => {
+  const pairs = puzzle.pairs || [];
+  const choices = Array.from(new Set(pairs.map((pair) => pair.target)));
+  const selected = state?.assigned || {};
+  const correctCount = pairs.filter((pair) => selected[pair.source] === pair.target).length;
+
+  const onChange = (source: string, target: string) => {
+    onState({ ...state, assigned: { ...selected, [source]: target } });
+  };
+
+  return (
+    <div
+      style={{
+        border: `1px solid ${COLORS.blackLine}`,
+        borderRadius: "4px",
+        padding: "1rem",
+        background: `linear-gradient(180deg, ${COLORS.surface2}, ${COLORS.surface})`,
+      }}
+    >
+      <div style={{ ...S.mono, fontSize: "0.58rem", color: COLORS.textFaint, marginBottom: "0.75rem" }}>
+        {correctCount}/{pairs.length} matched correctly
+      </div>
+      <div style={{ display: "grid", gap: "0.6rem" }}>
+        {pairs.map((pair) => {
+          const chosen = selected[pair.source] || "";
+          const isCorrect = chosen === pair.target;
+          return (
+            <div
+              key={pair.source}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "minmax(120px, 1fr) 1.4fr",
+                gap: "0.5rem",
+                alignItems: "center",
+              }}
+            >
+              <div style={{ ...S.mono, color: COLORS.cyan, fontSize: "0.8rem" }}>{pair.source}</div>
+              <select
+                value={chosen}
+                disabled={revealed}
+                onChange={(e) => onChange(pair.source, e.target.value)}
+                style={{
+                  ...S.input,
+                  fontSize: "0.74rem",
+                  color: revealed && isCorrect ? COLORS.gold : COLORS.textPrimary,
+                  borderColor: revealed ? (isCorrect ? COLORS.goldDim : COLORS.red) : COLORS.blackLine,
+                }}
+              >
+                <option value="">select gloss…</option>
+                {choices.map((choice) => (
+                  <option key={choice} value={choice}>
+                    {choice}
+                  </option>
+                ))}
+              </select>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 const GrimmPuzzle = ({
   puzzle,
   state,
@@ -2308,6 +2383,10 @@ export default function Derivative() {
         g.accepts.every((w) => assigned[w] === g.id)
       );
     }
+    if (puzzle.type === "MATCH") {
+      const assigned = puzzleState.assigned || {};
+      return (puzzle.pairs || []).every((pair) => assigned[pair.source] === pair.target);
+    }
 
     if (puzzle.type === "IDIOM") {
       const idiomFound: number[] = puzzleState.idiomFound || [];
@@ -2366,6 +2445,9 @@ export default function Derivative() {
       tracker = (puzzle.groups || [])
         .flatMap((g) => g.accepts.map((w) => (assigned[w] === g.id ? "◈" : "◇")))
         .join("");
+    } else if (puzzle.type === "MATCH") {
+      const assigned = puzzleState.assigned || {};
+      tracker = (puzzle.pairs || []).map((pair) => (assigned[pair.source] === pair.target ? "◈" : "◇")).join("");
     } else if (puzzle.type === "GRIMM") {
       const answers = puzzleState.answers || {};
       tracker = (puzzle.pairs || []).map((_, i) => (answers[i] ? "◈" : "◇")).join("");
@@ -2948,6 +3030,15 @@ export default function Derivative() {
 
           {isSortType && (
             <SortPuzzle
+              puzzle={puzzle}
+              state={puzzleState}
+              onState={handlePuzzleState}
+              revealed={revealed}
+            />
+          )}
+
+          {puzzle.type === "MATCH" && (
+            <MatchPuzzle
               puzzle={puzzle}
               state={puzzleState}
               onState={handlePuzzleState}

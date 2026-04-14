@@ -41,6 +41,11 @@ export type SortPoolEntry = {
   revealHeadline?: string;
   revealBody?: string;
   falseSystem?: FalseSystemConfig;
+  matchPairs?: Array<{
+    source: string;
+    target: string;
+    note?: string;
+  }>;
 };
 
 export type RootPoolEntry = {
