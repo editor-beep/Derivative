@@ -23,12 +23,11 @@ function getSuffix(word: string, root: string): string | null {
  *    "act"      (root "act") → "···"  (word is the root itself)
  */
 function buildHintLabel(word: string, root: string): string {
-  const idx = word.indexOf(root);
-  if (idx < 0) {
+  if (word.indexOf(root) < 0) {
     return "·".repeat(Math.min(word.length, 7));
   }
-  const prefix = idx > 0 ? word.slice(0, idx) : "";
-  const suffix = word.slice(idx + root.length);
+  const prefix = getPrefix(word, root) ?? "";
+  const suffix = getSuffix(word, root) ?? "";
   const rootMask = "·".repeat(root.length);
   if (prefix && suffix) return `${prefix}-${rootMask}-${suffix}`;
   if (prefix) return `${prefix}-${rootMask}`;
