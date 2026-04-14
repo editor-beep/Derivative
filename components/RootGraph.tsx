@@ -1,11 +1,39 @@
 import React, { useState } from "react";
 import { PREFIX_DATA } from "../lib/prefixMap";
 
-/* ── PREFIX PARSER ───────────────────────────────────────── */
+/* ── MORPHOLOGY PARSERS ──────────────────────────────────── */
 function getPrefix(word: string, root: string): string | null {
   const idx = word.indexOf(root);
   if (idx <= 0) return null;
   return word.slice(0, idx);
+}
+
+function getSuffix(word: string, root: string): string | null {
+  const idx = word.indexOf(root);
+  if (idx < 0) return null;
+  const after = word.slice(idx + root.length);
+  return after || null;
+}
+
+/** Returns a hint label showing the morphological wrapper around the root,
+ *  with the root itself masked as dots. Examples:
+ *    "react"    (root "act") → "re-···"
+ *    "action"   (root "act") → "···-ion"
+ *    "reactive" (root "act") → "re-···-ive"
+ *    "act"      (root "act") → "···"  (word is the root itself)
+ */
+function buildHintLabel(word: string, root: string): string {
+  const idx = word.indexOf(root);
+  if (idx < 0) {
+    return "·".repeat(Math.min(word.length, 7));
+  }
+  const prefix = idx > 0 ? word.slice(0, idx) : "";
+  const suffix = word.slice(idx + root.length);
+  const rootMask = "·".repeat(root.length);
+  if (prefix && suffix) return `${prefix}-${rootMask}-${suffix}`;
+  if (prefix) return `${prefix}-${rootMask}`;
+  if (suffix) return `${rootMask}-${suffix}`;
+  return rootMask;
 }
 
 /* ── ORBIT COLLISION DETECTION ───────────────────────────────── */
@@ -118,9 +146,9 @@ export default function RootGraph({
             fontSize: "8px",
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            color: hintsVisible ? "#e8b84b" : "#4a3a28",
+            color: hintsVisible ? "#e8b84b" : "#c8922a",
             background: hintsVisible ? "rgba(200,146,42,0.08)" : "rgba(10,8,4,0.6)",
-            border: `1px solid ${hintsVisible ? "#c8922a55" : "#2a201055"}`,
+            border: `1px solid ${hintsVisible ? "#c8922a55" : "rgba(200,146,42,0.35)"}`,
             borderRadius: "2px",
             padding: "3px 10px",
             cursor: "pointer",
@@ -158,7 +186,6 @@ export default function RootGraph({
           const y = CY + Math.sin(angle) * radius;
 
           const isFound = found.includes(word);
-          const showLabel = isFound || hintsVisible;
           const prefix = getPrefix(word, root);
           const meaning =
             prefix
@@ -214,16 +241,20 @@ export default function RootGraph({
                 stroke={isFound ? "#c8922a" : "#2a2010"}
               />
 
-              {/* NODE LABEL — show word if found or hints on, else dots */}
+              {/* NODE LABEL — full word if found; prefix/suffix hint if stitched; dots otherwise */}
               <text
                 x={x}
                 y={y + 3}
                 textAnchor="middle"
                 fontSize="8"
-                fill={isFound ? "#e8b84b" : hintsVisible ? "#5a4a38" : "#1e1808"}
+                fill={isFound ? "#e8b84b" : hintsVisible ? "#9a8870" : "#1e1808"}
                 fontFamily="monospace"
               >
-                {showLabel ? word : "·".repeat(Math.min(word.length, 7))}
+                {isFound
+                  ? word
+                  : hintsVisible
+                  ? buildHintLabel(word, root)
+                  : "·".repeat(Math.min(word.length, 7))}
               </text>
             </g>
           );
