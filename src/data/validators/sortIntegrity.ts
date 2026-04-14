@@ -17,10 +17,11 @@ export type SortIntegrityIssue = {
 
 export const validateSortIntegrity = (
   entries: SortIntegrityEntry[],
-  options?: { requirePoolCoverage?: boolean },
+  options?: { requirePoolCoverage?: boolean; allowedPoolExtras?: string[] },
 ): SortIntegrityIssue[] => {
   const issues: SortIntegrityIssue[] = [];
   const requirePoolCoverage = options?.requirePoolCoverage ?? false;
+  const allowedPoolExtras = new Set(options?.allowedPoolExtras ?? []);
 
   for (const entry of entries) {
     const entryLabel = entry.root ?? "unknown-entry";
@@ -41,10 +42,10 @@ export const validateSortIntegrity = (
       const acceptedTerms = new Set(entry.groups.flatMap((group) => group.accepts));
       const decoyTerms = new Set(entry.falseSystem?.decoys ?? []);
       for (const token of entry.pool) {
-        if (!acceptedTerms.has(token) && !decoyTerms.has(token)) {
+        if (!acceptedTerms.has(token) && !decoyTerms.has(token) && !allowedPoolExtras.has(token)) {
           issues.push({
             entryLabel,
-            message: `pool token '${token}' is neither accepted nor marked as an explicit decoy`,
+            message: `pool token '${token}' is neither accepted, marked as an explicit decoy, nor listed as an allowed injected decoy`,
           });
         }
       }

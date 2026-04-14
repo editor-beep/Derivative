@@ -86,3 +86,45 @@ test("every synthesized puzzle includes a short non-empty meta claim", () => {
     assert.ok(puzzle.meta.claim.trim().split(/\s+/).length <= 8);
   }
 });
+
+
+test("classification puzzles inject deterministic decoys and merge authored false-system decoys", () => {
+  const insight = {
+    ...baseInsight("SUPPLETIVE"),
+    id: "suppletive-demo",
+    data: {
+      groups: [
+        { id: "g1", accepts: ["go", "went"], related: [] },
+        { id: "g2", accepts: ["gone"], related: [] },
+      ],
+      pool: ["go", "went", "gone"],
+      falseSystem: {
+        decoys: ["least"],
+        breakMessage: "authored break",
+        revealTruth: "authored reveal",
+      },
+    },
+  };
+
+  const date = "2026-03-01";
+  const first = synthesizePuzzle(insight, date);
+  const second = synthesizePuzzle(insight, date);
+
+  assert.deepEqual(first.pool, second.pool);
+  assert.ok(first.pool.length >= insight.data.pool.length + 1);
+  assert.ok(first.pool.length <= insight.data.pool.length + 2);
+
+  const accepts = new Set(insight.data.groups.flatMap((group) => group.accepts));
+  const injected = first.pool.filter((token) => !insight.data.pool.includes(token));
+  assert.ok(injected.length >= 1 && injected.length <= 2);
+  injected.forEach((token) => {
+    assert.equal(accepts.has(token), false, `injected decoy '${token}' must not be accepted by any group`);
+  });
+
+  assert.equal(first.falseSystem.breakMessage, "authored break");
+  assert.equal(first.falseSystem.revealTruth, "authored reveal");
+  assert.ok(first.falseSystem.decoys.includes("least"));
+  injected.forEach((token) => {
+    assert.ok(first.falseSystem.decoys.includes(token));
+  });
+});
