@@ -794,7 +794,7 @@ const TypeBadge = ({ type, lensId }: { type: PuzzleType; lensId?: LensId }) => {
   );
 };
 
-const RevealCard = ({
+export const RevealCard = ({
   puzzle,
   onShare,
 }: {
@@ -803,6 +803,7 @@ const RevealCard = ({
 }) => {
   const color = TYPE_COLORS[puzzle.type] || COLORS.goldDim;
   const Icon = TYPE_ICONS[puzzle.type] || IconRoot;
+  const claim = puzzle.meta?.claim?.trim();
 
   return (
     <div
@@ -864,6 +865,21 @@ const RevealCard = ({
           {puzzle.reveal.body}
         </div>
 
+        {claim && (
+          <div
+            style={{
+              ...S.mono,
+              fontSize: "0.62rem",
+              color: COLORS.textMuted,
+              letterSpacing: "0.08em",
+              marginBottom: "0.9rem",
+              opacity: 0.82,
+            }}
+          >
+            {claim}
+          </div>
+        )}
+
         <div
           style={{
             display: "flex",
@@ -903,6 +919,19 @@ const RevealCard = ({
       </div>
     </div>
   );
+};
+
+export const RevealSection = ({
+  puzzle,
+  visible,
+  onShare,
+}: {
+  puzzle: Puzzle;
+  visible: boolean;
+  onShare: () => void;
+}) => {
+  if (!visible) return null;
+  return <RevealCard puzzle={puzzle} onShare={onShare} />;
 };
 
 const ShareCard = ({ data }: { data: ShareData }) => {
@@ -3083,7 +3112,7 @@ export default function Derivative() {
             </button>
           )}
 
-          {(revealed || complete) && <RevealCard puzzle={puzzle} onShare={buildShare} />}
+          <RevealSection puzzle={puzzle} visible={revealed || complete} onShare={buildShare} />
           {shareMsg && <ShareCard data={shareMsg} />}
         </div>
       </div>
