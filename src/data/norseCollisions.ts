@@ -133,7 +133,7 @@ export const NORSE_BORROWED_POOL = [
     groups: [
       {
         id: "norse",
-        displayLabel: "norse words", solutionLabel: "Norse social words",
+        displayLabel: "norse layer", solutionLabel: "Norse social words",
         accepts: ["law", "husband", "fellow", "skill", "trust", "loan", "anger", "wrong", "happy", "guest"],
         related: ["ransack", "outlaw"],
       },
@@ -167,13 +167,13 @@ export const NORSE_BORROWED_POOL = [
     groups: [
       {
         id: "norse_winner",
-        displayLabel: "norse winner", solutionLabel: "Norse winner (what we say now)",
+        displayLabel: "norse layer", solutionLabel: "Norse winner (what we say now)",
         accepts: ["take", "die", "sky", "leg", "skin", "call", "hit", "ill", "ugly", "want"],
         related: ["get", "give", "raise"],
       },
       {
         id: "oe_loser",
-        displayLabel: "english displaced", solutionLabel: "Old English loser (what we no longer say)",
+        displayLabel: "english layer", solutionLabel: "Old English loser (what we no longer say)",
         accepts: ["nim", "clepe", "smite"],
         related: ["starve (any death)", "heaven (physical)", "limb (specific)", "hide (human)", "sick (mental)", "unfair", "wish (lack)", "yclept", "slay"],
       },
@@ -189,13 +189,13 @@ export const NORSE_BORROWED_POOL = [
     groups: [
       {
         id: "norse",
-        displayLabel: "norse words", solutionLabel: "Norse everyday words",
+        displayLabel: "norse layer", solutionLabel: "Norse everyday words",
         accepts: ["egg", "knife", "cake", "bag", "seat", "gap", "loose", "flat", "get", "window"],
         related: ["steak", "root"],
       },
       {
         id: "origin",
-        displayLabel: "replaced by", solutionLabel: "What displaced or what the Norse word replaced",
+        displayLabel: "english layer", solutionLabel: "What displaced or what the Norse word replaced",
         accepts: [],
         related: ["ey (Saxon form)", "seax (Saxon blade)", "bread type", "sack", "stool", "opening", "tied", "level", "catch/seize", "vind-auga (wind-eye)", "hlaef", "dwellan"],
       },
