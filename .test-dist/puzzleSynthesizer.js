@@ -107,7 +107,7 @@ function guardPrompt({ type, id, prompt, revealBody, fallback, }) {
     return fallback;
 }
 function buildRootPuzzle(insight, date) {
-    const { targets, required } = insight.data;
+    const { targets, required, forms } = insight.data;
     return {
         date,
         type: "ROOT",
@@ -116,6 +116,7 @@ function buildRootPuzzle(insight, date) {
         targets,
         required,
         pool: targets,
+        forms,
         meta: {
             claim: claimForInsight(insight),
             root: insight.root,

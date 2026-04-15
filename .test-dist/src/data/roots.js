@@ -84,6 +84,7 @@ const _ROOT_POOL_RAW = [
         targets: ["decide", "decision", "incision", "incisive", "scissors", "precise", "concise", "homicide", "suicide", "genocide"],
         required: ["decide", "decision", "incision", "precise", "homicide"],
         tension: "Latin 'caedere' (to cut/kill) is the hidden blade in English abstraction — 'decision' is a cutting through options, 'incisive' is cutting to the point, while 'homicide' returns to the original meaning. The 14th-century legal vocabulary that gave us 'precise' (cut off with exactness) and 'concise' (cut down) was also the vocabulary that gave courts the power to decide who lived and died",
+        forms: ["cide", "cis", "cision", "cise"],
     },
     {
         root: "cap",
@@ -92,6 +93,7 @@ const _ROOT_POOL_RAW = [
         targets: ["capture", "captive", "capacity", "accept", "except", "concept", "reception", "perception", "anticipate", "participate"],
         required: ["capture", "captive", "capacity", "concept", "perception"],
         tension: "Latin 'capere' (to take/seize) connects the physical capture to the mental concept (something taken in by the mind) to participation (taking part) — seizing as the root of understanding",
+        forms: ["cept", "ceiv", "cip"],
     },
     {
         root: "cede",
@@ -108,7 +110,8 @@ const _ROOT_POOL_RAW = [
         targets: ["accept", "except", "intercept", "concept", "perceive", "receive", "deceive", "capable", "capture", "captive"],
         required: ["accept", "except", "intercept", "concept", "perceive"],
         tension: "Latin 'capere' bifurcates into -cept and -ceive forms — the same root in Latin and French dress",
-        entryPaths: { accept: "direct_latin", except: "direct_latin", intercept: "direct_latin", concept: "direct_latin", perceive: "via_french", receive: "via_french", deceive: "via_french", capable: "direct_latin", capture: "direct_latin", captive: "direct_latin" }
+        entryPaths: { accept: "direct_latin", except: "direct_latin", intercept: "direct_latin", concept: "direct_latin", perceive: "via_french", receive: "via_french", deceive: "via_french", capable: "direct_latin", capture: "direct_latin", captive: "direct_latin" },
+        forms: ["ceiv", "cap", "cip"],
     },
     {
         root: "cern",
@@ -117,6 +120,7 @@ const _ROOT_POOL_RAW = [
         targets: ["discern", "discernment", "discrete", "discreet", "secret", "secretion", "concern", "certain", "decree", "discriminate"],
         required: ["discern", "discernment", "discrete", "secret", "certain"],
         tension: "Latin 'cernere' (to sift/separate) underlies both judicial 'discernment' and state 'secrecy' — the elite power to separate, classify, and withhold was coded into the same root. 'Discreet' and 'discrete' are doublets from the same past participle: social tact and mathematical separation share a face. A 'decree' (a thing sifted out and decided) was the instrument of that power",
+        forms: ["cret", "cre"],
     },
     {
         root: "civ",
@@ -254,7 +258,8 @@ const _ROOT_POOL_RAW = [
         targets: ["fracture", "fragment", "fraction", "infraction", "refract", "fragile", "frail", "afraid"],
         required: ["fracture", "fragment", "fraction", "infraction", "refract"],
         tension: "Latin 'frangere' reaches English as 'fract-' (learned) and 'frail/afraid' (via French erosion)",
-        entryPaths: { fracture: "direct_latin", fragment: "direct_latin", fraction: "direct_latin", infraction: "direct_latin", refract: "direct_latin", fragile: "direct_latin", frail: "via_french", afraid: "via_french" }
+        entryPaths: { fracture: "direct_latin", fragment: "direct_latin", fraction: "direct_latin", infraction: "direct_latin", refract: "direct_latin", fragile: "direct_latin", frail: "via_french", afraid: "via_french" },
+        forms: ["frag", "frail"],
     },
     {
         root: "gen",
@@ -447,6 +452,7 @@ const _ROOT_POOL_RAW = [
         targets: ["submit", "transmit", "permit", "admit", "dismiss", "mission", "omit", "emit", "commit", "remit"],
         required: ["submit", "transmit", "permit", "admit", "omit"],
         tension: "The root 'mittere' (send) forks into -mit and -miss forms depending on tense",
+        forms: ["miss"],
     },
     {
         root: "mort",
@@ -575,6 +581,7 @@ const _ROOT_POOL_RAW = [
         targets: ["compose", "impose", "expose", "propose", "deposit", "postpone", "position", "positive", "component", "opponent"],
         required: ["compose", "impose", "expose", "propose", "deposit"],
         tension: "Latin 'ponere' (place) splits into -pose and -pon- forms — the same root in two tense stems",
+        forms: ["pon"],
     },
     {
         root: "potent",
@@ -941,6 +948,7 @@ const _ROOT_POOL_RAW = [
         targets: ["photograph", "biography", "diagram", "telegram", "autograph", "geography", "paragraph", "calligraphy", "typography", "monograph"],
         required: ["photograph", "biography", "diagram", "autograph", "geography"],
         tension: "Greek 'graphein' (to write) fused with -gram and -graph variants in English",
+        forms: ["gram"],
     },
     {
         root: "heli",

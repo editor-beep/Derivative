@@ -21,6 +21,7 @@ function buildRootInsight(r, idx) {
             impostors: d.impostors,
             eras: d.eras,
             decompositions: d.decompositions,
+            forms: d.forms,
         },
     };
 }

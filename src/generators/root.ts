@@ -24,6 +24,7 @@ export function buildRootInsight(
       impostors: d.impostors,
       eras: d.eras,
       decompositions: d.decompositions,
+      forms: d.forms,
     },
   };
 }

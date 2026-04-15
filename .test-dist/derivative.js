@@ -599,7 +599,13 @@ const PuzzleHeader = ({ puzzle, selDate, onOpenHelp, }) => {
                     color: constants_1.COLORS.textSecondary,
                     fontStyle: "italic",
                     marginBottom: "0.3rem",
-                }, children: [lang, " \u00B7 ", meaning] }), (0, jsx_runtime_1.jsx)("div", { style: {
+                }, children: [lang, " \u00B7 ", meaning] }), puzzle.type === "ROOT" && puzzle.forms && puzzle.forms.length > 0 && ((0, jsx_runtime_1.jsxs)("div", { style: {
+                    ...S.mono,
+                    fontSize: "0.68rem",
+                    color: constants_1.COLORS.textFaint,
+                    letterSpacing: "0.08em",
+                    marginBottom: "0.3rem",
+                }, children: ["also: ", puzzle.forms.map((f) => `-${f}-`).join(" · ")] })), (0, jsx_runtime_1.jsx)("div", { style: {
                     ...S.mono,
                     fontSize: "0.56rem",
                     color: constants_1.COLORS.textFaint,
@@ -722,7 +728,7 @@ const RootPuzzle = ({ puzzle, found, onWord, revealed, }) => {
                                 border: `1px solid rgba(78,207,207,0.4)`,
                                 color: constants_1.COLORS.cyan,
                                 boxShadow: `0 0 16px ${constants_1.COLORS.cyanGlow}`,
-                            }, children: [w, (0, jsx_runtime_1.jsx)("span", { style: { color: constants_1.COLORS.cyanDim, fontSize: "0.58rem" }, children: "related" })] }, w))) }))] }), (0, jsx_runtime_1.jsx)("div", { style: { position: "relative", height: "320px", marginTop: "0.75rem" }, children: (0, jsx_runtime_1.jsx)(RootGraph_1.default, { root: root, required: required, found: found, bonus: bonusFound }) })] }));
+                            }, children: [w, (0, jsx_runtime_1.jsx)("span", { style: { color: constants_1.COLORS.cyanDim, fontSize: "0.58rem" }, children: "related" })] }, w))) }))] }), (0, jsx_runtime_1.jsx)("div", { style: { position: "relative", height: "320px", marginTop: "0.75rem" }, children: (0, jsx_runtime_1.jsx)(RootGraph_1.default, { root: root, required: required, found: found, bonus: bonusFound, forms: puzzle.forms }) })] }));
 };
 const StepPuzzle = ({ puzzle, state, onState, revealed, }) => {
     const steps = puzzle.steps || [];

@@ -21,18 +21,23 @@ function getSuffix(word: string, root: string): string | null {
  *    "action"   (root "act") → "···-ion"
  *    "reactive" (root "act") → "re-···-ive"
  *    "act"      (root "act") → "···"  (word is the root itself)
+ *  Falls back to trying each alternate form in `forms` when the root doesn't
+ *  appear literally (e.g. "decide" with root "caed" → found via form "cid").
  */
-function buildHintLabel(word: string, root: string): string {
-  if (word.indexOf(root) < 0) {
-    return "·".repeat(Math.min(word.length, 7));
+function buildHintLabel(word: string, root: string, forms?: string[]): string {
+  // Try the primary root first
+  const candidates = [root, ...(forms ?? [])];
+  for (const candidate of candidates) {
+    if (word.indexOf(candidate) < 0) continue;
+    const prefix = getPrefix(word, candidate) ?? "";
+    const suffix = getSuffix(word, candidate) ?? "";
+    const rootMask = "·".repeat(candidate.length);
+    if (prefix && suffix) return `${prefix}-${rootMask}-${suffix}`;
+    if (prefix) return `${prefix}-${rootMask}`;
+    if (suffix) return `${rootMask}-${suffix}`;
+    return rootMask;
   }
-  const prefix = getPrefix(word, root) ?? "";
-  const suffix = getSuffix(word, root) ?? "";
-  const rootMask = "·".repeat(root.length);
-  if (prefix && suffix) return `${prefix}-${rootMask}-${suffix}`;
-  if (prefix) return `${prefix}-${rootMask}`;
-  if (suffix) return `${rootMask}-${suffix}`;
-  return rootMask;
+  return "·".repeat(Math.min(word.length, 7));
 }
 
 /* ── ORBIT COLLISION DETECTION ───────────────────────────────── */
@@ -68,11 +73,13 @@ export default function RootGraph({
   required,
   found,
   bonus,
+  forms,
 }: {
   root: string;
   required: string[];
   found: string[];
   bonus: string[];
+  forms?: string[];
 }) {
   const [hintsVisible, setHintsVisible] = useState(false);
   const words = [...required, ...bonus];
@@ -170,7 +177,7 @@ export default function RootGraph({
         <circle cx={CX} cy={CY} r={26} className="root-core" />
         <text
           x={CX}
-          y={CY + 4}
+          y={forms && forms.length > 0 ? CY : CY + 4}
           textAnchor="middle"
           fontSize="11"
           fill="#e8b84b"
@@ -178,6 +185,18 @@ export default function RootGraph({
         >
           {root}
         </text>
+        {forms && forms.length > 0 && (
+          <text
+            x={CX}
+            y={CY + 13}
+            textAnchor="middle"
+            fontSize="7"
+            fill="#8a7050"
+            fontFamily="monospace"
+          >
+            {forms.map((f) => `-${f}`).join(" · ")}
+          </text>
+        )}
 
         {words.map((word, i) => {
           const angle = (i / words.length) * Math.PI * 2;
@@ -252,7 +271,7 @@ export default function RootGraph({
                 {isFound
                   ? word
                   : hintsVisible
-                  ? buildHintLabel(word, root)
+                  ? buildHintLabel(word, root, forms)
                   : "·".repeat(Math.min(word.length, 7))}
               </text>
             </g>
