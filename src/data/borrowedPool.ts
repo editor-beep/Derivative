@@ -61,18 +61,21 @@ export const BORROWED_POOL: SortPoolEntry[] = [
       {
         id: "french",
         displayLabel: "norman french", solutionLabel: "Norman French conquest layer",
+        hint: "The Imperial Machine",
         accepts: ["beef", "pork", "mutton", "venison"],
         related: ["veal", "poultry"],
       },
       {
         id: "old_english",
         displayLabel: "old english", solutionLabel: "Old English farming layer",
+        hint: "The Root Source",
         accepts: ["cow", "pig", "sheep", "deer"],
         related: ["ox", "fowl"],
       },
       {
         id: "latin",
         displayLabel: "church latin", solutionLabel: "Latin ecclesiastical layer",
+        hint: "The Sacred Register",
         accepts: ["scripture", "angel", "altar", "martyr"],
         related: ["saint", "bishop"],
       },

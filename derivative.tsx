@@ -1215,19 +1215,27 @@ const StepPuzzle = ({
     overflow: "hidden",
   };
 
-  const renderOptions = (options: string[]) => (
+  const renderOptions = (options: string[], optionHints?: Record<string, string>) => (
     <div style={{ display: "flex", flexDirection: "column", gap: "7px" }}>
-      {options.map((opt: string) => (
-        <button
-          key={opt}
-          disabled={locked}
-          onClick={() => submitAnswer(opt)}
-          className="deriv-btn"
-          style={{ ...S.btnSm, width: "100%", textAlign: "left", padding: "0.6rem 0.9rem", fontSize: "0.72rem", opacity: locked ? 0.55 : 1, cursor: locked ? "default" : "pointer", letterSpacing: "0.04em" }}
-        >
-          {opt}
-        </button>
-      ))}
+      {options.map((opt: string) => {
+        const hint = optionHints?.[opt];
+        return (
+          <button
+            key={opt}
+            disabled={locked}
+            onClick={() => submitAnswer(opt)}
+            className="deriv-btn"
+            style={{ ...S.btnSm, width: "100%", textAlign: "left", padding: "0.6rem 0.9rem", fontSize: "0.72rem", opacity: locked ? 0.55 : 1, cursor: locked ? "default" : "pointer", letterSpacing: "0.04em" }}
+          >
+            <span>{opt}</span>
+            {hint && (
+              <span style={{ display: "block", fontSize: "0.58rem", color: COLORS.textFaint, marginTop: "0.18rem", letterSpacing: "0.1em", fontStyle: "italic", textTransform: "none" }}>
+                {hint}
+              </span>
+            )}
+          </button>
+        );
+      })}
     </div>
   );
 
@@ -1297,7 +1305,7 @@ const StepPuzzle = ({
             <div style={{ fontSize: "2rem", fontWeight: 600, color: COLORS.textPrimary, letterSpacing: "0.03em", marginBottom: "1.4rem", textShadow: "0 0 20px rgba(232,184,75,0.12)" }}>
               {currentStep.word}
             </div>
-            {renderOptions(currentStep.options)}
+            {renderOptions(currentStep.options, currentStep.optionHints)}
           </>
         )}
 

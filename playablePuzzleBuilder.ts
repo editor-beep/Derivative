@@ -66,6 +66,14 @@ function buildSortPlayablePuzzle(puzzle: Puzzle): PlayablePuzzle {
   }
 
   const options = puzzle.groups.map((group, index) => group.displayLabel || group.label || `Group ${index + 1}`);
+  const optionHints: Record<string, string> = {};
+  for (const group of puzzle.groups) {
+    const label = group.displayLabel || group.label;
+    if (label && group.hint) {
+      optionHints[label] = group.hint;
+    }
+  }
+  const hasHints = Object.keys(optionHints).length > 0;
   const shuffledWords = shufflePool(puzzle.pool, `${puzzle.date}:${puzzle.type}`);
   const steps: Step[] = [];
   let classifiedCount = 0;
@@ -91,6 +99,7 @@ function buildSortPlayablePuzzle(puzzle: Puzzle): PlayablePuzzle {
       word,
       options,
       correct,
+      ...(hasHints ? { optionHints } : {}),
     });
 
     classifiedCount += 1;

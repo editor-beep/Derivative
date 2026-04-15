@@ -230,7 +230,7 @@ export interface Reveal {
 }
 
 export type Step =
-  | { type: "CLASSIFY"; word: string; options: string[]; correct: string }
+  | { type: "CLASSIFY"; word: string; options: string[]; correct: string; optionHints?: Record<string, string> }
   | { type: "GUESS_SYSTEM"; options: string[]; correct: string }
   | { type: "INFO"; text: string };
 
