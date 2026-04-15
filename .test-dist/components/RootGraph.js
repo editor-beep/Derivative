@@ -57,21 +57,27 @@ function getSuffix(word, root) {
  *    "action"   (root "act") → "···-ion"
  *    "reactive" (root "act") → "re-···-ive"
  *    "act"      (root "act") → "···"  (word is the root itself)
+ *  Falls back to trying each alternate form in `forms` when the root doesn't
+ *  appear literally (e.g. "decide" with root "caed" → found via form "cid").
  */
-function buildHintLabel(word, root) {
-    if (word.indexOf(root) < 0) {
-        return "·".repeat(Math.min(word.length, 7));
+function buildHintLabel(word, root, forms) {
+    // Try the primary root first
+    const candidates = [root, ...(forms ?? [])];
+    for (const candidate of candidates) {
+        if (word.indexOf(candidate) < 0)
+            continue;
+        const prefix = getPrefix(word, candidate) ?? "";
+        const suffix = getSuffix(word, candidate) ?? "";
+        const rootMask = "·".repeat(candidate.length);
+        if (prefix && suffix)
+            return `${prefix}-${rootMask}-${suffix}`;
+        if (prefix)
+            return `${prefix}-${rootMask}`;
+        if (suffix)
+            return `${rootMask}-${suffix}`;
+        return rootMask;
     }
-    const prefix = getPrefix(word, root) ?? "";
-    const suffix = getSuffix(word, root) ?? "";
-    const rootMask = "·".repeat(root.length);
-    if (prefix && suffix)
-        return `${prefix}-${rootMask}-${suffix}`;
-    if (prefix)
-        return `${prefix}-${rootMask}`;
-    if (suffix)
-        return `${rootMask}-${suffix}`;
-    return rootMask;
+    return "·".repeat(Math.min(word.length, 7));
 }
 /* ── ORBIT COLLISION DETECTION ───────────────────────────────── */
 const CHAR_WIDTH_PX = 5;
@@ -100,7 +106,7 @@ function computeOrbitRadius(words) {
     }
     return Math.min(needed, MAX_ORBIT_RADIUS);
 }
-function RootGraph({ root, required, found, bonus, }) {
+function RootGraph({ root, required, found, bonus, forms, }) {
     const [hintsVisible, setHintsVisible] = (0, react_1.useState)(false);
     const words = [...required, ...bonus];
     const radius = computeOrbitRadius(words);
@@ -149,7 +155,7 @@ function RootGraph({ root, required, found, bonus, }) {
                         padding: "3px 10px",
                         cursor: "pointer",
                         transition: "all 0.2s ease",
-                    }, children: hintsVisible ? "hide hints" : "hint ›" }) }), (0, jsx_runtime_1.jsxs)("svg", { width: "100%", height: "100%", viewBox: `0 0 ${VB_W} ${VB_H}`, preserveAspectRatio: "xMidYMid meet", style: { position: "absolute", inset: 0, zIndex: 1 }, children: [(0, jsx_runtime_1.jsx)("circle", { cx: CX, cy: CY, r: 26, className: "root-core" }), (0, jsx_runtime_1.jsx)("text", { x: CX, y: CY + 4, textAnchor: "middle", fontSize: "11", fill: "#e8b84b", fontFamily: "monospace", children: root }), words.map((word, i) => {
+                    }, children: hintsVisible ? "hide hints" : "hint ›" }) }), (0, jsx_runtime_1.jsxs)("svg", { width: "100%", height: "100%", viewBox: `0 0 ${VB_W} ${VB_H}`, preserveAspectRatio: "xMidYMid meet", style: { position: "absolute", inset: 0, zIndex: 1 }, children: [(0, jsx_runtime_1.jsx)("circle", { cx: CX, cy: CY, r: 26, className: "root-core" }), (0, jsx_runtime_1.jsx)("text", { x: CX, y: forms && forms.length > 0 ? CY : CY + 4, textAnchor: "middle", fontSize: "11", fill: "#e8b84b", fontFamily: "monospace", children: root }), forms && forms.length > 0 && ((0, jsx_runtime_1.jsx)("text", { x: CX, y: CY + 13, textAnchor: "middle", fontSize: "7", fill: "#8a7050", fontFamily: "monospace", children: forms.map((f) => `-${f}`).join(" · ") })), words.map((word, i) => {
                         const angle = (i / words.length) * Math.PI * 2;
                         const x = CX + Math.cos(angle) * radius;
                         const y = CY + Math.sin(angle) * radius;
@@ -161,7 +167,7 @@ function RootGraph({ root, required, found, bonus, }) {
                         return ((0, jsx_runtime_1.jsxs)("g", { children: [(0, jsx_runtime_1.jsx)("line", { x1: CX, y1: CY, x2: x, y2: y, stroke: isFound ? "#e8b84b" : "#2a2010", strokeWidth: "1", strokeDasharray: "4 6", className: isFound ? "flow-active" : "flow-idle" }), prefix && hintsVisible && ((0, jsx_runtime_1.jsx)("text", { x: (CX + x) / 2, y: (CY + y) / 2 - 6, fontSize: "8", fill: "#8a7868", textAnchor: "middle", fontFamily: "monospace", children: prefix })), meaning && hintsVisible && ((0, jsx_runtime_1.jsx)("text", { x: (CX + x) / 2, y: (CY + y) / 2 + 6, fontSize: "8", fill: "#4ecfcf", textAnchor: "middle", fontFamily: "monospace", children: meaning })), (0, jsx_runtime_1.jsx)("circle", { cx: x, cy: y, r: NODE_RADIUS, fill: isFound ? "rgba(200,146,42,0.2)" : "#0d0b08", stroke: isFound ? "#c8922a" : "#2a2010" }), (0, jsx_runtime_1.jsx)("text", { x: x, y: y + 3, textAnchor: "middle", fontSize: "8", fill: isFound ? "#e8b84b" : hintsVisible ? "#9a8870" : "#1e1808", fontFamily: "monospace", children: isFound
                                         ? word
                                         : hintsVisible
-                                            ? buildHintLabel(word, root)
+                                            ? buildHintLabel(word, root, forms)
                                             : "·".repeat(Math.min(word.length, 7)) })] }, word));
                     })] }), (0, jsx_runtime_1.jsx)("style", { children: `
         .flow-active {

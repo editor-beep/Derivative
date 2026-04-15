@@ -166,6 +166,8 @@ export interface Puzzle {
   pairs?: PuzzlePair[];
   timeline?: PuzzleTimelineItem[];
   falseSystem?: FalseSystemConfig;
+  // ROOT-specific: alternate surface forms the root takes (allomorphs)
+  forms?: string[];
 
   // IDIOM-specific
   fragments?: string[];
@@ -214,6 +216,9 @@ export interface RootInsightFragment {
   eras?: Record<string, string>;
   decompositions?: Record<string, string>;
   registers?: Record<string, "formal" | "informal" | "technical" | string>;
+  // Alternate surface forms the root takes in English words (allomorphs).
+  // E.g. "caed" → ["cide", "cis", "cision"] so players know to look for -cide/-cis-.
+  forms?: string[];
 }
 
 export interface FalseSystemConfig {

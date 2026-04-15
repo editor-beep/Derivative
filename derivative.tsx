@@ -900,6 +900,20 @@ const PuzzleHeader = ({
         {lang} · {meaning}
       </div>
 
+      {puzzle.type === "ROOT" && puzzle.forms && puzzle.forms.length > 0 && (
+        <div
+          style={{
+            ...S.mono,
+            fontSize: "0.68rem",
+            color: COLORS.textFaint,
+            letterSpacing: "0.08em",
+            marginBottom: "0.3rem",
+          }}
+        >
+          also: {puzzle.forms.map((f) => `-${f}-`).join(" · ")}
+        </div>
+      )}
+
       <div
         style={{
           ...S.mono,
@@ -1147,6 +1161,7 @@ const RootPuzzle = ({
           required={required}
           found={found}
           bonus={bonusFound}
+          forms={puzzle.forms}
         />
       </div>
     </div>

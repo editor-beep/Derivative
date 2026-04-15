@@ -141,7 +141,7 @@ function guardPrompt({
 }
 
 function buildRootPuzzle(insight: InsightByType<"ROOT">, date: string): Puzzle {
-  const { targets, required } = insight.data;
+  const { targets, required, forms } = insight.data;
   return {
     date,
     type: "ROOT",
@@ -150,6 +150,7 @@ function buildRootPuzzle(insight: InsightByType<"ROOT">, date: string): Puzzle {
     targets,
     required,
     pool: targets,
+    forms,
     meta: {
       claim: claimForInsight(insight),
       root: insight.root,
