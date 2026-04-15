@@ -291,6 +291,303 @@ export const FALSE_FAMILY_POOL = [
       "Completely unrelated Old English roots that share modern spelling (and sometimes pronunciation)",
   },
   {
+    root: "quarry",
+    lang: "Old French/Latin",
+    meaning: "excavation vs. prey",
+    groups: [
+      {
+        id: "mine",
+        displayLabel: "stone excavation",
+        solutionLabel: "quarry — OF quarriere from Latin quadrare 'to square (stone)'",
+        accepts: ["mine", "pit", "stone works"],
+        related: ["rock", "dig"],
+      },
+      {
+        id: "prey",
+        displayLabel: "hunted animal",
+        solutionLabel: "quarry — OF cuiree 'parts of the deer placed on the hide (cuir) for the hounds'",
+        accepts: ["prey", "target", "game"],
+        related: ["hunt", "victim"],
+      },
+    ],
+    pool: [
+      "quarry", "mine", "pit", "stone works", "prey", "target", "game",
+      "rock", "dig", "hunt", "victim",
+    ],
+    tension:
+      "Two French terms—one for squaring stone, one for the rewards of a hunt—merged into one English word.",
+  },
+  {
+    root: "row",
+    lang: "Germanic",
+    meaning: "line/propulsion vs. argument",
+    groups: [
+      {
+        id: "line",
+        displayLabel: "a line or to paddle",
+        solutionLabel: "row /roʊ/ — OE rāw 'a line' or rōwan 'to paddle'",
+        accepts: ["column", "paddle", "linear"],
+        related: ["boat", "order"],
+      },
+      {
+        id: "fight",
+        displayLabel: "a noisy argument",
+        solutionLabel: "row /raʊ/ — Origin uncertain, possibly related to 'rouse'",
+        accepts: ["argument", "spat", "fracas"],
+        related: ["noise", "quarrel"],
+      },
+    ],
+    pool: [
+      "row", "column", "paddle", "linear", "argument", "spat", "fracas",
+      "boat", "order", "noise", "quarrel",
+    ],
+    tension:
+      "The 'line' sense is ancient Germanic; the 'argument' sense appeared much later and sounds like 'plow'.",
+  },
+  {
+    root: "sow",
+    lang: "Germanic",
+    meaning: "plant seeds vs. female pig",
+    groups: [
+      {
+        id: "plant",
+        displayLabel: "to plant seeds",
+        solutionLabel: "sow /soʊ/ — OE sāwan 'to scatter seed'",
+        accepts: ["seed", "plant", "scatter"],
+        related: ["farm", "grow"],
+      },
+      {
+        id: "pig",
+        displayLabel: "adult female pig",
+        solutionLabel: "sow /saʊ/ — OE sugu 'female pig'",
+        accepts: ["hog", "swine", "female pig"],
+        related: ["livestock", "farm"],
+      },
+    ],
+    pool: [
+      "sow", "seed", "plant", "scatter", "hog", "swine", "female pig",
+      "farm", "grow", "livestock",
+    ],
+    tension:
+      "Different Germanic roots (planting vs. pigs) that became heteronyms in Modern English.",
+  },
+  {
+    root: "wind",
+    lang: "Germanic",
+    meaning: "air movement vs. twist",
+    groups: [
+      {
+        id: "air",
+        displayLabel: "moving air",
+        solutionLabel: "wind /wɪnd/ — OE wind 'moving air'",
+        accepts: ["breeze", "gust", "gale"],
+        related: ["weather", "blow"],
+      },
+      {
+        id: "twist",
+        displayLabel: "turn or coil",
+        solutionLabel: "wind /waɪnd/ — OE windan 'to turn or twist'",
+        accepts: ["coil", "tighten", "rewind", "winding"],
+        related: ["spiral", "curve"],
+      },
+    ],
+    pool: [
+      "wind", "breeze", "gust", "gale", "coil", "tighten", "rewind", "winding",
+      "weather", "blow", "spiral", "curve",
+    ],
+    tension:
+      "Heteronyms with different pronunciations and origins (moving air vs. mechanical twisting).",
+  },
+  {
+    root: "tear",
+    lang: "Germanic",
+    meaning: "weeping vs. ripping",
+    groups: [
+      {
+        id: "weep",
+        displayLabel: "drop of eye fluid",
+        solutionLabel: "tear /tɪər/ — OE tēar 'drop from eyes'",
+        accepts: ["crying", "droplet", "teardrop"],
+        related: ["sadness", "weep"],
+      },
+      {
+        id: "rip",
+        displayLabel: "pull apart",
+        solutionLabel: "tear /tɛər/ — OE teran 'to pull apart'",
+        accepts: ["rip", "shred", "split"],
+        related: ["damage", "rupture"],
+      },
+    ],
+    pool: [
+      "tear", "crying", "droplet", "teardrop", "rip", "shred", "split",
+      "sadness", "weep", "damage", "rupture",
+    ],
+    tension:
+      "Distinct pronunciations distinguish emotional/biological fluid from physical destruction.",
+  },
+  {
+    root: "bass",
+    lang: "Germanic/Latin",
+    meaning: "low pitch vs. fish",
+    groups: [
+      {
+        id: "music",
+        displayLabel: "low frequency or instrument",
+        solutionLabel: "bass /beɪs/ — Alteration of ME 'base' from Latin bassus 'low'",
+        accepts: ["low-pitched", "double bass", "bass guitar"],
+        related: ["baritone", "deep"],
+      },
+      {
+        id: "fish",
+        displayLabel: "species of fish",
+        solutionLabel: "bass /bæs/ — OE bærs 'a perch-like fish'",
+        accepts: ["sea bass", "perch", "largemouth"],
+        related: ["fishing", "marine"],
+      },
+    ],
+    pool: [
+      "bass", "low-pitched", "double bass", "bass guitar", "sea bass", "perch", "largemouth",
+      "baritone", "deep", "fishing", "marine",
+    ],
+    tension:
+      "Coincidence of spelling between a musical term and a zoological name.",
+  },
+  {
+    root: "slough",
+    lang: "Germanic",
+    meaning: "swamp vs. shed skin",
+    groups: [
+      {
+        id: "swamp",
+        displayLabel: "muddy area or swamp",
+        solutionLabel: "slough /sluː/ — OE slōh 'muddy place'",
+        accepts: ["bog", "swamp", "mire"],
+        related: ["mud", "wetland"],
+      },
+      {
+        id: "shed",
+        displayLabel: "cast off skin",
+        solutionLabel: "slough /slʌf/ — ME slughe 'skin of a snake'",
+        accepts: ["shed", "peel", "discard"],
+        related: ["skin", "molt"],
+      },
+    ],
+    pool: [
+      "slough", "bog", "swamp", "mire", "shed", "peel", "discard",
+      "mud", "wetland", "skin", "molt",
+    ],
+    tension:
+      "High pronunciation variance (/slʌf/ vs /sluː/) depending on geographic or biological context.",
+  },
+  {
+    root: "pawn",
+    lang: "Old French/Latin",
+    meaning: "chess piece vs. collateral",
+    groups: [
+      {
+        id: "chess",
+        displayLabel: "chess piece",
+        solutionLabel: "pawn — OF paon from Latin pedo 'foot soldier'",
+        accepts: ["chess piece", "foot soldier", "puppet"],
+        related: ["game", "strategy"],
+      },
+      {
+        id: "collateral",
+        displayLabel: "pledge for a loan",
+        solutionLabel: "pawn — OF pan 'pledge, security'",
+        accepts: ["hock", "pledge", "collateral", "pawn shop"],
+        related: ["loan", "debt"],
+      },
+    ],
+    pool: [
+      "pawn", "chess piece", "foot soldier", "puppet", "hock", "pledge", "collateral", "pawn shop",
+      "game", "strategy", "loan", "debt",
+    ],
+    tension:
+      "Convergent spelling from different French roots (soldier vs. pledge).",
+  },
+  {
+    root: "fluke",
+    lang: "Germanic",
+    meaning: "luck vs. whale tail vs. flatfish",
+    groups: [
+      {
+        id: "luck",
+        displayLabel: "lucky accident",
+        solutionLabel: "fluke — Dialectal origin, possibly from 'fluke' (flatfish) via its shape",
+        accepts: ["accident", "chance", "stroke of luck"],
+        related: ["random", "unlikely"],
+      },
+      {
+        id: "whale",
+        displayLabel: "whale's tail",
+        solutionLabel: "fluke — Likely from OE flōc (flatfish) due to the flattened shape",
+        accepts: ["tail", "fin", "anchor blade"],
+        related: ["whale", "marine"],
+      },
+    ],
+    pool: [
+      "fluke", "accident", "chance", "stroke of luck", "tail", "fin", "anchor blade",
+      "random", "unlikely", "whale", "marine",
+    ],
+    tension:
+      "Polysemy based on the 'flat' shape of the original Germanic word for flatfish.",
+  },
+  {
+    root: "bark",
+    lang: "Old Norse/Germanic",
+    meaning: "tree skin vs. dog sound",
+    groups: [
+      {
+        id: "tree",
+        displayLabel: "outer layer of a tree",
+        solutionLabel: "bark — ON börkr 'outer covering of trees'",
+        accepts: ["cork", "tree skin", "rind"],
+        related: ["wood", "trunk"],
+      },
+      {
+        id: "sound",
+        displayLabel: "sound of a dog",
+        solutionLabel: "bark — OE beorgan 'to bark'",
+        accepts: ["yelp", "howl", "woof"],
+        related: ["noise", "canine"],
+      },
+    ],
+    pool: [
+      "bark", "cork", "tree skin", "rind", "yelp", "howl", "woof",
+      "wood", "trunk", "noise", "canine",
+    ],
+    tension:
+      "Common homonym with entirely distinct tree-based and animal-based roots.",
+  },
+  {
+    root: "yard",
+    lang: "Germanic",
+    meaning: "enclosure vs. unit of measure",
+    groups: [
+      {
+        id: "area",
+        displayLabel: "enclosed ground",
+        solutionLabel: "yard — OE geard 'enclosure, garden'",
+        accepts: ["garden", "court", "backyard"],
+        related: ["outdoor", "space"],
+      },
+      {
+        id: "length",
+        displayLabel: "unit of measurement",
+        solutionLabel: "yard — OE gierd 'rod, stick'",
+        accepts: ["three feet", "36 inches", "measuring stick"],
+        related: ["distance", "rod"],
+      },
+    ],
+    pool: [
+      "yard", "garden", "court", "backyard", "three feet", "36 inches", "measuring stick",
+      "outdoor", "space", "distance", "rod",
+    ],
+    tension:
+      "Derived from two similar but distinct OE roots: one for the space (enclosure) and one for the tool (rod).",
+  },
+  {
     root: "rack",
     lang: "Dutch/Germanic + others",
     meaning: "framework, torment, ruin",
