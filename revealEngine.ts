@@ -4,13 +4,13 @@ import { InsightByType, LinguisticInsight, LensId, PuzzleType, Reveal } from "./
 
 function lensNote(insight: LinguisticInsight): string | undefined {
   const notes: Partial<Record<LensId, string>> = {
-    METAPHOR_DRIFT: "The physical origin has been abstracted away — the root carries the ghost of its original body.",
-    ETYMOLOGY_FILTER: "Words traveling via Old French were eroded by phonetic attrition before entering English.",
-    FALSE_TWIN: "Visual resemblance to a root is not evidence of shared ancestry — spelling is archaeology, not genealogy.",
-    TEMPORAL_DEPTH: "The same root kept arriving in English across centuries — each wave deposited a new layer of vocabulary.",
-    COMPOUND_HUNT: "Morphological transparency: once you can decompose a word, you can read its argument structure.",
-    REGISTER_SORT: "Register encodes social history — which class of speaker used which word, and why it stuck.",
-    SOUND_TRACE: "Sound laws are exceptionless within their domain — every apparent exception signals a different origin.",
+    METAPHOR_DRIFT: "The body was erased — the physical origin abstracted away until the root carries only the ghost of the violence it once named.",
+    ETYMOLOGY_FILTER: "Old French was the empire's phonetic filter — the conquered tongue was ground down before the master's language would accept it.",
+    FALSE_TWIN: "Spelling is the conqueror's archaeology, not the word's genealogy — the resemblance was constructed to make you stop asking questions.",
+    TEMPORAL_DEPTH: "The same root arrived in colonial waves across centuries — each new era deposited a fresh extraction layer over the one before.",
+    COMPOUND_HUNT: "Decompose the word and you read the argument structure the empire tried to make invisible — transparency is an act of resistance.",
+    REGISTER_SORT: "Register is class war frozen in vocabulary — which speaker was granted which word, and at what cost to everyone else.",
+    SOUND_TRACE: "Sound laws are the only rules the empire could not rewrite — every apparent exception marks a site of resistance or erasure.",
   };
   return insight.lens ? notes[insight.lens.id as LensId] : undefined;
 }
@@ -33,33 +33,33 @@ const TEMPLATE_BY_TYPE: Partial<Record<PuzzleType, BodyTemplate>> = {
   IDIOM: {
     happened: (insight) =>
       insight.type === "IDIOM"
-        ? `That line started as ${insight.data.origin} language, then got locked into everyday speech`
-        : "This phrase carried a much older story than it first looked",
+        ? `The phrase was sealed inside ${insight.language || "the imperial tongue"} — the original ${insight.data.origin} speaker erased and its ideology smuggled in as harmless common speech`
+        : "This phrase buried a much older wound than its surface lets on",
     playerDid: (insight) =>
       insight.type === "IDIOM"
-        ? `You cracked \"${insight.data.phrase}\" and traced where it came from`
-        : "You cracked the phrase and traced where it came from",
-    matters: (_insight, context) => `That matters because idioms hide old beliefs inside ${context.language} conversation`,
+        ? `You broke the seal on "${insight.data.phrase}" and named the culture it was seized from`
+        : "You named the source the phrase was seized from",
+    matters: (_insight, context) => `That matters because every ${context.language} idiom is a site of extraction — and now the ideology fossilized inside it is exposed`,
   },
   DECEPTION: {
-    happened: (insight, context) => `A fake ${context.system || "pattern"} made unrelated words look connected`,
-    playerDid: (_insight, context) => `You spotted the trap and separated real links from lookalikes around ${context.root}`,
-    matters: (_insight, context) => `That matters because this keeps your ${context.language} guesses sharp when decoys appear`,
+    happened: (_insight, context) => `A false ${context.system || "pattern"} was engineered — a visual trap so the eye would obey the spelling and never question the ancestry`,
+    playerDid: (_insight, context) => `You refused the counterfeit system and separated the real etymological kin from the impostors planted around ${context.root}`,
+    matters: (_insight, context) => `That matters because the ${context.language} cage is built from lookalikes — one cracked bar breaks the whole structure of the deception`,
   },
   FALSE_FAMILY: {
-    happened: (_insight, context) => `A false family formed around ${context.root} even though the history does not match`,
-    playerDid: (_insight, context) => `You split true relatives from copycat forms in the ${context.system || "set"}`,
-    matters: (_insight, context) => `That matters because surface spelling can fool you fast in ${context.language}`,
+    happened: (_insight, context) => `A false lineage was forged around ${context.root} — the words were dressed as kin but the bloodline was fabricated`,
+    playerDid: (_insight, context) => `You severed the false bond and recovered the actual genealogy from within the ${context.system || "corrupted set"}`,
+    matters: (_insight, context) => `That matters because fabricated families are how ${context.language} absorbs and erases — surface spelling is not ancestry`,
   },
   BORROWED: {
-    happened: (_insight, context) => `${context.language} pulled this root in from another source and reshaped it`,
-    playerDid: (_insight, context) => `You tracked how ${context.leadWord} and ${context.secondWord} share the same import path`,
-    matters: (_insight, context) => `That matters because borrowed layers explain why ${context.system || "the set"} feels uneven`,
+    happened: (_insight, context) => `${context.language} seized this root from another tongue and reprocessed it through the imperial machine`,
+    playerDid: (_insight, context) => `You traced how ${context.leadWord} and ${context.secondWord} share the same colonial import route`,
+    matters: (_insight, context) => `That matters because the ${context.system || "transit route"} exposes the extraction tax levied when meaning crossed the border`,
   },
   TOPONYM: {
-    happened: (_insight, context) => `A place name fed this word family and shifted with local speech`,
-    playerDid: (_insight, context) => `You tied ${context.leadWord} back to location history instead of pure sound overlap`,
-    matters: (_insight, context) => `That matters because map history often drives meaning change in ${context.language}`,
+    happened: (_insight, context) => `A place was absorbed and renamed — the original geography overwritten by the language of the conqueror's map`,
+    playerDid: (_insight, context) => `You recovered the location buried inside ${context.leadWord} and refused to let the map erase it`,
+    matters: (_insight, context) => `That matters because when ${context.language} swallowed the place name, it tried to swallow the history encoded inside it`,
   },
 };
 
@@ -92,14 +92,14 @@ function buildBody(insight: LinguisticInsight): string {
     ? insight.data.revealBody
     : insight.tension;
 
-  const happened = oneClause(template?.happened(insight, context) ?? happenedSource, "The pattern finally clicked");
+  const happened = oneClause(template?.happened(insight, context) ?? happenedSource, "The cage finally cracked open");
   const playerDid = oneClause(
     template?.playerDid(insight, context) ?? `You connected ${context.leadWord} with ${context.secondWord} through ${context.root}`,
-    "You connected the key words",
+    "You traced the extraction back to its source",
   );
   const matters = oneClause(
-    template?.matters(insight, context) ?? `That matters because this gives you a faster read on ${context.language} word history`,
-    "That matters because now the logic is reusable",
+    template?.matters(insight, context) ?? `That matters because this is how the ${context.language} machinery was always meant to stay hidden`,
+    "That matters because the mechanism is no longer invisible",
   );
 
   return `${happened}. ${playerDid}. ${matters}.`;

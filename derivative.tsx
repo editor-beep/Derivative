@@ -841,7 +841,7 @@ export const RevealCard = ({
               textTransform: "uppercase",
             }}
           >
-            revealed machinery
+            declassified
           </div>
         </div>
 
@@ -3144,7 +3144,7 @@ export default function Derivative() {
               style={{ ...S.btnSm, marginTop: "1rem" }}
               onClick={handleReveal}
             >
-              reveal machinery →
+              breach the record →
             </button>
           )}
 
