@@ -83,3 +83,11 @@ export type MoorishArabicEntry = {
   insight: string;
   difficulty: "Easy" | "Medium" | "Hard";
 };
+
+export type WomanCentricEntry = {
+  word: string;
+  origin: string;
+  definition: string;
+  insight: string;
+  difficulty: "Easy" | "Medium" | "Hard";
+};
