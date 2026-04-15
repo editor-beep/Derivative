@@ -1052,6 +1052,76 @@ const ShareCard = ({ data }: { data: ShareData }) => {
   );
 };
 
+const TutorialModal = ({
+  visible,
+  onClose,
+}: {
+  visible: boolean;
+  onClose: () => void;
+}) => {
+  if (!visible) return null;
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 50,
+        background: "rgba(0,0,0,0.72)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "1rem",
+      }}
+    >
+      <div
+        style={{
+          width: "min(760px, 100%)",
+          maxHeight: "88vh",
+          overflowY: "auto",
+          background: COLORS.bg2,
+          border: `1px solid ${COLORS.goldDark}`,
+          borderRadius: "4px",
+          padding: "1.1rem 1.15rem",
+          boxShadow: `0 0 28px ${COLORS.goldGlow}`,
+        }}
+      >
+        <div style={{ ...S.mono, fontSize: "0.76rem", color: COLORS.gold, letterSpacing: "0.12em", marginBottom: "0.75rem", textTransform: "uppercase" }}>
+          derivative // initiation protocol
+        </div>
+
+        <div style={{ color: COLORS.textSecondary, lineHeight: 1.8, fontSize: "0.82rem" }}>
+          <p style={{ margin: "0 0 0.7rem" }}>
+            I want to play a game. Each date in this archive contains one scheduled puzzle. Your task is not recall. Your task is detection.
+          </p>
+
+          <p style={{ margin: "0 0 0.55rem" }}>
+            <strong style={{ color: COLORS.textPrimary }}>Puzzle systems:</strong>{" "}
+            Root (reconstruct root-linked words), Semantic (trace meaning drift), Suppletive (forms that do not match but belong),
+            Grimm (sound-shift laws), Collision (language contact), PIE (proto-language inheritance), Deception (false pattern traps),
+            False Family (look-alikes, not relatives), Phantom Root (fake roots), Idiom (reconstruct expression), Borrowed (loan paths),
+            Toponym (hidden place-name origin), Match (pair source and target).
+          </p>
+
+          <p style={{ margin: "0 0 0.55rem" }}>
+            <strong style={{ color: COLORS.textPrimary }}>Difficulty tiers:</strong>{" "}
+            Word Curious, Vocabulary Vanguard, Etymologist, Doctor of English History.
+          </p>
+
+          <p style={{ margin: 0 }}>
+            <strong style={{ color: COLORS.textPrimary }}>After reveal:</strong>{" "}
+            Generate the share card to copy a spoiler-safe artifact with date, puzzle/difficulty icons, and your ◈/◇ performance tracker.
+          </p>
+        </div>
+
+        <button className="deriv-btn" style={{ ...S.btnPrimary, marginTop: "1rem" }} onClick={onClose}>
+          begin →
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const PuzzleHeader = ({
   puzzle,
   selDate,
@@ -2298,6 +2368,7 @@ export default function Derivative() {
   const [puzzleState, setPuzzleState] = useState<PuzzleState>({});
   const [shareMsg, setShareMsg] = useState<ShareData | null>(null);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
 
   const today = getTodayStr();
   const archiveDates = useMemo(() => getMonthDates(today), [today]);
@@ -2322,7 +2393,11 @@ export default function Derivative() {
     setShareMsg(null);
     setIsHelpOpen(false);
     const data = load();
-    if (!data._hasPlayed) save({ ...data, _hasPlayed: true });
+    const isFirstEntry = !data._hasSeenTutorial;
+    if (!data._hasPlayed || isFirstEntry) {
+      save({ ...data, _hasPlayed: true, _hasSeenTutorial: true });
+    }
+    if (isFirstEntry) setShowTutorial(true);
     setView("game");
   };
 
@@ -2831,6 +2906,15 @@ export default function Derivative() {
             >
               Archive — {monthLabel}
             </span>
+            <button
+              className="deriv-btn"
+              style={{ ...S.btnSm, padding: "0.18rem 0.5rem", minWidth: "1.9rem" }}
+              onClick={() => window.location.reload()}
+              aria-label="Reload archive"
+              title="Reload"
+            >
+              ?
+            </button>
           </div>
 
           <div
@@ -3123,6 +3207,7 @@ export default function Derivative() {
 
           <RevealSection puzzle={puzzle} visible={revealed || complete} onShare={buildShare} />
           {shareMsg && <ShareCard data={shareMsg} />}
+          <TutorialModal visible={showTutorial} onClose={() => setShowTutorial(false)} />
         </div>
       </div>
     );
