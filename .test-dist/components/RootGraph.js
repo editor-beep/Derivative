@@ -128,7 +128,7 @@ function RootGraph({ root, required, found, bonus, forms, }) {
                     textTransform: "uppercase",
                     fontSize: "9px",
                     color: "#5a4a38",
-                    opacity: 0.65,
+                    opacity: 0.85,
                 }, children: [(0, jsx_runtime_1.jsx)("div", { style: { position: "absolute", top: 12, left: 14 }, children: "derivational system" }), (0, jsx_runtime_1.jsx)("div", { style: { position: "absolute", top: 12, right: 14 }, children: "syntactic layer" }), (0, jsx_runtime_1.jsx)("div", { style: { position: "absolute", bottom: 14, left: 14 }, children: "semantic transformation" }), (0, jsx_runtime_1.jsx)("div", { style: { position: "absolute", bottom: 14, right: 14 }, children: "lexical output" }), (0, jsx_runtime_1.jsxs)("div", { style: {
                             position: "absolute",
                             top: "50%",
