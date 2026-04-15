@@ -1532,7 +1532,7 @@ function Derivative() {
                                 display: "flex",
                                 alignItems: "center",
                                 gap: "0.7rem",
-                                marginBottom: "2.2rem",
+                                marginBottom: "1.2rem",
                             }, children: [(0, jsx_runtime_1.jsx)("span", { style: {
                                         ...S.mono,
                                         fontSize: "0.78rem",
@@ -1543,7 +1543,34 @@ function Derivative() {
                                         letterSpacing: "0.1em",
                                         color: constants_1.COLORS.textMuted,
                                         textTransform: "uppercase",
-                                    }, children: statusDot.label })] }), (0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: { ...S.btnPrimary, marginBottom: "1.4rem", padding: "0.55rem 1.8rem" }, onClick: () => openPuzzle(today), children: "play today \u2192" }), (0, jsx_runtime_1.jsx)("button", { className: "arch-link", onClick: () => setView("archive"), children: "archive" }), (0, jsx_runtime_1.jsx)("a", { href: "https://www.themeansofproduction.press", target: "_blank", rel: "noopener noreferrer", style: {
+                                    }, children: statusDot.label })] }), (() => {
+                            const scheduledLevels = (0, difficulty_1.getDayOfWeekDifficulty)(today);
+                            return ((0, jsx_runtime_1.jsx)("div", { style: {
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "0.45rem",
+                                    marginBottom: "2.2rem",
+                                }, children: scheduledLevels.map((level) => {
+                                    const m = difficulty_1.DIFFICULTY_META[level];
+                                    return ((0, jsx_runtime_1.jsxs)("span", { style: {
+                                            ...S.mono,
+                                            fontSize: "0.55rem",
+                                            letterSpacing: "0.1em",
+                                            color: m.color,
+                                            textTransform: "uppercase",
+                                            display: "inline-flex",
+                                            alignItems: "center",
+                                            gap: "0.25rem",
+                                        }, children: [(0, jsx_runtime_1.jsx)("span", { style: {
+                                                    display: "inline-block",
+                                                    width: "8px",
+                                                    height: "2px",
+                                                    background: m.color,
+                                                    borderRadius: "1px",
+                                                    flexShrink: 0,
+                                                } }), m.sublabel] }, level));
+                                }) }));
+                        })(), (0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: { ...S.btnPrimary, marginBottom: "1.4rem", padding: "0.55rem 1.8rem" }, onClick: () => openPuzzle(today), children: "play today \u2192" }), (0, jsx_runtime_1.jsx)("button", { className: "arch-link", onClick: () => setView("archive"), children: "archive" }), (0, jsx_runtime_1.jsx)("a", { href: "https://www.themeansofproduction.press", target: "_blank", rel: "noopener noreferrer", style: {
                                 ...S.mono,
                                 display: "block",
                                 marginTop: "2.2rem",

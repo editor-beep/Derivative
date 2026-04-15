@@ -71,3 +71,34 @@ export function getDifficulty(type: PuzzleType, lensId: LensId): DifficultyLevel
   const bump = COMPLEX_LENSES.has(lensId) ? 1 : 0;
   return LEVELS[Math.min(base + bump, 3)] ?? "VERY_HARD";
 }
+
+// ── Day-of-week difficulty schedule ───────────────────────────────────────────
+// Maps UTC day index (0 = Sunday … 6 = Saturday) to the allowed difficulty
+// levels for that day.  The schedule is designed to give newcomers an easy
+// entry point early in the week and build toward a challenging Sunday capstone.
+//
+//   Mon / Tue   → Easy
+//   Wed         → Easy  or Medium
+//   Thu         → Medium
+//   Fri / Sat   → Medium or Hard
+//   Sun         → Very Hard (always)
+
+export const DIFFICULTY_SCHEDULE: Readonly<Record<number, readonly DifficultyLevel[]>> = {
+  0: ["VERY_HARD"],          // Sunday
+  1: ["EASY"],               // Monday
+  2: ["EASY"],               // Tuesday
+  3: ["EASY", "MEDIUM"],     // Wednesday
+  4: ["MEDIUM"],             // Thursday
+  5: ["MEDIUM", "HARD"],     // Friday
+  6: ["MEDIUM", "HARD"],     // Saturday
+};
+
+/**
+ * Returns the difficulty levels that are scheduled for the given UTC date.
+ * The date string must be in "YYYY-MM-DD" format.
+ */
+export function getDayOfWeekDifficulty(date: string): readonly DifficultyLevel[] {
+  const [year, month, day] = date.split("-").map(Number);
+  const utcDay = new Date(Date.UTC(year ?? 0, (month ?? 1) - 1, day ?? 1)).getUTCDay();
+  return DIFFICULTY_SCHEDULE[utcDay] ?? ["EASY", "MEDIUM", "HARD", "VERY_HARD"];
+}
