@@ -7,6 +7,7 @@ import { HEBREW_YIDDISH_POOL } from "./hebrewYiddishPool";
 import { MOORISH_ARABIC_POOL } from "./moorishArabicPool";
 import { WOMAN_CENTRIC_POOL } from "./womanCentricPool";
 import { LGBTQ_POOL } from "./lgbtqPool";
+import { CAPITONYM_POOL } from "./capitonymPool";
 import { CONTRONYM_POOL } from "./contronymPool";
 import type { SortPoolEntry } from "../types";
 
@@ -20,6 +21,7 @@ export const BORROWED_POOL: SortPoolEntry[] = [
   ...MOORISH_ARABIC_POOL,
   ...WOMAN_CENTRIC_POOL,
   ...LGBTQ_POOL,
+  ...CAPITONYM_POOL,
   ...CONTRONYM_POOL,
   {
     root: "Arabic extraction",
