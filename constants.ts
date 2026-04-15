@@ -29,7 +29,7 @@ export const TYPE_SUBLABELS: Record<PuzzleType, string> = {
   SEMANTIC: "meaning drift",
   COLLISION: "language contact",
   PIE: "proto-layer",
-  DECEPTION: "french takeout descendants",
+  DECEPTION: "french fakeout descendants",
   FALSE_FAMILY: "etymological imposture",
   PHANTOM_ROOT: "reverse inference",
   IDIOM: "fossilized ideology",
