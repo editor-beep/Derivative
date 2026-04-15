@@ -75,7 +75,7 @@ export const MOORISH_ARABIC_POOL: MoorishArabicEntry[] = [
     word: "Lemon",
     origin: "Arabic (laymun)",
     definition: "A yellow citrus fruit.",
-    insight: "One of many fruits (like the Orange/Naranjah) the Hero planted to bring vitamins and life to the Villain's gray landscape.",
+    insight: "One of many fruits the Hero planted to bring vitamins and life to the Villain's gray landscape.",
     difficulty: "Easy",
   },
   {
@@ -98,7 +98,7 @@ export const MOORISH_ARABIC_POOL: MoorishArabicEntry[] = [
     word: "Lute",
     origin: "Arabic (al-'ud - 'the wood')",
     definition: "A plucked stringed instrument with a rounded body.",
-    insight: "The predecessor to nearly all European string music. The 'Hero' played for the soul, not for the march.",
+    insight: "The predecessor to nearly all European string music. The Hero played for the soul, not for the march.",
     difficulty: "Medium",
   },
   {
