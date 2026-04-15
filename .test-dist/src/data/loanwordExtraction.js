@@ -15,13 +15,13 @@ exports.LOANWORD_EXTRACTION_POOL = [
         groups: [
             {
                 id: "french_prestige",
-                displayLabel: "Group A", solutionLabel: "French prestige layer (upper-class register)",
+                displayLabel: "french prestige", solutionLabel: "French prestige layer (upper-class register)",
                 accepts: ["cuisine", "chauffeur", "bourgeois", "entrepreneur", "camouflage"],
                 related: ["silhouette", "renaissance"],
             },
             {
                 id: "english_base",
-                displayLabel: "Group B", solutionLabel: "Anglo-Saxon equivalent (working-class register)",
+                displayLabel: "anglo-saxon base", solutionLabel: "Anglo-Saxon equivalent (working-class register)",
                 accepts: ["cooking", "driver", "townsman", "undertaker", "disguise"],
                 related: ["shadow", "rebirth"],
             },
@@ -36,13 +36,13 @@ exports.LOANWORD_EXTRACTION_POOL = [
         groups: [
             {
                 id: "military",
-                displayLabel: "Group A", solutionLabel: "Military and command vocabulary",
+                displayLabel: "military words", solutionLabel: "Military and command vocabulary",
                 accepts: ["admiral", "arsenal", "magazine", "cipher"],
                 related: ["assassin", "caliber"],
             },
             {
                 id: "commercial",
-                displayLabel: "Group B", solutionLabel: "Commercial and everyday vocabulary",
+                displayLabel: "commercial words", solutionLabel: "Commercial and everyday vocabulary",
                 accepts: ["coffee", "candy", "cotton", "safari"],
                 related: ["sugar", "muslin"],
             },
@@ -57,13 +57,13 @@ exports.LOANWORD_EXTRACTION_POOL = [
         groups: [
             {
                 id: "landscape",
-                displayLabel: "Group A", solutionLabel: "Landscape words from Spanish/Mexican territories",
+                displayLabel: "landscape words", solutionLabel: "Landscape words from Spanish/Mexican territories",
                 accepts: ["canyon", "mesa", "sierra", "patio", "plaza"],
                 related: ["arroyo", "chaparral"],
             },
             {
                 id: "resistance",
-                displayLabel: "Group B", solutionLabel: "Political and conflict words from the same contact zone",
+                displayLabel: "conflict words", solutionLabel: "Political and conflict words from the same contact zone",
                 accepts: ["guerilla", "vigilante", "desperado", "embargo"],
                 related: ["aficionado", "junta"],
             },
@@ -78,13 +78,13 @@ exports.LOANWORD_EXTRACTION_POOL = [
         groups: [
             {
                 id: "prestige",
-                displayLabel: "Group A", solutionLabel: "Italian artistic prestige vocabulary",
+                displayLabel: "prestige words", solutionLabel: "Italian artistic prestige vocabulary",
                 accepts: ["virtuoso", "solo", "scenario", "stanza", "studio"],
                 related: ["opera", "sonnet"],
             },
             {
                 id: "catastrophe",
-                displayLabel: "Group B", solutionLabel: "Italian disaster and exclusion vocabulary",
+                displayLabel: "disaster words", solutionLabel: "Italian disaster and exclusion vocabulary",
                 accepts: ["ghetto", "fiasco", "quarantine", "influenza"],
                 related: ["malaria", "grotto"],
             },
@@ -99,13 +99,13 @@ exports.LOANWORD_EXTRACTION_POOL = [
         groups: [
             {
                 id: "emotional_states",
-                displayLabel: "Group A", solutionLabel: "Compound emotional states (no English equivalent)",
+                displayLabel: "emotional states", solutionLabel: "Compound emotional states (no English equivalent)",
                 accepts: ["schadenfreude", "wanderlust", "angst", "zeitgeist"],
                 related: ["weltanschauung", "sturm und drang"],
             },
             {
                 id: "cultural_concepts",
-                displayLabel: "Group B", solutionLabel: "Cultural and aesthetic categories",
+                displayLabel: "cultural concepts", solutionLabel: "Cultural and aesthetic categories",
                 accepts: ["kitsch", "doppelgänger", "poltergeist", "kindergarten"],
                 related: ["bildungsroman", "leitmotif"],
             },
@@ -120,13 +120,13 @@ exports.LOANWORD_EXTRACTION_POOL = [
         groups: [
             {
                 id: "comfort",
-                displayLabel: "Group A", solutionLabel: "Comfort and lifestyle words brought back by colonists",
+                displayLabel: "comfort words", solutionLabel: "Comfort and lifestyle words brought back by colonists",
                 accepts: ["pajamas", "punch", "cushy", "khaki", "dungarees"],
                 related: ["chintz", "bandana"],
             },
             {
                 id: "control",
-                displayLabel: "Group B", solutionLabel: "Control and criminalization words from the same period",
+                displayLabel: "control words", solutionLabel: "Control and criminalization words from the same period",
                 accepts: ["loot", "dacoit", "nabob", "juggernaut"],
                 related: ["thuggee", "sepoy"],
             },
@@ -141,13 +141,13 @@ exports.LOANWORD_EXTRACTION_POOL = [
         groups: [
             {
                 id: "yiddish_absorbed",
-                displayLabel: "Group A", solutionLabel: "Yiddish words now fully mainstream",
+                displayLabel: "yiddish absorbed", solutionLabel: "Yiddish words now fully mainstream",
                 accepts: ["glitch", "schmooze", "chutzpah", "klutz", "schmaltz"],
                 related: ["spiel", "kvetch"],
             },
             {
                 id: "yiddish_origin",
-                displayLabel: "Group B", solutionLabel: "What each word literally came from",
+                displayLabel: "original yiddish", solutionLabel: "What each word literally came from",
                 accepts: ["glitshn", "shmusen", "khutspe", "klots", "shmalts"],
                 related: ["to slip/slide", "to chat", "insolence/nerve", "wooden block", "rendered fat", "shpil (game/play)", "kvetsh (to squeeze)"],
             },

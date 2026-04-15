@@ -2214,7 +2214,12 @@ export default function Derivative() {
   const [showTutorial, setShowTutorial] = useState(false);
 
   const today = getTodayStr();
-  const archiveDates = useMemo(() => getMonthDates(today), [today]);
+  const [archiveMonth, setArchiveMonth] = useState<string>(() => today.slice(0, 7));
+
+  const archiveDates = useMemo(() => {
+    const allDates = getMonthDates(archiveMonth + "-01");
+    return allDates.filter((d) => d <= today);
+  }, [archiveMonth, today]);
 
   const getProgress = (dateStr: string): PuzzleProgressEntry => {
     const entry = progress[dateStr];
@@ -2718,10 +2723,24 @@ export default function Derivative() {
   }
 
   if (view === "archive") {
-    const monthLabel = new Date(today + "T12:00:00").toLocaleDateString("en-US", {
+    // Use the 15th to avoid timezone edge cases when parsing the month label
+    const monthLabel = new Date(archiveMonth + "-15T12:00:00").toLocaleDateString("en-US", {
       month: "long",
       year: "numeric",
     });
+
+    const currentYear = parseInt(today.slice(0, 4), 10);
+    const janMonth = `${currentYear}-01`;
+    const canGoPrev = archiveMonth > janMonth;
+    const canGoNext = archiveMonth < today.slice(0, 7);
+
+    const shiftMonth = (delta: number) => {
+      const [y, m] = archiveMonth.split("-").map(Number);
+      const d = new Date(y, m - 1 + delta, 1);
+      const ny = d.getFullYear();
+      const nm = String(d.getMonth() + 1).padStart(2, "0");
+      setArchiveMonth(`${ny}-${nm}`);
+    };
 
     return (
       <div style={{ ...bgStyle, padding: "2rem" }}>
@@ -2734,6 +2753,15 @@ export default function Derivative() {
             <button className="deriv-btn" style={S.btnSm} onClick={() => setView("ready")}>
               ← back
             </button>
+            <button
+              className="deriv-btn"
+              style={{ ...S.btnSm, padding: "0.18rem 0.5rem", minWidth: "1.9rem", opacity: canGoPrev ? 1 : 0.3 }}
+              onClick={() => canGoPrev && shiftMonth(-1)}
+              disabled={!canGoPrev}
+              aria-label="Previous month"
+            >
+              ‹
+            </button>
             <span
               style={{
                 ...S.mono,
@@ -2741,10 +2769,21 @@ export default function Derivative() {
                 fontSize: "0.75rem",
                 letterSpacing: "0.14em",
                 textTransform: "uppercase",
+                flex: 1,
+                textAlign: "center",
               }}
             >
               Archive — {monthLabel}
             </span>
+            <button
+              className="deriv-btn"
+              style={{ ...S.btnSm, padding: "0.18rem 0.5rem", minWidth: "1.9rem", opacity: canGoNext ? 1 : 0.3 }}
+              onClick={() => canGoNext && shiftMonth(1)}
+              disabled={!canGoNext}
+              aria-label="Next month"
+            >
+              ›
+            </button>
             <button
               className="deriv-btn"
               style={{ ...S.btnSm, padding: "0.18rem 0.5rem", minWidth: "1.9rem" }}
@@ -2781,7 +2820,7 @@ export default function Derivative() {
             ))}
 
             {(() => {
-              const [yearRaw, monthRaw] = today.split("-").map(Number);
+              const [yearRaw, monthRaw] = archiveMonth.split("-").map(Number);
               const year = yearRaw ?? new Date().getFullYear();
               const month = monthRaw ?? new Date().getMonth() + 1;
               return [...Array(new Date(year, month - 1, 1).getDay())].map((_, i) => (

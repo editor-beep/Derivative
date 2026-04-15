@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TYPE_COLORS = exports.COLORS = exports.TYPE_SUBLABELS = exports.TYPE_LABELS = exports.SPLASH_IMAGE = exports.STORAGE_KEY = void 0;
 exports.STORAGE_KEY = "derivative_v4";
-exports.SPLASH_IMAGE = "https://github.com/user-attachments/assets/e6f5403b-5958-4d0e-8be4-439beb2b7a79";
+exports.SPLASH_IMAGE = "/splash.jpg";
 exports.TYPE_LABELS = {
     ROOT: "ROOT",
     SUPPLETIVE: "SUPPLETIVE PAIR",
