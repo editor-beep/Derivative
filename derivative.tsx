@@ -2215,17 +2215,20 @@ export default function Derivative() {
   const [showTutorial, setShowTutorial] = useState(false);
   const [lexiconPool, setLexiconPool] = useState<HebrewYiddishEntry[] | null>(null);
   const [lexiconFilter, setLexiconFilter] = useState<"All" | "Easy" | "Medium" | "Hard">("All");
+  const [lexiconError, setLexiconError] = useState(false);
 
   const today = getTodayStr();
   const [archiveMonth, setArchiveMonth] = useState<string>(() => today.slice(0, 7));
 
   useEffect(() => {
-    if (view === "lexicon" && !lexiconPool) {
+    if (view === "lexicon" && !lexiconPool && !lexiconError) {
       import("./src/data/hebrewYiddishPool").then((mod) => {
         setLexiconPool(mod.HEBREW_YIDDISH_POOL);
+      }).catch(() => {
+        setLexiconError(true);
       });
     }
-  }, [view, lexiconPool]);
+  }, [view, lexiconPool, lexiconError]);
 
   const archiveDates = useMemo(() => {
     const allDates = getMonthDates(archiveMonth + "-01");
@@ -3085,7 +3088,7 @@ export default function Derivative() {
                 textAlign: "center",
               }}
             >
-              Hebrew &amp; Yiddish Lexicon
+              Hebrew & Yiddish Lexicon
             </span>
           </div>
 
@@ -3126,7 +3129,11 @@ export default function Derivative() {
           </div>
 
           {/* Word cards */}
-          {!visiblePool ? (
+          {lexiconError ? (
+            <div style={{ ...S.mono, fontSize: "0.7rem", color: COLORS.goldDim, letterSpacing: "0.1em" }}>
+              failed to load lexicon data.
+            </div>
+          ) : !visiblePool ? (
             <div style={{ ...S.mono, fontSize: "0.7rem", color: COLORS.textMuted, letterSpacing: "0.1em" }}>
               loading...
             </div>
