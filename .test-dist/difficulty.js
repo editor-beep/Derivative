@@ -2,8 +2,9 @@
 // difficulty.ts
 // Maps (PuzzleType, LensId) → DifficultyLevel for display in the puzzle UI and archive.
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DIFFICULTY_META = void 0;
+exports.DIFFICULTY_SCHEDULE = exports.DIFFICULTY_META = void 0;
 exports.getDifficulty = getDifficulty;
+exports.getDayOfWeekDifficulty = getDayOfWeekDifficulty;
 // ── Difficulty metadata ────────────────────────────────────────────────────────
 exports.DIFFICULTY_META = {
     EASY: {
@@ -60,4 +61,43 @@ function getDifficulty(type, lensId) {
     const base = TYPE_BASE[type] ?? 0;
     const bump = COMPLEX_LENSES.has(lensId) ? 1 : 0;
     return LEVELS[Math.min(base + bump, 3)] ?? "VERY_HARD";
+}
+// ── Day-of-week difficulty schedule ───────────────────────────────────────────
+// Maps UTC day index (0 = Sunday … 6 = Saturday) to the allowed difficulty
+// levels for that day.  The schedule is designed to give newcomers an easy
+// entry point early in the week and build toward a challenging Sunday capstone.
+//
+//   Mon / Tue   → Easy
+//   Wed         → Easy  or Medium
+//   Thu         → Medium
+//   Fri / Sat   → Medium or Hard
+//   Sun         → Very Hard (always)
+exports.DIFFICULTY_SCHEDULE = {
+    0: ["VERY_HARD"], // Sunday
+    1: ["EASY"], // Monday
+    2: ["EASY"], // Tuesday
+    3: ["EASY", "MEDIUM"], // Wednesday
+    4: ["MEDIUM"], // Thursday
+    5: ["MEDIUM", "HARD"], // Friday
+    6: ["MEDIUM", "HARD"], // Saturday
+};
+/**
+ * Returns the difficulty levels that are scheduled for the given UTC date.
+ * The date string must be in "YYYY-MM-DD" format.
+ * Throws if the date string is not a valid YYYY-MM-DD date.
+ */
+function getDayOfWeekDifficulty(date) {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
+    if (!match) {
+        throw new Error(`getDayOfWeekDifficulty: invalid date format "${date}" (expected YYYY-MM-DD)`);
+    }
+    const year = Number(match[1]);
+    const month = Number(match[2]);
+    const day = Number(match[3]);
+    const utcDay = new Date(Date.UTC(year, month - 1, day)).getUTCDay();
+    const levels = exports.DIFFICULTY_SCHEDULE[utcDay];
+    if (!levels) {
+        throw new Error(`getDayOfWeekDifficulty: no schedule entry for UTC day ${utcDay}`);
+    }
+    return levels;
 }
