@@ -53,6 +53,14 @@ function buildSortPlayablePuzzle(puzzle) {
         throw new Error(`Empty pool for ${puzzle.type} puzzle on ${puzzle.date}`);
     }
     const options = puzzle.groups.map((group, index) => group.displayLabel || group.label || `Group ${index + 1}`);
+    const optionHints = {};
+    for (const group of puzzle.groups) {
+        const label = group.displayLabel || group.label;
+        if (label && group.hint) {
+            optionHints[label] = group.hint;
+        }
+    }
+    const hasHints = Object.keys(optionHints).length > 0;
     const shuffledWords = shufflePool(puzzle.pool, `${puzzle.date}:${puzzle.type}`);
     const steps = [];
     let classifiedCount = 0;
@@ -74,6 +82,7 @@ function buildSortPlayablePuzzle(puzzle) {
             word,
             options,
             correct,
+            ...(hasHints ? { optionHints } : {}),
         });
         classifiedCount += 1;
         if (classifiedCount % GUESS_INTERVAL === 0) {

@@ -18,12 +18,14 @@ exports.NORSE_CONSONANT_POOL = [
             {
                 id: "norse",
                 displayLabel: "norse sk-", solutionLabel: "Old Norse stream (hard sk-)",
+                hint: "The Imperial Machine",
                 accepts: ["skirt", "skull", "skin", "skill", "sky"],
                 related: ["scrape", "scare"],
             },
             {
                 id: "oe",
                 displayLabel: "english sh-", solutionLabel: "Old English stream (soft sh-)",
+                hint: "The Root Source",
                 accepts: ["shirt", "shell", "shin", "share", "shore"],
                 related: ["shape", "shed"],
             },
@@ -39,12 +41,14 @@ exports.NORSE_CONSONANT_POOL = [
             {
                 id: "norse",
                 displayLabel: "norse sk-", solutionLabel: "Old Norse stream (hard sk-)",
+                hint: "The Imperial Machine",
                 accepts: ["scatter", "skid", "scrape", "score"],
                 related: ["screech", "scowl"],
             },
             {
                 id: "oe",
                 displayLabel: "english sh-", solutionLabel: "Old English stream (soft sh-)",
+                hint: "The Root Source",
                 accepts: ["shatter", "slide", "shred", "shear"],
                 related: ["shriek", "shy"],
             },
@@ -60,12 +64,14 @@ exports.NORSE_CONSONANT_POOL = [
             {
                 id: "norse",
                 displayLabel: "norse k-", solutionLabel: "Old Norse stream (hard k-)",
+                hint: "The Imperial Machine",
                 accepts: ["kirk", "dike", "egg"],
                 related: ["garth", "beck"],
             },
             {
                 id: "oe",
                 displayLabel: "english ch-", solutionLabel: "Old English stream (soft ch-/dg-)",
+                hint: "The Root Source",
                 accepts: ["church", "ditch", "edge"],
                 related: ["yard", "brook"],
             },
@@ -86,12 +92,14 @@ exports.NORSE_BORROWED_POOL = [
             {
                 id: "norse_winner",
                 displayLabel: "norse th-", solutionLabel: "Norse th- forms (the winners)",
+                hint: "The Imperial Machine",
                 accepts: ["they", "them", "their", "both", "same"],
                 related: ["their", "theirs"],
             },
             {
                 id: "oe_loser",
                 displayLabel: "english h-", solutionLabel: "Old English h- forms (displaced)",
+                hint: "The Root Source",
                 accepts: ["hie", "hem", "here", "ba", "ilk"],
                 related: ["he", "him"],
             },
@@ -107,12 +115,14 @@ exports.NORSE_BORROWED_POOL = [
             {
                 id: "norse",
                 displayLabel: "norse landscape", solutionLabel: "Norse landscape words (still in place names)",
+                hint: "The Imperial Machine",
                 accepts: ["fell", "beck", "tarn", "dale", "gill", "ness", "wick", "holm", "thorp", "by"],
                 related: ["scar", "force"],
             },
             {
                 id: "english",
                 displayLabel: "english words", solutionLabel: "English equivalents",
+                hint: "The Root Source",
                 accepts: ["hill", "stream", "lake", "valley", "ravine"],
                 related: ["headland", "bay", "island", "village", "town", "moor", "cliff"],
             },
@@ -161,12 +171,14 @@ exports.NORSE_BORROWED_POOL = [
             {
                 id: "norse_winner",
                 displayLabel: "norse layer", solutionLabel: "Norse winner (what we say now)",
+                hint: "The Imperial Machine",
                 accepts: ["take", "die", "sky", "leg", "skin", "call", "hit", "ill", "ugly", "want"],
                 related: ["get", "give", "raise"],
             },
             {
                 id: "oe_loser",
                 displayLabel: "english layer", solutionLabel: "Old English loser (what we no longer say)",
+                hint: "The Root Source",
                 accepts: ["nim", "clepe", "smite"],
                 related: ["starve (any death)", "heaven (physical)", "limb (specific)", "hide (human)", "sick (mental)", "unfair", "wish (lack)", "yclept", "slay"],
             },
