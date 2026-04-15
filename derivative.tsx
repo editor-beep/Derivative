@@ -2723,6 +2723,7 @@ export default function Derivative() {
   }
 
   if (view === "archive") {
+    // Use the 15th to avoid timezone edge cases when parsing the month label
     const monthLabel = new Date(archiveMonth + "-15T12:00:00").toLocaleDateString("en-US", {
       month: "long",
       year: "numeric",
@@ -2735,7 +2736,7 @@ export default function Derivative() {
 
     const shiftMonth = (delta: number) => {
       const [y, m] = archiveMonth.split("-").map(Number);
-      const d = new Date(y, (m ?? 1) - 1 + delta, 1);
+      const d = new Date(y, m - 1 + delta, 1);
       const ny = d.getFullYear();
       const nm = String(d.getMonth() + 1).padStart(2, "0");
       setArchiveMonth(`${ny}-${nm}`);
