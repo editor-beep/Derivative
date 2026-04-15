@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SOURCES = exports.ACADEMIC_ROOT_TABLE = exports.TOPONYM_POOL = exports.FOLK_ETYMOLOGY_POOL = exports.SUPPLETIVE_EXTENDED_POOL = exports.EPONYM_POOL = exports.LOANWORD_EXTRACTION_POOL = exports.NORSE_BORROWED_POOL = exports.NORSE_CONSONANT_POOL = exports.FRENCH_FALSE_FRIENDS_POOL = exports.FRENCH_DOUBLETS_POOL = exports.FRENCH_VISUAL_FRAUD_POOL = exports.MEANING_DRIFT_POOL_2 = exports.MEANING_DRIFT_POOL = exports.ROOT_POOL = void 0;
+exports.SOURCES = exports.ACADEMIC_ROOT_TABLE = exports.AFRICAN_DIASPORA_POOL = exports.TOPONYM_POOL = exports.FOLK_ETYMOLOGY_POOL = exports.SUPPLETIVE_EXTENDED_POOL = exports.EPONYM_POOL = exports.LOANWORD_EXTRACTION_POOL = exports.NORSE_BORROWED_POOL = exports.NORSE_CONSONANT_POOL = exports.FRENCH_FALSE_FRIENDS_POOL = exports.FRENCH_DOUBLETS_POOL = exports.FRENCH_VISUAL_FRAUD_POOL = exports.MEANING_DRIFT_POOL_2 = exports.MEANING_DRIFT_POOL = exports.ROOT_POOL = void 0;
 var roots_1 = require("./roots");
 Object.defineProperty(exports, "ROOT_POOL", { enumerable: true, get: function () { return roots_1.ROOT_POOL; } });
 var meaningDrift_1 = require("./meaningDrift");
@@ -24,6 +24,8 @@ var folkEtymology_1 = require("./folkEtymology");
 Object.defineProperty(exports, "FOLK_ETYMOLOGY_POOL", { enumerable: true, get: function () { return folkEtymology_1.FOLK_ETYMOLOGY_POOL; } });
 var toponyms_1 = require("./toponyms");
 Object.defineProperty(exports, "TOPONYM_POOL", { enumerable: true, get: function () { return toponyms_1.TOPONYM_POOL; } });
+var africanDiasporaPool_1 = require("./africanDiasporaPool");
+Object.defineProperty(exports, "AFRICAN_DIASPORA_POOL", { enumerable: true, get: function () { return africanDiasporaPool_1.AFRICAN_DIASPORA_POOL; } });
 var academicRootTable_1 = require("./academicRootTable");
 Object.defineProperty(exports, "ACADEMIC_ROOT_TABLE", { enumerable: true, get: function () { return academicRootTable_1.ACADEMIC_ROOT_TABLE; } });
 var sources_1 = require("./sources");

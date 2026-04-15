@@ -2,6 +2,7 @@ import { FRENCH_FALSE_FRIENDS_POOL } from "./frenchFakeouts";
 import { NORSE_BORROWED_POOL } from "./norseCollisions";
 import { LOANWORD_EXTRACTION_POOL } from "./loanwordExtraction";
 import { EPONYM_POOL } from "./eponyms";
+import { AFRICAN_DIASPORA_POOL } from "./africanDiasporaPool";
 import type { SortPoolEntry } from "../types";
 
 export const BORROWED_POOL: SortPoolEntry[] = [
@@ -9,6 +10,7 @@ export const BORROWED_POOL: SortPoolEntry[] = [
   ...NORSE_BORROWED_POOL,
   ...LOANWORD_EXTRACTION_POOL,
   ...EPONYM_POOL,
+  ...AFRICAN_DIASPORA_POOL,
   {
     root: "Arabic extraction",
     lang: "Arabic → English",
