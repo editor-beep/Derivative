@@ -3,7 +3,7 @@ import { generateDailyPuzzle } from "./generator";
 import RootGraph from "./components/RootGraph";
 import PuzzleHelpModal from "./components/PuzzleHelpModal";
 import type { Puzzle, PuzzleType, LensId, ProgressStore, PuzzleProgressEntry, PuzzleState, Step } from "./types";
-import { getDifficulty, DIFFICULTY_META, type DifficultyLevel } from "./difficulty";
+import { getDifficulty, DIFFICULTY_META, getDayOfWeekDifficulty, type DifficultyLevel } from "./difficulty";
 import { TYPE_LABELS, TYPE_SUBLABELS, COLORS, TYPE_COLORS, STORAGE_KEY, SPLASH_IMAGE } from "./constants";
 import { getUtcDateKey } from "./src/dateUtils";
 import { hydrateProgressStore, withDiscoveredSystem } from "./progressSystems";
@@ -2697,7 +2697,7 @@ export default function Derivative() {
               display: "flex",
               alignItems: "center",
               gap: "0.7rem",
-              marginBottom: "2.2rem",
+              marginBottom: "1.2rem",
             }}
           >
             <span
@@ -2721,6 +2721,52 @@ export default function Derivative() {
               {statusDot.label}
             </span>
           </div>
+
+          {/* Day-of-week difficulty schedule hint */}
+          {(() => {
+            const scheduledLevels = getDayOfWeekDifficulty(today);
+            return (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.45rem",
+                  marginBottom: "2.2rem",
+                }}
+              >
+                {scheduledLevels.map((level) => {
+                  const m = DIFFICULTY_META[level];
+                  return (
+                    <span
+                      key={level}
+                      style={{
+                        ...S.mono,
+                        fontSize: "0.55rem",
+                        letterSpacing: "0.1em",
+                        color: m.color,
+                        textTransform: "uppercase",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "0.25rem",
+                      }}
+                    >
+                      <span
+                        style={{
+                          display: "inline-block",
+                          width: "8px",
+                          height: "2px",
+                          background: m.color,
+                          borderRadius: "1px",
+                          flexShrink: 0,
+                        }}
+                      />
+                      {m.sublabel}
+                    </span>
+                  );
+                })}
+              </div>
+            );
+          })()}
 
           {/* Play CTA */}
           <button
