@@ -170,13 +170,13 @@ export const CAPITONYM_POOL: SortPoolEntry[] = [
       "mosaic",
       "titanic",
       "quaker",
-      "the Central European nation — its workers polished the Empire's floors",
+      "the Central European nation — phonetically identical to the unrelated verb 'to shine'",
       "the West African coast — its gold funded the British coin worth 21 shillings",
       "the North African kingdom — its leather named the finest bookbinding craft",
       "the French wine region — its sparkling wine became the Empire's celebration liquid",
       "the 40-day Christian fast before Easter — the season that owns the verb 'to lend'",
       "relating to Moses and the Law — the tiles took his name when artisans copied Byzantine church floors",
-      "the Greek Titans, and the famous shipwreck — both collapse the adjective into catastrophe",
+      "the Greek Titans, and the 1912 RMS Titanic disaster — both collapse the adjective into catastrophe",
       "the Religious Society of Friends — nicknamed for trembling before God, turned into a breakfast brand",
     ],
     tension:
@@ -191,7 +191,7 @@ export const CAPITONYM_POOL: SortPoolEntry[] = [
       {
         source: "polish",
         target:
-          "the Central European nation — its workers polished the Empire's floors",
+          "the Central European nation — phonetically identical to the unrelated verb 'to shine'",
       },
       {
         source: "guinea",
@@ -221,7 +221,7 @@ export const CAPITONYM_POOL: SortPoolEntry[] = [
       {
         source: "titanic",
         target:
-          "the Greek Titans, and the famous shipwreck — both collapse the adjective into catastrophe",
+          "the Greek Titans, and the 1912 RMS Titanic disaster — both collapse the adjective into catastrophe",
       },
       {
         source: "quaker",
