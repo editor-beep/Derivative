@@ -84,9 +84,20 @@ exports.DIFFICULTY_SCHEDULE = {
 /**
  * Returns the difficulty levels that are scheduled for the given UTC date.
  * The date string must be in "YYYY-MM-DD" format.
+ * Throws if the date string is not a valid YYYY-MM-DD date.
  */
 function getDayOfWeekDifficulty(date) {
-    const [year, month, day] = date.split("-").map(Number);
-    const utcDay = new Date(Date.UTC(year ?? 0, (month ?? 1) - 1, day ?? 1)).getUTCDay();
-    return exports.DIFFICULTY_SCHEDULE[utcDay] ?? ["EASY", "MEDIUM", "HARD", "VERY_HARD"];
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
+    if (!match) {
+        throw new Error(`getDayOfWeekDifficulty: invalid date format "${date}" (expected YYYY-MM-DD)`);
+    }
+    const year = Number(match[1]);
+    const month = Number(match[2]);
+    const day = Number(match[3]);
+    const utcDay = new Date(Date.UTC(year, month - 1, day)).getUTCDay();
+    const levels = exports.DIFFICULTY_SCHEDULE[utcDay];
+    if (!levels) {
+        throw new Error(`getDayOfWeekDifficulty: no schedule entry for UTC day ${utcDay}`);
+    }
+    return levels;
 }
