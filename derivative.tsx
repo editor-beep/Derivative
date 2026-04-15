@@ -2515,7 +2515,7 @@ export default function Derivative() {
             backgroundImage: `url(${SPLASH_IMAGE})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
-            opacity: 0.15,
+            opacity: 0.35,
             zIndex: 0,
           }}
         />

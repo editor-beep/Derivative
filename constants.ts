@@ -3,8 +3,7 @@
 import type { PuzzleType } from "./types";
 
 export const STORAGE_KEY = "derivative_v4";
-export const SPLASH_IMAGE =
-  "https://github.com/user-attachments/assets/e6f5403b-5958-4d0e-8be4-439beb2b7a79";
+export const SPLASH_IMAGE = "/splash.jpg";
 
 export const TYPE_LABELS: Record<PuzzleType, string> = {
   ROOT: "ROOT",
