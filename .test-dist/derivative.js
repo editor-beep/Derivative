@@ -1228,15 +1228,18 @@ function Derivative() {
     const [showTutorial, setShowTutorial] = (0, react_1.useState)(false);
     const [lexiconPool, setLexiconPool] = (0, react_1.useState)(null);
     const [lexiconFilter, setLexiconFilter] = (0, react_1.useState)("All");
+    const [lexiconError, setLexiconError] = (0, react_1.useState)(false);
     const today = getTodayStr();
     const [archiveMonth, setArchiveMonth] = (0, react_1.useState)(() => today.slice(0, 7));
     (0, react_1.useEffect)(() => {
-        if (view === "lexicon" && !lexiconPool) {
+        if (view === "lexicon" && !lexiconPool && !lexiconError) {
             Promise.resolve().then(() => __importStar(require("./src/data/hebrewYiddishPool"))).then((mod) => {
                 setLexiconPool(mod.HEBREW_YIDDISH_POOL);
+            }).catch(() => {
+                setLexiconError(true);
             });
         }
-    }, [view, lexiconPool]);
+    }, [view, lexiconPool, lexiconError]);
     const archiveDates = (0, react_1.useMemo)(() => {
         const allDates = getMonthDates(archiveMonth + "-01");
         return allDates.filter((d) => d <= today);
@@ -1767,7 +1770,7 @@ function Derivative() {
                                     color: lexiconFilter === f
                                         ? (f === "All" ? constants_1.COLORS.gold : (difficultyColors[f] ?? constants_1.COLORS.gold))
                                         : constants_1.COLORS.textSecondary,
-                                }, onClick: () => setLexiconFilter(f), children: f }, f))) }), !visiblePool ? ((0, jsx_runtime_1.jsx)("div", { style: { ...S.mono, fontSize: "0.7rem", color: constants_1.COLORS.textMuted, letterSpacing: "0.1em" }, children: "loading..." })) : ((0, jsx_runtime_1.jsx)("div", { style: { display: "flex", flexDirection: "column", gap: "0.85rem" }, children: visiblePool.map((entry) => {
+                                }, onClick: () => setLexiconFilter(f), children: f }, f))) }), lexiconError ? ((0, jsx_runtime_1.jsx)("div", { style: { ...S.mono, fontSize: "0.7rem", color: constants_1.COLORS.goldDim, letterSpacing: "0.1em" }, children: "failed to load lexicon data." })) : !visiblePool ? ((0, jsx_runtime_1.jsx)("div", { style: { ...S.mono, fontSize: "0.7rem", color: constants_1.COLORS.textMuted, letterSpacing: "0.1em" }, children: "loading..." })) : ((0, jsx_runtime_1.jsx)("div", { style: { display: "flex", flexDirection: "column", gap: "0.85rem" }, children: visiblePool.map((entry) => {
                                 const dc = difficultyColors[entry.difficulty] ?? constants_1.COLORS.gold;
                                 return ((0, jsx_runtime_1.jsxs)("div", { style: {
                                         background: constants_1.COLORS.surface,

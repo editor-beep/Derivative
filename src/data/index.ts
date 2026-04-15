@@ -11,6 +11,7 @@ export { TOPONYM_POOL } from "./toponyms";
 
 export { AFRICAN_DIASPORA_POOL } from "./africanDiasporaPool";
 export { HEBREW_YIDDISH_POOL } from "./hebrewYiddishPool";
+export { MOORISH_ARABIC_POOL } from "./moorishArabicPool";
 export { ACADEMIC_ROOT_TABLE } from "./academicRootTable";
 
 export { SOURCES } from "./sources";
