@@ -60,6 +60,7 @@ const DATASET_SOURCE_INDEX = {
     academic_root_table: { sourceIds: ["oed", "wiktionary"], confidence: "verified", notes: "Reference-table rows summarize well-attested classical stems." },
     african_diaspora: { sourceIds: ["etymonline", "wiktionary", "wikipedia"], confidence: "disputed", notes: "African-origin etymologies draw on contested historical linguistics; Wolof/AAVE connections are debated in scholarly literature. Cultural and political framing is editorial." },
     moorish_arabic: { sourceIds: ["oed", "etymonline", "wiktionary", "wikipedia"], confidence: "probable", notes: "Arabic-Iberian etymologies are well-attested in comparative linguistics; some intermediate borrowing routes (e.g. via Medieval Latin or Old French) are simplified. Cultural and Hero/Villain framing is editorial." },
+    woman_centric: { sourceIds: ["oed", "etymonline", "wiktionary", "wikipedia"], confidence: "probable", notes: "Etymology data is well-attested in standard references; semantic-shift and reclamation narratives are interpretive summaries. Hero/Villain framing is editorial." },
 };
 function applyDatasetProvenance(entries, datasetKey) {
     const config = DATASET_SOURCE_INDEX[datasetKey];

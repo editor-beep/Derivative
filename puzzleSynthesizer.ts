@@ -31,7 +31,7 @@ function seededShuffle(values: string[], seed: string): string[] {
 
 function injectClassificationDecoys(
   insight: InsightByType<
-    "SUPPLETIVE" | "GRIMM" | "COLLISION" | "PIE" | "PHANTOM_ROOT" | "DECEPTION" | "FALSE_FAMILY" | "BORROWED" | "TOPONYM"
+    "SUPPLETIVE" | "COLLISION" | "PIE" | "PHANTOM_ROOT" | "DECEPTION" | "FALSE_FAMILY" | "BORROWED" | "TOPONYM"
   >,
   date: string,
 ): { pool: string[]; falseSystem: Puzzle["falseSystem"] } {
@@ -161,7 +161,7 @@ function buildRootPuzzle(insight: InsightByType<"ROOT">, date: string): Puzzle {
   };
 }
 
-function buildSortPuzzle(insight: InsightByType<"SUPPLETIVE" | "GRIMM" | "COLLISION" | "PIE" | "PHANTOM_ROOT" | "DECEPTION" | "FALSE_FAMILY" | "BORROWED" | "TOPONYM">, date: string): Puzzle {
+function buildSortPuzzle(insight: InsightByType<"SUPPLETIVE" | "COLLISION" | "PIE" | "PHANTOM_ROOT" | "DECEPTION" | "FALSE_FAMILY" | "BORROWED" | "TOPONYM">, date: string): Puzzle {
   const { groups, questionPrompt, revealBody } = insight.data;
   const { pool, falseSystem } = injectClassificationDecoys(insight, date);
   const normalizedGroups = groups.map((group, index) => {
@@ -253,6 +253,25 @@ function buildIdiomPuzzle(insight: InsightByType<"IDIOM">, date: string): Puzzle
   };
 }
 
+function buildGrimmPuzzle(insight: InsightByType<"GRIMM">, date: string): Puzzle {
+  const { pairs } = insight.data;
+  return {
+    date,
+    type: "GRIMM",
+    lensId: lensId(insight),
+    prompt: insight.tension,
+    pairs,
+    meta: {
+      claim: "Sound shifts are law.",
+      root: insight.root,
+      lang: insight.language,
+      meaning: insight.meaning,
+      lensLabel: lensLabel(insight),
+    },
+    reveal: { headline: "", body: "", connections: [] },
+  };
+}
+
 function buildBorrowedPuzzle(insight: InsightByType<"BORROWED">, date: string): Puzzle {
   return buildSortPuzzle(insight, date);
 }
@@ -309,6 +328,11 @@ function assertPuzzleShape(puzzle: Puzzle): Puzzle {
         throw new Error(`Invalid MATCH puzzle shape for ${puzzle.date}`);
       }
       break;
+    case "GRIMM":
+      if (!puzzle.pairs?.length) {
+        throw new Error(`Invalid GRIMM puzzle shape for ${puzzle.date}`);
+      }
+      break;
     default:
       if (!puzzle.groups?.length || !puzzle.pool?.length) {
         throw new Error(`Invalid ${puzzle.type} puzzle shape for ${puzzle.date}`);
@@ -348,9 +372,11 @@ export function synthesizePuzzle(insight: LinguisticInsight, date: string): Puzz
     case "SUPPLETIVE":
     case "COLLISION":
     case "PIE":
-    case "GRIMM":
     case "PHANTOM_ROOT":
       return assertPuzzleShape(buildSortPuzzle(insight, date));
+
+    case "GRIMM":
+      return assertPuzzleShape(buildGrimmPuzzle(insight, date));
 
     default: {
       const neverType: never = insight;

@@ -3,6 +3,7 @@ import { NORSE_BORROWED_POOL } from "./norseCollisions";
 import { LOANWORD_EXTRACTION_POOL } from "./loanwordExtraction";
 import { EPONYM_POOL } from "./eponyms";
 import { AFRICAN_DIASPORA_POOL } from "./africanDiasporaPool";
+import { HEBREW_YIDDISH_POOL } from "./hebrewYiddishPool";
 import type { SortPoolEntry } from "../types";
 
 export const BORROWED_POOL: SortPoolEntry[] = [
@@ -11,6 +12,7 @@ export const BORROWED_POOL: SortPoolEntry[] = [
   ...LOANWORD_EXTRACTION_POOL,
   ...EPONYM_POOL,
   ...AFRICAN_DIASPORA_POOL,
+  ...HEBREW_YIDDISH_POOL,
   {
     root: "Arabic extraction",
     lang: "Arabic → English",

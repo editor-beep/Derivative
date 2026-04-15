@@ -1,37 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -43,6 +10,7 @@ const react_1 = require("react");
 const generator_1 = require("./generator");
 const RootGraph_1 = __importDefault(require("./components/RootGraph"));
 const PuzzleHelpModal_1 = __importDefault(require("./components/PuzzleHelpModal"));
+const TypeIcons_1 = require("./components/TypeIcons");
 const difficulty_1 = require("./difficulty");
 const constants_1 = require("./constants");
 const dateUtils_1 = require("./src/dateUtils");
@@ -145,60 +113,6 @@ const S = {
         boxSizing: "border-box",
         transition: "border-color 0.18s ease, box-shadow 0.18s ease",
     },
-};
-const IconBase = ({ children, color, }) => ((0, jsx_runtime_1.jsx)("svg", { viewBox: "0 0 24 24", width: "15", height: "15", "aria-hidden": "true", style: { display: "block", filter: `drop-shadow(0 0 6px ${color}33)` }, children: children }));
-const IconRoot = ({ color }) => ((0, jsx_runtime_1.jsxs)(IconBase, { color: color, children: [(0, jsx_runtime_1.jsx)("circle", { cx: "12", cy: "12", r: "7.5", fill: "none", stroke: color, strokeWidth: "1.4" }), (0, jsx_runtime_1.jsx)("circle", { cx: "12", cy: "12", r: "1.7", fill: color }), (0, jsx_runtime_1.jsx)("path", { d: "M12 4.5v3.2M12 16.3v3.2M4.5 12h3.2M16.3 12h3.2", stroke: color, strokeWidth: "1.2" }), (0, jsx_runtime_1.jsx)("path", { d: "M7.4 7.4l2.1 2.1M14.5 14.5l2.1 2.1M16.6 7.4l-2.1 2.1M9.5 14.5l-2.1 2.1", stroke: color, strokeWidth: "1.1" })] }));
-const IconSuppletive = ({ color }) => ((0, jsx_runtime_1.jsxs)(IconBase, { color: color, children: [(0, jsx_runtime_1.jsx)("path", { d: "M5 8h7", stroke: color, strokeWidth: "1.4", strokeLinecap: "round" }), (0, jsx_runtime_1.jsx)("path", { d: "M12 8l-2.2-2.2M12 8l-2.2 2.2", stroke: color, strokeWidth: "1.4", strokeLinecap: "round" }), (0, jsx_runtime_1.jsx)("path", { d: "M19 16h-7", stroke: color, strokeWidth: "1.4", strokeLinecap: "round" }), (0, jsx_runtime_1.jsx)("path", { d: "M12 16l2.2-2.2M12 16l2.2 2.2", stroke: color, strokeWidth: "1.4", strokeLinecap: "round" }), (0, jsx_runtime_1.jsx)("circle", { cx: "8", cy: "8", r: "1.6", fill: color }), (0, jsx_runtime_1.jsx)("circle", { cx: "16", cy: "16", r: "1.6", fill: color })] }));
-const IconGrimm = ({ color }) => ((0, jsx_runtime_1.jsxs)(IconBase, { color: color, children: [(0, jsx_runtime_1.jsx)("path", { d: "M4 16c2-7 4-9 8-9 4 0 6 2 8 9", fill: "none", stroke: color, strokeWidth: "1.4" }), (0, jsx_runtime_1.jsx)("path", { d: "M5.5 17.5h13", stroke: color, strokeWidth: "1.2" }), (0, jsx_runtime_1.jsx)("circle", { cx: "8", cy: "11", r: "1.2", fill: color }), (0, jsx_runtime_1.jsx)("circle", { cx: "12", cy: "9", r: "1.2", fill: color }), (0, jsx_runtime_1.jsx)("circle", { cx: "16", cy: "11", r: "1.2", fill: color })] }));
-const IconSemantic = ({ color }) => ((0, jsx_runtime_1.jsxs)(IconBase, { color: color, children: [(0, jsx_runtime_1.jsx)("path", { d: "M12 4v16", stroke: color, strokeWidth: "1.3" }), (0, jsx_runtime_1.jsx)("circle", { cx: "12", cy: "6", r: "1.8", fill: color }), (0, jsx_runtime_1.jsx)("circle", { cx: "12", cy: "12", r: "1.8", fill: "none", stroke: color, strokeWidth: "1.2" }), (0, jsx_runtime_1.jsx)("circle", { cx: "12", cy: "18", r: "1.8", fill: color, opacity: "0.4" }), (0, jsx_runtime_1.jsx)("path", { d: "M9 9.2h6M9 14.8h6", stroke: color, strokeWidth: "1.1" })] }));
-const IconCollision = ({ color }) => ((0, jsx_runtime_1.jsxs)(IconBase, { color: color, children: [(0, jsx_runtime_1.jsx)("path", { d: "M6 7l5.5 5.5M18 7l-5.5 5.5", stroke: color, strokeWidth: "1.4" }), (0, jsx_runtime_1.jsx)("path", { d: "M6 17l5.5-5.5M18 17l-5.5-5.5", stroke: color, strokeWidth: "1.4" }), (0, jsx_runtime_1.jsx)("circle", { cx: "6", cy: "7", r: "1.6", fill: color }), (0, jsx_runtime_1.jsx)("circle", { cx: "18", cy: "7", r: "1.6", fill: color }), (0, jsx_runtime_1.jsx)("circle", { cx: "6", cy: "17", r: "1.6", fill: color, opacity: "0.5" }), (0, jsx_runtime_1.jsx)("circle", { cx: "18", cy: "17", r: "1.6", fill: color, opacity: "0.5" })] }));
-const IconPIE = ({ color }) => ((0, jsx_runtime_1.jsxs)(IconBase, { color: color, children: [(0, jsx_runtime_1.jsx)("circle", { cx: "12", cy: "12", r: "8", fill: "none", stroke: color, strokeWidth: "1.4" }), (0, jsx_runtime_1.jsx)("circle", { cx: "12", cy: "12", r: "4", fill: "none", stroke: color, strokeWidth: "1.2" }), (0, jsx_runtime_1.jsx)("circle", { cx: "12", cy: "12", r: "1.4", fill: color })] }));
-const IconDeception = ({ color }) => ((0, jsx_runtime_1.jsxs)(IconBase, { color: color, children: [(0, jsx_runtime_1.jsx)("path", { d: "M12 4l7 4v8l-7 4-7-4V8l7-4z", fill: "none", stroke: color, strokeWidth: "1.3" }), (0, jsx_runtime_1.jsx)("path", { d: "M8 12h8", stroke: color, strokeWidth: "1.2" }), (0, jsx_runtime_1.jsx)("path", { d: "M10 9.5l4 5", stroke: color, strokeWidth: "1.2" })] }));
-const IconFalseFamily = ({ color }) => ((0, jsx_runtime_1.jsxs)(IconBase, { color: color, children: [(0, jsx_runtime_1.jsx)("circle", { cx: "8", cy: "8", r: "3", fill: "none", stroke: color, strokeWidth: "1.2" }), (0, jsx_runtime_1.jsx)("circle", { cx: "16", cy: "8", r: "3", fill: "none", stroke: color, strokeWidth: "1.2" }), (0, jsx_runtime_1.jsx)("circle", { cx: "12", cy: "16", r: "3", fill: "none", stroke: color, strokeWidth: "1.2" }), (0, jsx_runtime_1.jsx)("path", { d: "M6.2 18.8L17.8 5.2", stroke: color, strokeWidth: "1.4" })] }));
-const IconPhantomRoot = ({ color }) => ((0, jsx_runtime_1.jsxs)(IconBase, { color: color, children: [(0, jsx_runtime_1.jsx)("path", { d: "M12 4v6", stroke: color, strokeWidth: "1.4" }), (0, jsx_runtime_1.jsx)("path", { d: "M12 10l-3.2 3.2M12 10l3.2 3.2", stroke: color, strokeWidth: "1.3" }), (0, jsx_runtime_1.jsx)("circle", { cx: "8.8", cy: "14.2", r: "1.5", fill: color }), (0, jsx_runtime_1.jsx)("circle", { cx: "15.2", cy: "14.2", r: "1.5", fill: color }), (0, jsx_runtime_1.jsx)("circle", { cx: "12", cy: "18.2", r: "1.5", fill: color, opacity: "0.65" })] }));
-const IconIdiom = ({ color }) => ((0, jsx_runtime_1.jsxs)(IconBase, { color: color, children: [(0, jsx_runtime_1.jsx)("path", { d: "M4 8h16", stroke: color, strokeWidth: "1.4", strokeLinecap: "round" }), (0, jsx_runtime_1.jsx)("path", { d: "M4 12h10", stroke: color, strokeWidth: "1.4", strokeLinecap: "round" }), (0, jsx_runtime_1.jsx)("path", { d: "M4 16h13", stroke: color, strokeWidth: "1.4", strokeLinecap: "round" }), (0, jsx_runtime_1.jsx)("circle", { cx: "18", cy: "12", r: "2.2", fill: "none", stroke: color, strokeWidth: "1.2" }), (0, jsx_runtime_1.jsx)("circle", { cx: "18", cy: "12", r: "0.8", fill: color })] }));
-const IconBorrowed = ({ color }) => ((0, jsx_runtime_1.jsxs)(IconBase, { color: color, children: [(0, jsx_runtime_1.jsx)("circle", { cx: "6", cy: "8", r: "2.5", fill: "none", stroke: color, strokeWidth: "1.2" }), (0, jsx_runtime_1.jsx)("circle", { cx: "18", cy: "8", r: "2.5", fill: "none", stroke: color, strokeWidth: "1.2" }), (0, jsx_runtime_1.jsx)("circle", { cx: "12", cy: "17", r: "2.5", fill: "none", stroke: color, strokeWidth: "1.2" }), (0, jsx_runtime_1.jsx)("path", { d: "M8.2 9.2L10.2 15.2", stroke: color, strokeWidth: "1.1", strokeDasharray: "1.5 1.5" }), (0, jsx_runtime_1.jsx)("path", { d: "M15.8 9.2L13.8 15.2", stroke: color, strokeWidth: "1.1", strokeDasharray: "1.5 1.5" }), (0, jsx_runtime_1.jsx)("path", { d: "M8.4 7.6L15.6 7.6", stroke: color, strokeWidth: "1.1", strokeDasharray: "1.5 1.5" })] }));
-const IconToponym = ({ color }) => ((0, jsx_runtime_1.jsxs)(IconBase, { color: color, children: [(0, jsx_runtime_1.jsx)("circle", { cx: "12", cy: "9", r: "3.5", fill: "none", stroke: color, strokeWidth: "1.2" }), (0, jsx_runtime_1.jsx)("path", { d: "M12 12.5 L12 19", stroke: color, strokeWidth: "1.2", strokeLinecap: "round" }), (0, jsx_runtime_1.jsx)("path", { d: "M8.5 18.5 Q12 21.5 15.5 18.5", stroke: color, strokeWidth: "1.0", fill: "none" })] }));
-// ── Difficulty icons ──────────────────────────────────────────────────────────
-const IconDifficultyEasy = ({ color }) => ((0, jsx_runtime_1.jsxs)(IconBase, { color: color, children: [(0, jsx_runtime_1.jsx)("circle", { cx: "12", cy: "12", r: "2.5", fill: color }), (0, jsx_runtime_1.jsx)("path", { d: "M12 5.5v2.5M12 16v2.5M5.5 12h2.5M16 12h2.5", stroke: color, strokeWidth: "1.4", strokeLinecap: "round" }), (0, jsx_runtime_1.jsx)("path", { d: "M7.7 7.7l1.7 1.7M14.6 14.6l1.7 1.7M16.3 7.7l-1.7 1.7M9.4 14.6l-1.7 1.7", stroke: color, strokeWidth: "1", strokeLinecap: "round", opacity: 0.5 })] }));
-const IconDifficultyMedium = ({ color }) => ((0, jsx_runtime_1.jsxs)(IconBase, { color: color, children: [(0, jsx_runtime_1.jsx)("circle", { cx: "9", cy: "12", r: "4.5", fill: "none", stroke: color, strokeWidth: "1.3" }), (0, jsx_runtime_1.jsx)("circle", { cx: "15", cy: "12", r: "4.5", fill: "none", stroke: color, strokeWidth: "1.3" }), (0, jsx_runtime_1.jsx)("circle", { cx: "12", cy: "12", r: "1.2", fill: color })] }));
-const IconDifficultyHard = ({ color }) => ((0, jsx_runtime_1.jsxs)(IconBase, { color: color, children: [(0, jsx_runtime_1.jsx)("circle", { cx: "10.5", cy: "10.5", r: "5.5", fill: "none", stroke: color, strokeWidth: "1.3" }), (0, jsx_runtime_1.jsx)("path", { d: "M14.7 14.7l4.2 4.2", stroke: color, strokeWidth: "1.6", strokeLinecap: "round" }), (0, jsx_runtime_1.jsx)("path", { d: "M8.5 10.5h4M10.5 8.5v4", stroke: color, strokeWidth: "1", strokeLinecap: "round", opacity: 0.7 })] }));
-const IconDifficultyVeryHard = ({ color }) => ((0, jsx_runtime_1.jsxs)(IconBase, { color: color, children: [(0, jsx_runtime_1.jsx)("path", { d: "M5 16V9l3.5 3.5L12 6l3.5 6.5L19 9v7H5z", fill: "none", stroke: color, strokeWidth: "1.3", strokeLinejoin: "round" }), (0, jsx_runtime_1.jsx)("path", { d: "M5 16h14", stroke: color, strokeWidth: "1.2" }), (0, jsx_runtime_1.jsx)("circle", { cx: "8.5", cy: "12.5", r: "1", fill: color }), (0, jsx_runtime_1.jsx)("circle", { cx: "12", cy: "8", r: "1", fill: color }), (0, jsx_runtime_1.jsx)("circle", { cx: "15.5", cy: "12.5", r: "1", fill: color })] }));
-const TYPE_ICONS = {
-    ROOT: IconRoot,
-    SUPPLETIVE: IconSuppletive,
-    GRIMM: IconGrimm,
-    SEMANTIC: IconSemantic,
-    COLLISION: IconCollision,
-    PIE: IconPIE,
-    DECEPTION: IconDeception,
-    FALSE_FAMILY: IconFalseFamily,
-    PHANTOM_ROOT: IconPhantomRoot,
-    IDIOM: IconIdiom,
-    BORROWED: IconBorrowed,
-    TOPONYM: IconToponym,
-    MATCH: IconSemantic,
-};
-const TYPE_SHARE_ICONS = {
-    ROOT: "Ψ",
-    SUPPLETIVE: "≠",
-    GRIMM: "∿",
-    SEMANTIC: "→",
-    COLLISION: "✕",
-    PIE: "∴",
-    IDIOM: "❝",
-    BORROWED: "←",
-    TOPONYM: "⊙",
-    DECEPTION: "≢",
-    FALSE_FAMILY: "≁",
-    PHANTOM_ROOT: "∅",
-    MATCH: "⇄",
-};
-const DIFFICULTY_SHARE_ICONS = {
-    EASY: "○",
-    MEDIUM: "◎",
-    HARD: "◉",
-    VERY_HARD: "●",
 };
 const GlobalFX = () => ((0, jsx_runtime_1.jsx)("style", { children: `
     @keyframes shake {
@@ -492,16 +406,10 @@ const SystemMesh = ({ intensity = 1 }) => ((0, jsx_runtime_1.jsx)("div", { style
             height: "100%",
             opacity: 0.55,
         }, children: [(0, jsx_runtime_1.jsxs)("g", { stroke: "rgba(78,207,207,0.18)", strokeWidth: "0.35", fill: "none", children: [(0, jsx_runtime_1.jsx)("path", { d: "M12 72 L26 56 L41 61 L56 43 L73 52" }), (0, jsx_runtime_1.jsx)("path", { d: "M22 28 L34 36 L52 22 L68 31 L81 20" }), (0, jsx_runtime_1.jsx)("path", { d: "M17 82 L37 78 L49 86 L66 73 L84 78" })] }), (0, jsx_runtime_1.jsxs)("g", { fill: "rgba(78,207,207,0.34)", children: [(0, jsx_runtime_1.jsx)("circle", { cx: "12", cy: "72", r: "0.9" }), (0, jsx_runtime_1.jsx)("circle", { cx: "26", cy: "56", r: "0.9" }), (0, jsx_runtime_1.jsx)("circle", { cx: "41", cy: "61", r: "0.9" }), (0, jsx_runtime_1.jsx)("circle", { cx: "56", cy: "43", r: "0.9" }), (0, jsx_runtime_1.jsx)("circle", { cx: "73", cy: "52", r: "0.9" }), (0, jsx_runtime_1.jsx)("circle", { cx: "22", cy: "28", r: "0.9" }), (0, jsx_runtime_1.jsx)("circle", { cx: "34", cy: "36", r: "0.9" }), (0, jsx_runtime_1.jsx)("circle", { cx: "52", cy: "22", r: "0.9" }), (0, jsx_runtime_1.jsx)("circle", { cx: "68", cy: "31", r: "0.9" }), (0, jsx_runtime_1.jsx)("circle", { cx: "81", cy: "20", r: "0.9" })] })] }) }));
-const DIFFICULTY_ICONS = {
-    EASY: IconDifficultyEasy,
-    MEDIUM: IconDifficultyMedium,
-    HARD: IconDifficultyHard,
-    VERY_HARD: IconDifficultyVeryHard,
-};
 const DifficultyBadge = ({ puzzleType, lensId }) => {
     const level = (0, difficulty_1.getDifficulty)(puzzleType, lensId);
     const meta = difficulty_1.DIFFICULTY_META[level];
-    const Icon = DIFFICULTY_ICONS[level];
+    const Icon = TypeIcons_1.DIFFICULTY_ICONS[level];
     return ((0, jsx_runtime_1.jsxs)("div", { style: {
             display: "inline-flex",
             alignItems: "center",
@@ -528,7 +436,7 @@ const DifficultyBadge = ({ puzzleType, lensId }) => {
 };
 const TypeBadge = ({ type, lensId }) => {
     const tc = constants_1.TYPE_COLORS[type] || constants_1.COLORS.goldDim;
-    const Icon = TYPE_ICONS[type] || IconRoot;
+    const Icon = TypeIcons_1.TYPE_ICONS[type] || TypeIcons_1.IconRoot;
     return ((0, jsx_runtime_1.jsxs)("div", { style: { display: "inline-flex", flexDirection: "column", marginBottom: "0.65rem" }, children: [(0, jsx_runtime_1.jsxs)("div", { style: {
                     display: "inline-flex",
                     alignItems: "center",
@@ -558,7 +466,7 @@ const TypeBadge = ({ type, lensId }) => {
 };
 const RevealCard = ({ puzzle, onShare, }) => {
     const color = constants_1.TYPE_COLORS[puzzle.type] || constants_1.COLORS.goldDim;
-    const Icon = TYPE_ICONS[puzzle.type] || IconRoot;
+    const Icon = TypeIcons_1.TYPE_ICONS[puzzle.type] || TypeIcons_1.IconRoot;
     const claim = puzzle.meta?.claim?.trim();
     return ((0, jsx_runtime_1.jsxs)("div", { className: "reveal-shell", style: {
             borderTop: `1px solid ${constants_1.COLORS.blackLine}`,
@@ -1226,20 +1134,8 @@ function Derivative() {
     const [shareMsg, setShareMsg] = (0, react_1.useState)(null);
     const [isHelpOpen, setIsHelpOpen] = (0, react_1.useState)(false);
     const [showTutorial, setShowTutorial] = (0, react_1.useState)(false);
-    const [lexiconPool, setLexiconPool] = (0, react_1.useState)(null);
-    const [lexiconFilter, setLexiconFilter] = (0, react_1.useState)("All");
-    const [lexiconError, setLexiconError] = (0, react_1.useState)(false);
     const today = getTodayStr();
     const [archiveMonth, setArchiveMonth] = (0, react_1.useState)(() => today.slice(0, 7));
-    (0, react_1.useEffect)(() => {
-        if (view === "lexicon" && !lexiconPool && !lexiconError) {
-            Promise.resolve().then(() => __importStar(require("./src/data/hebrewYiddishPool"))).then((mod) => {
-                setLexiconPool(mod.HEBREW_YIDDISH_POOL);
-            }).catch(() => {
-                setLexiconError(true);
-            });
-        }
-    }, [view, lexiconPool, lexiconError]);
     const archiveDates = (0, react_1.useMemo)(() => {
         const allDates = getMonthDates(archiveMonth + "-01");
         return allDates.filter((d) => d <= today);
@@ -1367,8 +1263,8 @@ function Derivative() {
         const day = dayRaw ?? new Date().getDate();
         const dateRoman = `${toRoman(day)} · ${toRoman(month)} · ${toRoman(year)}`;
         const diffLevel = (0, difficulty_1.getDifficulty)(puzzle.type, puzzle.lensId ?? "DEFAULT");
-        const diffIcon = DIFFICULTY_SHARE_ICONS[diffLevel] || "○";
-        const typeIcon = TYPE_SHARE_ICONS[puzzle.type] || "◇";
+        const diffIcon = constants_1.DIFFICULTY_SHARE_ICONS[diffLevel] || "○";
+        const typeIcon = constants_1.TYPE_SHARE_ICONS[puzzle.type] || "◇";
         const iconRow = `◈  ${diffIcon}  ${typeIcon}`;
         let tracker = "";
         if (puzzle.type === "ROOT") {
@@ -1506,7 +1402,7 @@ function Derivative() {
                                 letterSpacing: "0.1em",
                                 margin: "0 0 2.4rem",
                                 textTransform: "uppercase",
-                            }, children: "Do you want to play a game?" }), (0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: { ...S.btnPrimary, marginBottom: "1.6rem", padding: "0.6rem 2.2rem" }, onClick: () => openPuzzle(today), children: "enter \u2192" }), (0, jsx_runtime_1.jsx)("button", { className: "arch-link", onClick: () => setView("archive"), children: "archive" }), (0, jsx_runtime_1.jsx)("button", { className: "arch-link", style: { marginTop: "0.65rem" }, onClick: () => setView("lexicon"), children: "lexicon" }), (0, jsx_runtime_1.jsx)("a", { href: "https://www.themeansofproduction.press", target: "_blank", rel: "noopener noreferrer", style: {
+                            }, children: "Do you want to play a game?" }), (0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: { ...S.btnPrimary, marginBottom: "1.6rem", padding: "0.6rem 2.2rem" }, onClick: () => openPuzzle(today), children: "enter \u2192" }), (0, jsx_runtime_1.jsx)("button", { className: "arch-link", onClick: () => setView("archive"), children: "archive" }), (0, jsx_runtime_1.jsx)("a", { href: "https://www.themeansofproduction.press", target: "_blank", rel: "noopener noreferrer", style: {
                                 ...S.mono,
                                 display: "block",
                                 marginTop: "2.2rem",
@@ -1522,7 +1418,7 @@ function Derivative() {
         const typeLabel = todayPuzzle ? (constants_1.TYPE_LABELS[todayPuzzle.type] || todayPuzzle.type) : "";
         const subLabel = todayPuzzle ? (constants_1.TYPE_SUBLABELS[todayPuzzle.type] || "") : "";
         const typeColor = todayPuzzle ? (constants_1.TYPE_COLORS[todayPuzzle.type] || constants_1.COLORS.gold) : constants_1.COLORS.gold;
-        const TypeIcon = todayPuzzle ? TYPE_ICONS[todayPuzzle.type] : null;
+        const TypeIcon = todayPuzzle ? TypeIcons_1.TYPE_ICONS[todayPuzzle.type] : null;
         const statusDot = todayStatus === "complete"
             ? { symbol: "◈", color: constants_1.COLORS.gold, label: "complete" }
             : todayStatus === "partial"
@@ -1615,7 +1511,7 @@ function Derivative() {
                                                     flexShrink: 0,
                                                 } }), m.sublabel] }, level));
                                 }) }));
-                        })(), (0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: { ...S.btnPrimary, marginBottom: "1.4rem", padding: "0.55rem 1.8rem" }, onClick: () => openPuzzle(today), children: "play today \u2192" }), (0, jsx_runtime_1.jsx)("button", { className: "arch-link", onClick: () => setView("archive"), children: "archive" }), (0, jsx_runtime_1.jsx)("button", { className: "arch-link", style: { marginTop: "0.65rem" }, onClick: () => setView("lexicon"), children: "lexicon" }), (0, jsx_runtime_1.jsx)("a", { href: "https://www.themeansofproduction.press", target: "_blank", rel: "noopener noreferrer", style: {
+                        })(), (0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: { ...S.btnPrimary, marginBottom: "1.4rem", padding: "0.55rem 1.8rem" }, onClick: () => openPuzzle(today), children: "play today \u2192" }), (0, jsx_runtime_1.jsx)("button", { className: "arch-link", onClick: () => setView("archive"), children: "archive" }), (0, jsx_runtime_1.jsx)("a", { href: "https://www.themeansofproduction.press", target: "_blank", rel: "noopener noreferrer", style: {
                                 ...S.mono,
                                 display: "block",
                                 marginTop: "2.2rem",
@@ -1733,85 +1629,7 @@ function Derivative() {
                                 color: constants_1.COLORS.textMuted,
                                 letterSpacing: "0.08em",
                                 textDecoration: "none",
-                            }, children: "themeansofproduction.press" }), (0, jsx_runtime_1.jsx)("button", { className: "arch-link", style: { marginTop: "0.65rem" }, onClick: () => setView("lexicon"), children: "lexicon" })] }), (0, jsx_runtime_1.jsx)(TutorialModal, { visible: showTutorial, onClose: () => setShowTutorial(false) })] }));
-    }
-    if (view === "lexicon") {
-        const difficultyColors = {
-            Easy: constants_1.COLORS.cyan,
-            Medium: constants_1.COLORS.gold,
-            Hard: constants_1.COLORS.goldDim,
-        };
-        const filterOptions = ["All", "Easy", "Medium", "Hard"];
-        const visiblePool = lexiconPool
-            ? lexiconFilter === "All"
-                ? lexiconPool
-                : lexiconPool.filter((e) => e.difficulty === lexiconFilter)
-            : null;
-        return ((0, jsx_runtime_1.jsxs)("div", { style: { ...bgStyle, padding: "2rem" }, children: [(0, jsx_runtime_1.jsx)(GlobalFX, {}), (0, jsx_runtime_1.jsx)(Starfield, {}), (0, jsx_runtime_1.jsx)(AmbientOverlays, {}), (0, jsx_runtime_1.jsxs)("div", { style: { position: "relative", zIndex: 1, maxWidth: "700px", margin: "0 auto" }, children: [(0, jsx_runtime_1.jsxs)("div", { style: { display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1.5rem" }, children: [(0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: S.btnSm, onClick: () => setView("ready"), children: "\u2190 back" }), (0, jsx_runtime_1.jsx)("span", { style: {
-                                        ...S.mono,
-                                        color: constants_1.COLORS.gold,
-                                        fontSize: "0.75rem",
-                                        letterSpacing: "0.14em",
-                                        textTransform: "uppercase",
-                                        flex: 1,
-                                        textAlign: "center",
-                                    }, children: "Hebrew & Yiddish Lexicon" })] }), (0, jsx_runtime_1.jsx)("div", { style: {
-                                ...S.mono,
-                                fontSize: "0.6rem",
-                                color: constants_1.COLORS.textSecondary,
-                                letterSpacing: "0.1em",
-                                marginBottom: "1rem",
-                                lineHeight: 1.7,
-                            }, children: "Words that entered English through Jewish linguistic heritage \u2014 Yiddish survival wit, Hebrew sacred vocabulary, and the language of a people who refused to disappear." }), (0, jsx_runtime_1.jsx)("div", { style: { display: "flex", gap: "0.5rem", marginBottom: "1.5rem", flexWrap: "wrap" }, children: filterOptions.map((f) => ((0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: {
-                                    ...S.btnSm,
-                                    borderColor: lexiconFilter === f
-                                        ? (f === "All" ? constants_1.COLORS.gold : (difficultyColors[f] ?? constants_1.COLORS.gold))
-                                        : constants_1.COLORS.blackLine,
-                                    color: lexiconFilter === f
-                                        ? (f === "All" ? constants_1.COLORS.gold : (difficultyColors[f] ?? constants_1.COLORS.gold))
-                                        : constants_1.COLORS.textSecondary,
-                                }, onClick: () => setLexiconFilter(f), children: f }, f))) }), lexiconError ? ((0, jsx_runtime_1.jsx)("div", { style: { ...S.mono, fontSize: "0.7rem", color: constants_1.COLORS.goldDim, letterSpacing: "0.1em" }, children: "failed to load lexicon data." })) : !visiblePool ? ((0, jsx_runtime_1.jsx)("div", { style: { ...S.mono, fontSize: "0.7rem", color: constants_1.COLORS.textMuted, letterSpacing: "0.1em" }, children: "loading..." })) : ((0, jsx_runtime_1.jsx)("div", { style: { display: "flex", flexDirection: "column", gap: "0.85rem" }, children: visiblePool.map((entry) => {
-                                const dc = difficultyColors[entry.difficulty] ?? constants_1.COLORS.gold;
-                                return ((0, jsx_runtime_1.jsxs)("div", { style: {
-                                        background: constants_1.COLORS.surface,
-                                        border: `1px solid ${constants_1.COLORS.blackLine}`,
-                                        borderLeft: `3px solid ${dc}`,
-                                        borderRadius: "3px",
-                                        padding: "1rem 1.1rem",
-                                    }, children: [(0, jsx_runtime_1.jsxs)("div", { style: { display: "flex", alignItems: "baseline", gap: "0.75rem", marginBottom: "0.3rem" }, children: [(0, jsx_runtime_1.jsx)("span", { style: {
-                                                        ...S.mono,
-                                                        fontSize: "1rem",
-                                                        color: constants_1.COLORS.textPrimary,
-                                                        fontWeight: 500,
-                                                        letterSpacing: "0.04em",
-                                                    }, children: entry.word }), (0, jsx_runtime_1.jsx)("span", { style: {
-                                                        ...S.mono,
-                                                        fontSize: "0.54rem",
-                                                        color: dc,
-                                                        letterSpacing: "0.12em",
-                                                        textTransform: "uppercase",
-                                                        flexShrink: 0,
-                                                    }, children: entry.difficulty })] }), (0, jsx_runtime_1.jsx)("div", { style: {
-                                                ...S.mono,
-                                                fontSize: "0.6rem",
-                                                color: constants_1.COLORS.textMuted,
-                                                letterSpacing: "0.06em",
-                                                marginBottom: "0.5rem",
-                                            }, children: entry.origin }), (0, jsx_runtime_1.jsx)("div", { style: {
-                                                fontSize: "0.82rem",
-                                                color: constants_1.COLORS.textSecondary,
-                                                lineHeight: 1.6,
-                                                marginBottom: "0.6rem",
-                                                fontStyle: "italic",
-                                            }, children: entry.definition }), (0, jsx_runtime_1.jsx)("div", { style: {
-                                                fontSize: "0.78rem",
-                                                color: constants_1.COLORS.textSecondary,
-                                                lineHeight: 1.75,
-                                                borderTop: `1px solid ${constants_1.COLORS.blackLine}`,
-                                                paddingTop: "0.5rem",
-                                                opacity: 0.85,
-                                            }, children: entry.insight })] }, entry.word));
-                            }) }))] })] }));
+                            }, children: "themeansofproduction.press" })] }), (0, jsx_runtime_1.jsx)(TutorialModal, { visible: showTutorial, onClose: () => setShowTutorial(false) })] }));
     }
     if (view === "game" && puzzle && selDate) {
         const complete = isComplete();

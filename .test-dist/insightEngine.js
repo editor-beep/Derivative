@@ -12,6 +12,8 @@ const falseFamily_1 = require("./src/generators/falseFamily");
 const idiom_1 = require("./src/generators/idiom");
 const borrowed_1 = require("./src/generators/borrowed");
 const toponym_1 = require("./src/generators/toponym");
+const grimm_1 = require("./src/generators/grimm");
+const pie_1 = require("./src/generators/pie");
 const rootPool_1 = require("./src/data/rootPool");
 const suppletivePool_1 = require("./src/data/suppletivePool");
 const semanticPool_1 = require("./src/data/semanticPool");
@@ -21,6 +23,8 @@ const falseFamilyPool_1 = require("./src/data/falseFamilyPool");
 const idiomPool_1 = require("./src/data/idiomPool");
 const borrowedPool_1 = require("./src/data/borrowedPool");
 const toponymPool_1 = require("./src/data/toponymPool");
+const grimmPool_1 = require("./src/data/grimmPool");
+const piePool_1 = require("./src/data/piePool");
 const lenses_1 = require("./src/lenses");
 Object.defineProperty(exports, "LENSES", { enumerable: true, get: function () { return lenses_1.LENSES; } });
 Object.defineProperty(exports, "applyLens", { enumerable: true, get: function () { return lenses_1.applyLens; } });
@@ -78,6 +82,18 @@ exports.PUZZLE_SOURCES = [
         builder: toponym_1.buildToponymInsight,
         entryCount: toponymPool_1.TOPONYM_POOL.length,
         lensRule: (lens) => lens.applicableTo.includes("TOPONYM"),
+    },
+    {
+        builderType: "GRIMM",
+        builder: grimm_1.buildGrimmInsight,
+        entryCount: grimmPool_1.GRIMM_POOL.length,
+        lensRule: (lens) => lens.applicableTo.includes("GRIMM"),
+    },
+    {
+        builderType: "PIE",
+        builder: pie_1.buildPIEInsight,
+        entryCount: piePool_1.PIE_POOL.length,
+        lensRule: (lens) => lens.applicableTo.includes("PIE"),
     },
 ];
 for (const source of exports.PUZZLE_SOURCES) {

@@ -1,6 +1,7 @@
 // constants.ts
 
 import type { PuzzleType } from "./types";
+import type { DifficultyLevel } from "./difficulty";
 
 export const STORAGE_KEY = "derivative_v4";
 export const SPLASH_IMAGE = "/splash.jpg";
@@ -80,4 +81,27 @@ export const TYPE_COLORS: Record<PuzzleType, string> = {
   BORROWED: "#7ab87a",
   TOPONYM: "#4db6ac",
   MATCH: "#63b3ed",
+};
+
+export const TYPE_SHARE_ICONS: Record<PuzzleType, string> = {
+  ROOT: "Ψ",
+  SUPPLETIVE: "≠",
+  GRIMM: "∿",
+  SEMANTIC: "→",
+  COLLISION: "✕",
+  PIE: "∴",
+  IDIOM: "❝",
+  BORROWED: "←",
+  TOPONYM: "⊙",
+  DECEPTION: "≢",
+  FALSE_FAMILY: "≁",
+  PHANTOM_ROOT: "∅",
+  MATCH: "⇄",
+};
+
+export const DIFFICULTY_SHARE_ICONS: Record<DifficultyLevel, string> = {
+  EASY: "○",
+  MEDIUM: "◎",
+  HARD: "◉",
+  VERY_HARD: "●",
 };

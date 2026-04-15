@@ -102,11 +102,15 @@ export interface IdiomInsightData {
   revealBody: string;
 }
 
+export interface GrimmInsightData {
+  pairs: PuzzlePair[];
+}
+
 export type InsightDataByType = {
   ROOT: RootInsightData;
   SEMANTIC: SemanticInsightData;
   SUPPLETIVE: SortInsightData;
-  GRIMM: SortInsightData;
+  GRIMM: GrimmInsightData;
   COLLISION: SortInsightData;
   PIE: SortInsightData;
   DECEPTION: SortInsightData;
