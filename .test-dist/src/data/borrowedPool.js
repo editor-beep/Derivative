@@ -6,12 +6,14 @@ const norseCollisions_1 = require("./norseCollisions");
 const loanwordExtraction_1 = require("./loanwordExtraction");
 const eponyms_1 = require("./eponyms");
 const africanDiasporaPool_1 = require("./africanDiasporaPool");
+const hebrewYiddishPool_1 = require("./hebrewYiddishPool");
 exports.BORROWED_POOL = [
     ...frenchFakeouts_1.FRENCH_FALSE_FRIENDS_POOL,
     ...norseCollisions_1.NORSE_BORROWED_POOL,
     ...loanwordExtraction_1.LOANWORD_EXTRACTION_POOL,
     ...eponyms_1.EPONYM_POOL,
     ...africanDiasporaPool_1.AFRICAN_DIASPORA_POOL,
+    ...hebrewYiddishPool_1.HEBREW_YIDDISH_POOL,
     {
         root: "Arabic extraction",
         lang: "Arabic → English",

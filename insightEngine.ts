@@ -11,6 +11,8 @@ import { buildFalseFamilyInsight } from "./src/generators/falseFamily";
 import { buildIdiomInsight } from "./src/generators/idiom";
 import { buildBorrowedInsight } from "./src/generators/borrowed";
 import { buildToponymInsight } from "./src/generators/toponym";
+import { buildGrimmInsight } from "./src/generators/grimm";
+import { buildPIEInsight } from "./src/generators/pie";
 
 import { ROOT_POOL } from "./src/data/rootPool";
 import { SUPPLETIVE_POOL } from "./src/data/suppletivePool";
@@ -21,6 +23,8 @@ import { FALSE_FAMILY_POOL } from "./src/data/falseFamilyPool";
 import { IDIOM_POOL } from "./src/data/idiomPool";
 import { BORROWED_POOL } from "./src/data/borrowedPool";
 import { TOPONYM_POOL } from "./src/data/toponymPool";
+import { GRIMM_POOL } from "./src/data/grimmPool";
+import { PIE_POOL } from "./src/data/piePool";
 
 import { LENSES, applyLens } from "./src/lenses";
 export { LENSES, applyLens };
@@ -37,6 +41,8 @@ type PuzzleBuilderType = Extract<
   | "IDIOM"
   | "BORROWED"
   | "TOPONYM"
+  | "GRIMM"
+  | "PIE"
 >;
 
 type PuzzleSource = {
@@ -100,6 +106,18 @@ export const PUZZLE_SOURCES: readonly PuzzleSource[] = [
     builder: buildToponymInsight,
     entryCount: TOPONYM_POOL.length,
     lensRule: (lens) => lens.applicableTo.includes("TOPONYM"),
+  },
+  {
+    builderType: "GRIMM",
+    builder: buildGrimmInsight,
+    entryCount: GRIMM_POOL.length,
+    lensRule: (lens) => lens.applicableTo.includes("GRIMM"),
+  },
+  {
+    builderType: "PIE",
+    builder: buildPIEInsight,
+    entryCount: PIE_POOL.length,
+    lensRule: (lens) => lens.applicableTo.includes("PIE"),
   },
 ];
 

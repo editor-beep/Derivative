@@ -68,14 +68,6 @@ export type IdiomEntry = {
   revealBody: string;
 };
 
-export type HebrewYiddishEntry = {
-  word: string;
-  origin: string;
-  definition: string;
-  insight: string;
-  difficulty: "Easy" | "Medium" | "Hard";
-};
-
 export type MoorishArabicEntry = {
   word: string;
   origin: string;

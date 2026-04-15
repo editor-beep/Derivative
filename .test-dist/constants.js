@@ -1,7 +1,7 @@
 "use strict";
 // constants.ts
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TYPE_COLORS = exports.COLORS = exports.TYPE_SUBLABELS = exports.TYPE_LABELS = exports.SPLASH_IMAGE = exports.STORAGE_KEY = void 0;
+exports.DIFFICULTY_SHARE_ICONS = exports.TYPE_SHARE_ICONS = exports.TYPE_COLORS = exports.COLORS = exports.TYPE_SUBLABELS = exports.TYPE_LABELS = exports.SPLASH_IMAGE = exports.STORAGE_KEY = void 0;
 exports.STORAGE_KEY = "derivative_v4";
 exports.SPLASH_IMAGE = "/splash.jpg";
 exports.TYPE_LABELS = {
@@ -71,4 +71,25 @@ exports.TYPE_COLORS = {
     BORROWED: "#7ab87a",
     TOPONYM: "#4db6ac",
     MATCH: "#63b3ed",
+};
+exports.TYPE_SHARE_ICONS = {
+    ROOT: "Ψ",
+    SUPPLETIVE: "≠",
+    GRIMM: "∿",
+    SEMANTIC: "→",
+    COLLISION: "✕",
+    PIE: "∴",
+    IDIOM: "❝",
+    BORROWED: "←",
+    TOPONYM: "⊙",
+    DECEPTION: "≢",
+    FALSE_FAMILY: "≁",
+    PHANTOM_ROOT: "∅",
+    MATCH: "⇄",
+};
+exports.DIFFICULTY_SHARE_ICONS = {
+    EASY: "○",
+    MEDIUM: "◎",
+    HARD: "◉",
+    VERY_HARD: "●",
 };

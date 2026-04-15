@@ -1,11 +1,15 @@
-import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
-import type { HebrewYiddishEntry } from "./src/types";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { generateDailyPuzzle } from "./generator";
 import RootGraph from "./components/RootGraph";
 import PuzzleHelpModal from "./components/PuzzleHelpModal";
+import {
+  IconRoot,
+  TYPE_ICONS,
+  DIFFICULTY_ICONS,
+} from "./components/TypeIcons";
 import type { Puzzle, PuzzleType, LensId, ProgressStore, PuzzleProgressEntry, PuzzleState, Step } from "./types";
 import { getDifficulty, DIFFICULTY_META, getDayOfWeekDifficulty, type DifficultyLevel } from "./difficulty";
-import { TYPE_LABELS, TYPE_SUBLABELS, COLORS, TYPE_COLORS, STORAGE_KEY, SPLASH_IMAGE } from "./constants";
+import { TYPE_LABELS, TYPE_SUBLABELS, COLORS, TYPE_COLORS, TYPE_SHARE_ICONS, DIFFICULTY_SHARE_ICONS, STORAGE_KEY, SPLASH_IMAGE } from "./constants";
 import { getUtcDateKey } from "./src/dateUtils";
 import { hydrateProgressStore, withDiscoveredSystem } from "./progressSystems";
 
@@ -114,214 +118,6 @@ const S = {
     boxSizing: "border-box" as const,
     transition: "border-color 0.18s ease, box-shadow 0.18s ease",
   },
-};
-
-const IconBase = ({
-  children,
-  color,
-}: {
-  children: React.ReactNode;
-  color: string;
-}) => (
-  <svg
-    viewBox="0 0 24 24"
-    width="15"
-    height="15"
-    aria-hidden="true"
-    style={{ display: "block", filter: `drop-shadow(0 0 6px ${color}33)` }}
-  >
-    {children}
-  </svg>
-);
-
-const IconRoot = ({ color }: { color: string }) => (
-  <IconBase color={color}>
-    <circle cx="12" cy="12" r="7.5" fill="none" stroke={color} strokeWidth="1.4" />
-    <circle cx="12" cy="12" r="1.7" fill={color} />
-    <path d="M12 4.5v3.2M12 16.3v3.2M4.5 12h3.2M16.3 12h3.2" stroke={color} strokeWidth="1.2" />
-    <path d="M7.4 7.4l2.1 2.1M14.5 14.5l2.1 2.1M16.6 7.4l-2.1 2.1M9.5 14.5l-2.1 2.1" stroke={color} strokeWidth="1.1" />
-  </IconBase>
-);
-
-const IconSuppletive = ({ color }: { color: string }) => (
-  <IconBase color={color}>
-    <path d="M5 8h7" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
-    <path d="M12 8l-2.2-2.2M12 8l-2.2 2.2" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
-    <path d="M19 16h-7" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
-    <path d="M12 16l2.2-2.2M12 16l2.2 2.2" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
-    <circle cx="8" cy="8" r="1.6" fill={color} />
-    <circle cx="16" cy="16" r="1.6" fill={color} />
-  </IconBase>
-);
-
-const IconGrimm = ({ color }: { color: string }) => (
-  <IconBase color={color}>
-    <path d="M4 16c2-7 4-9 8-9 4 0 6 2 8 9" fill="none" stroke={color} strokeWidth="1.4" />
-    <path d="M5.5 17.5h13" stroke={color} strokeWidth="1.2" />
-    <circle cx="8" cy="11" r="1.2" fill={color} />
-    <circle cx="12" cy="9" r="1.2" fill={color} />
-    <circle cx="16" cy="11" r="1.2" fill={color} />
-  </IconBase>
-);
-
-const IconSemantic = ({ color }: { color: string }) => (
-  <IconBase color={color}>
-    <path d="M12 4v16" stroke={color} strokeWidth="1.3" />
-    <circle cx="12" cy="6" r="1.8" fill={color} />
-    <circle cx="12" cy="12" r="1.8" fill="none" stroke={color} strokeWidth="1.2" />
-    <circle cx="12" cy="18" r="1.8" fill={color} opacity="0.4" />
-    <path d="M9 9.2h6M9 14.8h6" stroke={color} strokeWidth="1.1" />
-  </IconBase>
-);
-
-const IconCollision = ({ color }: { color: string }) => (
-  <IconBase color={color}>
-    <path d="M6 7l5.5 5.5M18 7l-5.5 5.5" stroke={color} strokeWidth="1.4" />
-    <path d="M6 17l5.5-5.5M18 17l-5.5-5.5" stroke={color} strokeWidth="1.4" />
-    <circle cx="6" cy="7" r="1.6" fill={color} />
-    <circle cx="18" cy="7" r="1.6" fill={color} />
-    <circle cx="6" cy="17" r="1.6" fill={color} opacity="0.5" />
-    <circle cx="18" cy="17" r="1.6" fill={color} opacity="0.5" />
-  </IconBase>
-);
-
-const IconPIE = ({ color }: { color: string }) => (
-  <IconBase color={color}>
-    <circle cx="12" cy="12" r="8" fill="none" stroke={color} strokeWidth="1.4" />
-    <circle cx="12" cy="12" r="4" fill="none" stroke={color} strokeWidth="1.2" />
-    <circle cx="12" cy="12" r="1.4" fill={color} />
-  </IconBase>
-);
-
-const IconDeception = ({ color }: { color: string }) => (
-  <IconBase color={color}>
-    <path d="M12 4l7 4v8l-7 4-7-4V8l7-4z" fill="none" stroke={color} strokeWidth="1.3" />
-    <path d="M8 12h8" stroke={color} strokeWidth="1.2" />
-    <path d="M10 9.5l4 5" stroke={color} strokeWidth="1.2" />
-  </IconBase>
-);
-
-const IconFalseFamily = ({ color }: { color: string }) => (
-  <IconBase color={color}>
-    <circle cx="8" cy="8" r="3" fill="none" stroke={color} strokeWidth="1.2" />
-    <circle cx="16" cy="8" r="3" fill="none" stroke={color} strokeWidth="1.2" />
-    <circle cx="12" cy="16" r="3" fill="none" stroke={color} strokeWidth="1.2" />
-    <path d="M6.2 18.8L17.8 5.2" stroke={color} strokeWidth="1.4" />
-  </IconBase>
-);
-
-const IconPhantomRoot = ({ color }: { color: string }) => (
-  <IconBase color={color}>
-    <path d="M12 4v6" stroke={color} strokeWidth="1.4" />
-    <path d="M12 10l-3.2 3.2M12 10l3.2 3.2" stroke={color} strokeWidth="1.3" />
-    <circle cx="8.8" cy="14.2" r="1.5" fill={color} />
-    <circle cx="15.2" cy="14.2" r="1.5" fill={color} />
-    <circle cx="12" cy="18.2" r="1.5" fill={color} opacity="0.65" />
-  </IconBase>
-);
-
-const IconIdiom = ({ color }: { color: string }) => (
-  <IconBase color={color}>
-    <path d="M4 8h16" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
-    <path d="M4 12h10" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
-    <path d="M4 16h13" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
-    <circle cx="18" cy="12" r="2.2" fill="none" stroke={color} strokeWidth="1.2" />
-    <circle cx="18" cy="12" r="0.8" fill={color} />
-  </IconBase>
-);
-
-const IconBorrowed = ({ color }: { color: string }) => (
-  <IconBase color={color}>
-    <circle cx="6" cy="8" r="2.5" fill="none" stroke={color} strokeWidth="1.2" />
-    <circle cx="18" cy="8" r="2.5" fill="none" stroke={color} strokeWidth="1.2" />
-    <circle cx="12" cy="17" r="2.5" fill="none" stroke={color} strokeWidth="1.2" />
-    <path d="M8.2 9.2L10.2 15.2" stroke={color} strokeWidth="1.1" strokeDasharray="1.5 1.5" />
-    <path d="M15.8 9.2L13.8 15.2" stroke={color} strokeWidth="1.1" strokeDasharray="1.5 1.5" />
-    <path d="M8.4 7.6L15.6 7.6" stroke={color} strokeWidth="1.1" strokeDasharray="1.5 1.5" />
-  </IconBase>
-);
-
-const IconToponym = ({ color }: { color: string }) => (
-  <IconBase color={color}>
-    <circle cx="12" cy="9" r="3.5" fill="none" stroke={color} strokeWidth="1.2" />
-    <path d="M12 12.5 L12 19" stroke={color} strokeWidth="1.2" strokeLinecap="round" />
-    <path d="M8.5 18.5 Q12 21.5 15.5 18.5" stroke={color} strokeWidth="1.0" fill="none" />
-  </IconBase>
-);
-
-// ── Difficulty icons ──────────────────────────────────────────────────────────
-
-const IconDifficultyEasy = ({ color }: { color: string }) => (
-  <IconBase color={color}>
-    <circle cx="12" cy="12" r="2.5" fill={color} />
-    <path d="M12 5.5v2.5M12 16v2.5M5.5 12h2.5M16 12h2.5" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
-    <path d="M7.7 7.7l1.7 1.7M14.6 14.6l1.7 1.7M16.3 7.7l-1.7 1.7M9.4 14.6l-1.7 1.7" stroke={color} strokeWidth="1" strokeLinecap="round" opacity={0.5} />
-  </IconBase>
-);
-
-const IconDifficultyMedium = ({ color }: { color: string }) => (
-  <IconBase color={color}>
-    <circle cx="9" cy="12" r="4.5" fill="none" stroke={color} strokeWidth="1.3" />
-    <circle cx="15" cy="12" r="4.5" fill="none" stroke={color} strokeWidth="1.3" />
-    <circle cx="12" cy="12" r="1.2" fill={color} />
-  </IconBase>
-);
-
-const IconDifficultyHard = ({ color }: { color: string }) => (
-  <IconBase color={color}>
-    <circle cx="10.5" cy="10.5" r="5.5" fill="none" stroke={color} strokeWidth="1.3" />
-    <path d="M14.7 14.7l4.2 4.2" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
-    <path d="M8.5 10.5h4M10.5 8.5v4" stroke={color} strokeWidth="1" strokeLinecap="round" opacity={0.7} />
-  </IconBase>
-);
-
-const IconDifficultyVeryHard = ({ color }: { color: string }) => (
-  <IconBase color={color}>
-    <path d="M5 16V9l3.5 3.5L12 6l3.5 6.5L19 9v7H5z" fill="none" stroke={color} strokeWidth="1.3" strokeLinejoin="round" />
-    <path d="M5 16h14" stroke={color} strokeWidth="1.2" />
-    <circle cx="8.5" cy="12.5" r="1" fill={color} />
-    <circle cx="12" cy="8" r="1" fill={color} />
-    <circle cx="15.5" cy="12.5" r="1" fill={color} />
-  </IconBase>
-);
-
-const TYPE_ICONS: Record<PuzzleType, ({ color }: { color: string }) => ReactElement> = {
-  ROOT: IconRoot,
-  SUPPLETIVE: IconSuppletive,
-  GRIMM: IconGrimm,
-  SEMANTIC: IconSemantic,
-  COLLISION: IconCollision,
-  PIE: IconPIE,
-  DECEPTION: IconDeception,
-  FALSE_FAMILY: IconFalseFamily,
-  PHANTOM_ROOT: IconPhantomRoot,
-  IDIOM: IconIdiom,
-  BORROWED: IconBorrowed,
-  TOPONYM: IconToponym,
-  MATCH: IconSemantic,
-};
-
-const TYPE_SHARE_ICONS: Record<PuzzleType, string> = {
-  ROOT: "Ψ",
-  SUPPLETIVE: "≠",
-  GRIMM: "∿",
-  SEMANTIC: "→",
-  COLLISION: "✕",
-  PIE: "∴",
-  IDIOM: "❝",
-  BORROWED: "←",
-  TOPONYM: "⊙",
-  DECEPTION: "≢",
-  FALSE_FAMILY: "≁",
-  PHANTOM_ROOT: "∅",
-  MATCH: "⇄",
-};
-
-const DIFFICULTY_SHARE_ICONS: Record<DifficultyLevel, string> = {
-  EASY: "○",
-  MEDIUM: "◎",
-  HARD: "◉",
-  VERY_HARD: "●",
 };
 
 type ShareSection = { text: string; color: string; isTracker?: boolean };
@@ -694,13 +490,6 @@ const SystemMesh = ({ intensity = 1 }: { intensity?: number }) => (
     </svg>
   </div>
 );
-
-const DIFFICULTY_ICONS = {
-  EASY: IconDifficultyEasy,
-  MEDIUM: IconDifficultyMedium,
-  HARD: IconDifficultyHard,
-  VERY_HARD: IconDifficultyVeryHard,
-};
 
 const DifficultyBadge = ({ puzzleType, lensId }: { puzzleType: string; lensId: LensId }) => {
   const level = getDifficulty(puzzleType as PuzzleType, lensId);
@@ -2204,7 +1993,7 @@ const IdiomPuzzle = ({
 };
 
 export default function Derivative() {
-  const [view, setView] = useState<"splash" | "ready" | "archive" | "game" | "lexicon">("splash");
+  const [view, setView] = useState<"splash" | "ready" | "archive" | "game">("splash");
   const [selDate, setSelDate] = useState<string | null>(null);
   const [puzzle, setPuzzle] = useState<Puzzle | null>(null);
   const [progress, setProgress] = useState<ProgressStore>(load());
@@ -2213,22 +2002,9 @@ export default function Derivative() {
   const [shareMsg, setShareMsg] = useState<ShareData | null>(null);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
-  const [lexiconPool, setLexiconPool] = useState<HebrewYiddishEntry[] | null>(null);
-  const [lexiconFilter, setLexiconFilter] = useState<"All" | "Easy" | "Medium" | "Hard">("All");
-  const [lexiconError, setLexiconError] = useState(false);
 
   const today = getTodayStr();
   const [archiveMonth, setArchiveMonth] = useState<string>(() => today.slice(0, 7));
-
-  useEffect(() => {
-    if (view === "lexicon" && !lexiconPool && !lexiconError) {
-      import("./src/data/hebrewYiddishPool").then((mod) => {
-        setLexiconPool(mod.HEBREW_YIDDISH_POOL);
-      }).catch(() => {
-        setLexiconError(true);
-      });
-    }
-  }, [view, lexiconPool, lexiconError]);
 
   const archiveDates = useMemo(() => {
     const allDates = getMonthDates(archiveMonth + "-01");
@@ -2584,10 +2360,6 @@ export default function Derivative() {
             archive
           </button>
 
-          <button className="arch-link" style={{ marginTop: "0.65rem" }} onClick={() => setView("lexicon")}>
-            lexicon
-          </button>
-
           <a
             href="https://www.themeansofproduction.press"
             target="_blank"
@@ -2797,10 +2569,6 @@ export default function Derivative() {
 
           <button className="arch-link" onClick={() => setView("archive")}>
             archive
-          </button>
-
-          <button className="arch-link" style={{ marginTop: "0.65rem" }} onClick={() => setView("lexicon")}>
-            lexicon
           </button>
 
           <a
@@ -3044,179 +2812,8 @@ export default function Derivative() {
           >
             themeansofproduction.press
           </a>
-          <button className="arch-link" style={{ marginTop: "0.65rem" }} onClick={() => setView("lexicon")}>
-            lexicon
-          </button>
         </div>
         <TutorialModal visible={showTutorial} onClose={() => setShowTutorial(false)} />
-      </div>
-    );
-  }
-
-  if (view === "lexicon") {
-    const difficultyColors: Record<string, string> = {
-      Easy: COLORS.cyan,
-      Medium: COLORS.gold,
-      Hard: COLORS.goldDim,
-    };
-    const filterOptions = ["All", "Easy", "Medium", "Hard"] as const;
-    const visiblePool = lexiconPool
-      ? lexiconFilter === "All"
-        ? lexiconPool
-        : lexiconPool.filter((e) => e.difficulty === lexiconFilter)
-      : null;
-
-    return (
-      <div style={{ ...bgStyle, padding: "2rem" }}>
-        <GlobalFX />
-        <Starfield />
-        <AmbientOverlays />
-
-        <div style={{ position: "relative", zIndex: 1, maxWidth: "700px", margin: "0 auto" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1.5rem" }}>
-            <button className="deriv-btn" style={S.btnSm} onClick={() => setView("ready")}>
-              ← back
-            </button>
-            <span
-              style={{
-                ...S.mono,
-                color: COLORS.gold,
-                fontSize: "0.75rem",
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                flex: 1,
-                textAlign: "center",
-              }}
-            >
-              Hebrew & Yiddish Lexicon
-            </span>
-          </div>
-
-          <div
-            style={{
-              ...S.mono,
-              fontSize: "0.6rem",
-              color: COLORS.textSecondary,
-              letterSpacing: "0.1em",
-              marginBottom: "1rem",
-              lineHeight: 1.7,
-            }}
-          >
-            Words that entered English through Jewish linguistic heritage — Yiddish survival wit,
-            Hebrew sacred vocabulary, and the language of a people who refused to disappear.
-          </div>
-
-          {/* Difficulty filter */}
-          <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem", flexWrap: "wrap" }}>
-            {filterOptions.map((f) => (
-              <button
-                key={f}
-                className="deriv-btn"
-                style={{
-                  ...S.btnSm,
-                  borderColor: lexiconFilter === f
-                    ? (f === "All" ? COLORS.gold : (difficultyColors[f] ?? COLORS.gold))
-                    : COLORS.blackLine,
-                  color: lexiconFilter === f
-                    ? (f === "All" ? COLORS.gold : (difficultyColors[f] ?? COLORS.gold))
-                    : COLORS.textSecondary,
-                }}
-                onClick={() => setLexiconFilter(f)}
-              >
-                {f}
-              </button>
-            ))}
-          </div>
-
-          {/* Word cards */}
-          {lexiconError ? (
-            <div style={{ ...S.mono, fontSize: "0.7rem", color: COLORS.goldDim, letterSpacing: "0.1em" }}>
-              failed to load lexicon data.
-            </div>
-          ) : !visiblePool ? (
-            <div style={{ ...S.mono, fontSize: "0.7rem", color: COLORS.textMuted, letterSpacing: "0.1em" }}>
-              loading...
-            </div>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
-              {visiblePool.map((entry) => {
-                const dc = difficultyColors[entry.difficulty] ?? COLORS.gold;
-                return (
-                  <div
-                    key={entry.word}
-                    style={{
-                      background: COLORS.surface,
-                      border: `1px solid ${COLORS.blackLine}`,
-                      borderLeft: `3px solid ${dc}`,
-                      borderRadius: "3px",
-                      padding: "1rem 1.1rem",
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "baseline", gap: "0.75rem", marginBottom: "0.3rem" }}>
-                      <span
-                        style={{
-                          ...S.mono,
-                          fontSize: "1rem",
-                          color: COLORS.textPrimary,
-                          fontWeight: 500,
-                          letterSpacing: "0.04em",
-                        }}
-                      >
-                        {entry.word}
-                      </span>
-                      <span
-                        style={{
-                          ...S.mono,
-                          fontSize: "0.54rem",
-                          color: dc,
-                          letterSpacing: "0.12em",
-                          textTransform: "uppercase",
-                          flexShrink: 0,
-                        }}
-                      >
-                        {entry.difficulty}
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        ...S.mono,
-                        fontSize: "0.6rem",
-                        color: COLORS.textMuted,
-                        letterSpacing: "0.06em",
-                        marginBottom: "0.5rem",
-                      }}
-                    >
-                      {entry.origin}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "0.82rem",
-                        color: COLORS.textSecondary,
-                        lineHeight: 1.6,
-                        marginBottom: "0.6rem",
-                        fontStyle: "italic",
-                      }}
-                    >
-                      {entry.definition}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "0.78rem",
-                        color: COLORS.textSecondary,
-                        lineHeight: 1.75,
-                        borderTop: `1px solid ${COLORS.blackLine}`,
-                        paddingTop: "0.5rem",
-                        opacity: 0.85,
-                      }}
-                    >
-                      {entry.insight}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
       </div>
     );
   }

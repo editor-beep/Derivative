@@ -65,7 +65,7 @@ test("every synthesized puzzle includes a short non-empty meta claim", () => {
     { ...baseInsight("ROOT"), data: { targets: ["a"], required: ["a"] } },
     { ...baseInsight("SEMANTIC"), data: { timeline: [{ era: "old", meaning: "x" }], word: "nice" } },
     { ...baseInsight("SUPPLETIVE"), data: { groups: [{ id: "g1", accepts: ["x"], related: [] }], pool: ["x"] } },
-    { ...baseInsight("GRIMM"), data: { groups: [{ id: "g1", accepts: ["x"], related: [] }], pool: ["x"] } },
+    { ...baseInsight("GRIMM"), data: { pairs: [{ source: "Latin 'pater'", target: "father", note: "p→f" }] } },
     { ...baseInsight("COLLISION"), data: { groups: [{ id: "g1", accepts: ["x"], related: [] }], pool: ["x"] } },
     { ...baseInsight("PIE"), data: { groups: [{ id: "g1", accepts: ["x"], related: [] }], pool: ["x"] } },
     { ...baseInsight("DECEPTION"), data: { groups: [{ id: "g1", accepts: ["x"], related: [] }], pool: ["x"] } },

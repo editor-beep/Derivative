@@ -213,6 +213,24 @@ function buildIdiomPuzzle(insight, date) {
         reveal: { headline: "", body: "", connections: [] },
     };
 }
+function buildGrimmPuzzle(insight, date) {
+    const { pairs } = insight.data;
+    return {
+        date,
+        type: "GRIMM",
+        lensId: lensId(insight),
+        prompt: insight.tension,
+        pairs,
+        meta: {
+            claim: "Sound shifts are law.",
+            root: insight.root,
+            lang: insight.language,
+            meaning: insight.meaning,
+            lensLabel: lensLabel(insight),
+        },
+        reveal: { headline: "", body: "", connections: [] },
+    };
+}
 function buildBorrowedPuzzle(insight, date) {
     return buildSortPuzzle(insight, date);
 }
@@ -266,6 +284,11 @@ function assertPuzzleShape(puzzle) {
                 throw new Error(`Invalid MATCH puzzle shape for ${puzzle.date}`);
             }
             break;
+        case "GRIMM":
+            if (!puzzle.pairs?.length) {
+                throw new Error(`Invalid GRIMM puzzle shape for ${puzzle.date}`);
+            }
+            break;
         default:
             if (!puzzle.groups?.length || !puzzle.pool?.length) {
                 throw new Error(`Invalid ${puzzle.type} puzzle shape for ${puzzle.date}`);
@@ -295,9 +318,10 @@ function synthesizePuzzle(insight, date) {
         case "SUPPLETIVE":
         case "COLLISION":
         case "PIE":
-        case "GRIMM":
         case "PHANTOM_ROOT":
             return assertPuzzleShape(buildSortPuzzle(insight, date));
+        case "GRIMM":
+            return assertPuzzleShape(buildGrimmPuzzle(insight, date));
         default: {
             const neverType = insight;
             throw new Error(`Unsupported puzzle type: ${JSON.stringify(neverType)}`);
