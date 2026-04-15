@@ -1461,7 +1461,15 @@ function Derivative() {
                                 letterSpacing: "0.1em",
                                 margin: "0 0 2.4rem",
                                 textTransform: "uppercase",
-                            }, children: "Do you want to play a game?" }), (0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: { ...S.btnPrimary, marginBottom: "1.6rem", padding: "0.6rem 2.2rem" }, onClick: () => openPuzzle(today), children: "enter \u2192" }), (0, jsx_runtime_1.jsx)("button", { className: "arch-link", onClick: () => setView("archive"), children: "archive" })] })] }));
+                            }, children: "Do you want to play a game?" }), (0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: { ...S.btnPrimary, marginBottom: "1.6rem", padding: "0.6rem 2.2rem" }, onClick: () => openPuzzle(today), children: "enter \u2192" }), (0, jsx_runtime_1.jsx)("button", { className: "arch-link", onClick: () => setView("archive"), children: "archive" }), (0, jsx_runtime_1.jsx)("a", { href: "https://www.themeansofproduction.press", target: "_blank", rel: "noopener noreferrer", style: {
+                                ...S.mono,
+                                display: "block",
+                                marginTop: "2.2rem",
+                                fontSize: "0.62rem",
+                                color: constants_1.COLORS.textMuted,
+                                letterSpacing: "0.08em",
+                                textDecoration: "none",
+                            }, children: "themeansofproduction.press" })] })] }));
     }
     if (view === "ready") {
         const todayPuzzle = getPuzzleForDate(today);
@@ -1535,9 +1543,18 @@ function Derivative() {
                                         letterSpacing: "0.1em",
                                         color: constants_1.COLORS.textMuted,
                                         textTransform: "uppercase",
-                                    }, children: statusDot.label })] }), (0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: { ...S.btnPrimary, marginBottom: "1.4rem", padding: "0.55rem 1.8rem" }, onClick: () => openPuzzle(today), children: "play today \u2192" }), (0, jsx_runtime_1.jsx)("button", { className: "arch-link", onClick: () => setView("archive"), children: "archive" })] })] }));
+                                    }, children: statusDot.label })] }), (0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: { ...S.btnPrimary, marginBottom: "1.4rem", padding: "0.55rem 1.8rem" }, onClick: () => openPuzzle(today), children: "play today \u2192" }), (0, jsx_runtime_1.jsx)("button", { className: "arch-link", onClick: () => setView("archive"), children: "archive" }), (0, jsx_runtime_1.jsx)("a", { href: "https://www.themeansofproduction.press", target: "_blank", rel: "noopener noreferrer", style: {
+                                ...S.mono,
+                                display: "block",
+                                marginTop: "2.2rem",
+                                fontSize: "0.62rem",
+                                color: constants_1.COLORS.textMuted,
+                                letterSpacing: "0.08em",
+                                textDecoration: "none",
+                            }, children: "themeansofproduction.press" })] })] }));
     }
     if (view === "archive") {
+        // Use the 15th to avoid timezone edge cases when parsing the month label
         const monthLabel = new Date(archiveMonth + "-15T12:00:00").toLocaleDateString("en-US", {
             month: "long",
             year: "numeric",
@@ -1548,7 +1565,7 @@ function Derivative() {
         const canGoNext = archiveMonth < today.slice(0, 7);
         const shiftMonth = (delta) => {
             const [y, m] = archiveMonth.split("-").map(Number);
-            const d = new Date(y, (m ?? 1) - 1 + delta, 1);
+            const d = new Date(y, m - 1 + delta, 1);
             const ny = d.getFullYear();
             const nm = String(d.getMonth() + 1).padStart(2, "0");
             setArchiveMonth(`${ny}-${nm}`);
@@ -1636,7 +1653,15 @@ function Derivative() {
                                         alignItems: "center",
                                         gap: "0.3rem",
                                     }, children: [(0, jsx_runtime_1.jsx)("span", { style: { display: "inline-block", width: "12px", height: "2px", background: m.color, borderRadius: "1px" } }), m.label] }, level));
-                            }) })] }), (0, jsx_runtime_1.jsx)(TutorialModal, { visible: showTutorial, onClose: () => setShowTutorial(false) })] }));
+                            }) }), (0, jsx_runtime_1.jsx)("a", { href: "https://www.themeansofproduction.press", target: "_blank", rel: "noopener noreferrer", style: {
+                                ...S.mono,
+                                display: "block",
+                                marginTop: "1.5rem",
+                                fontSize: "0.62rem",
+                                color: constants_1.COLORS.textMuted,
+                                letterSpacing: "0.08em",
+                                textDecoration: "none",
+                            }, children: "themeansofproduction.press" })] }), (0, jsx_runtime_1.jsx)(TutorialModal, { visible: showTutorial, onClose: () => setShowTutorial(false) })] }));
     }
     if (view === "game" && puzzle && selDate) {
         const complete = isComplete();
