@@ -72,7 +72,7 @@ export const CONTRONYM_POOL: SortPoolEntry[] = [
         id: "supervisory_gaze",
         displayLabel: "supervision & inattention",
         solutionLabel: "Words where watchful care and the failure to notice share the same root",
-        hint: "These two words are built from the same idea — looking over something from above. One name means the care is diligent; the other means the look missed something.",
+        hint: "These two words are built from the same idea — looking over something from above. One names a diligent care; the other names the scan that missed something.",
         hintLevel2: "One is the job title of the person paid to watch everything. The other is the word for the error that occurred because no one was watching.",
         accepts: ["overlook", "oversight"],
         related: ["supervise", "neglect"],
