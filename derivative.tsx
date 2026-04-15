@@ -2209,11 +2209,14 @@ export default function Derivative() {
     ];
 
     const plain = [
-      "◈ DERIVATIVE ◈",
-      "The Game of the Lingua Imperii",
+      "◈ DERIVATIVE ◈The Game of the Lingua Imperii",
+      "",
       dateRoman,
+      "",
       iconRow,
+      "",
       tracker,
+      "",
       url,
     ].join("\n");
 
