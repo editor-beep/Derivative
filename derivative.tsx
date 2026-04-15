@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
 import { generateDailyPuzzle } from "./generator";
 import RootGraph from "./components/RootGraph";
+import PuzzleHelpModal from "./components/PuzzleHelpModal";
 import type { Puzzle, PuzzleType, LensId, ProgressStore, PuzzleProgressEntry, PuzzleState, Step } from "./types";
 import { getDifficulty, DIFFICULTY_META, type DifficultyLevel } from "./difficulty";
 import { TYPE_LABELS, TYPE_SUBLABELS, COLORS, TYPE_COLORS, STORAGE_KEY, SPLASH_IMAGE } from "./constants";
@@ -1124,9 +1125,11 @@ const TutorialModal = ({
 const PuzzleHeader = ({
   puzzle,
   selDate,
+  onOpenHelp,
 }: {
   puzzle: Puzzle;
   selDate: string;
+  onOpenHelp: () => void;
 }) => {
   const dateLabel = new Date(selDate + "T12:00:00").toLocaleDateString("en-US", {
     month: "long",
@@ -1194,9 +1197,32 @@ const PuzzleHeader = ({
           {puzzle.prompt}
         </div>
       )}
+
+      <button
+        className="deriv-btn"
+        onClick={onOpenHelp}
+        aria-label={`Open ${TYPE_LABELS[puzzle.type] || puzzle.type} gameplay help`}
+        style={{
+          ...S.btnSm,
+          marginTop: "0.75rem",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "30px",
+          height: "30px",
+          padding: 0,
+          fontSize: "0.88rem",
+          borderRadius: "999px",
+          lineHeight: 1,
+        }}
+      >
+        ?
+      </button>
     </div>
   );
 };
+
+
 
 const RootPuzzle = ({
   puzzle,
@@ -2341,6 +2367,7 @@ export default function Derivative() {
   const [revealed, setRevealed] = useState(false);
   const [puzzleState, setPuzzleState] = useState<PuzzleState>({});
   const [shareMsg, setShareMsg] = useState<ShareData | null>(null);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
 
   const today = getTodayStr();
@@ -2364,6 +2391,7 @@ export default function Derivative() {
     setRevealed(saved.revealed || false);
     setPuzzleState(saved.state || {});
     setShareMsg(null);
+    setIsHelpOpen(false);
     const data = load();
     const isFirstEntry = !data._hasSeenTutorial;
     if (!data._hasPlayed || isFirstEntry) {
@@ -3104,7 +3132,9 @@ export default function Derivative() {
             />
           </div>
 
-          <PuzzleHeader puzzle={puzzle} selDate={selDate} />
+          <PuzzleHeader puzzle={puzzle} selDate={selDate} onOpenHelp={() => setIsHelpOpen(true)} />
+
+          {isHelpOpen && <PuzzleHelpModal puzzleType={puzzle.type} onClose={() => setIsHelpOpen(false)} />}
 
           {puzzle.type === "ROOT" && (
             <RootPuzzle
