@@ -1054,9 +1054,11 @@ const ShareCard = ({ data }: { data: ShareData }) => {
 const PuzzleHeader = ({
   puzzle,
   selDate,
+  onOpenHelp,
 }: {
   puzzle: Puzzle;
   selDate: string;
+  onOpenHelp: () => void;
 }) => {
   const dateLabel = new Date(selDate + "T12:00:00").toLocaleDateString("en-US", {
     month: "long",
@@ -1124,8 +1126,136 @@ const PuzzleHeader = ({
           {puzzle.prompt}
         </div>
       )}
+
+      <button
+        className="deriv-btn"
+        onClick={onOpenHelp}
+        aria-label={`Open ${TYPE_LABELS[puzzle.type] || puzzle.type} gameplay help`}
+        style={{
+          ...S.btnSm,
+          marginTop: "0.75rem",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "30px",
+          height: "30px",
+          padding: 0,
+          fontSize: "0.88rem",
+          borderRadius: "999px",
+          lineHeight: 1,
+        }}
+      >
+        ?
+      </button>
     </div>
   );
+};
+
+const HELP_MODAL_BY_TYPE: Record<PuzzleType, { title: string; points: string[] }> = {
+  ROOT: {
+    title: "Root Hunt Mechanics",
+    points: [
+      "Enter words connected to the displayed root.",
+      "Required words advance puzzle completion; bonus words still score as discoveries.",
+      "Use the graph to spot lexical neighbors and semantic branches.",
+    ],
+  },
+  SEMANTIC: {
+    title: "Semantic Shift Mechanics",
+    points: [
+      "Follow the timeline and fill each blank era with the missing meaning.",
+      "Answers are checked by keyword overlap, so short close paraphrases count.",
+      "Complete every blank stage to finish the puzzle.",
+    ],
+  },
+  SUPPLETIVE: {
+    title: "Sound Shift Mechanics",
+    points: [
+      "Classify each word into the best-fit system group.",
+      "After a few classifications, you'll guess the larger historical force at work.",
+      "Solve by correctly sorting the classify words.",
+    ],
+  },
+  GRIMM: {
+    title: "Sound Shift Mechanics",
+    points: [
+      "Convert each source form into the expected target form.",
+      "Each correct pair locks in permanently.",
+      "Find all target forms to complete the set.",
+    ],
+  },
+  COLLISION: {
+    title: "Sound Shift Mechanics",
+    points: [
+      "Classify each word by which historical pathway produced it.",
+      "Expect similar-looking words to split into different origins.",
+      "Solve by correctly sorting the classify words.",
+    ],
+  },
+  PIE: {
+    title: "Sound Shift Mechanics",
+    points: [
+      "Sort reflexes by inherited sound-change pattern.",
+      "Watch for regular correspondences rather than modern spelling.",
+      "Solve by correctly sorting the classify words.",
+    ],
+  },
+  DECEPTION: {
+    title: "Sound Shift Mechanics",
+    points: [
+      "Separate true historical outcomes from misleading look-alikes.",
+      "The system-guess checkpoints test pattern recognition, not memorization.",
+      "Solve by correctly sorting the classify words.",
+    ],
+  },
+  FALSE_FAMILY: {
+    title: "Sound Shift Mechanics",
+    points: [
+      "Group words by real lineage, not superficial resemblance.",
+      "Some terms feel related but diverge under sound laws.",
+      "Solve by correctly sorting the classify words.",
+    ],
+  },
+  PHANTOM_ROOT: {
+    title: "Sound Shift Mechanics",
+    points: [
+      "Distinguish genuine root descendants from phantom reconstructions.",
+      "Use category labels as clues to historical plausibility.",
+      "Solve by correctly sorting the classify words.",
+    ],
+  },
+  IDIOM: {
+    title: "Idiom Reconstruction Mechanics",
+    points: [
+      "Rebuild the phrase by guessing individual words or the full expression.",
+      "Correct words reveal their exact slots and repeated words can unlock multiple positions.",
+      "Complete when every word in the expression is exposed.",
+    ],
+  },
+  BORROWED: {
+    title: "Borrowing Mechanics",
+    points: [
+      "Classify each word by borrowing pathway or source grouping.",
+      "Checkpoint prompts ask you to infer the broader system driving the set.",
+      "Solve by correctly sorting the classify words.",
+    ],
+  },
+  TOPONYM: {
+    title: "Borrowing Mechanics",
+    points: [
+      "Sort place-based words by historical transmission channel.",
+      "Expect geography and contact history to matter more than spelling.",
+      "Solve by correctly sorting the classify words.",
+    ],
+  },
+  MATCH: {
+    title: "Match Mechanics",
+    points: [
+      "Match each source term to its correct gloss.",
+      "Every row is independent; adjust mismatches until all pairs align.",
+      "Complete by making every source-target assignment correct.",
+    ],
+  },
 };
 
 const RootPuzzle = ({
@@ -2271,6 +2401,7 @@ export default function Derivative() {
   const [revealed, setRevealed] = useState(false);
   const [puzzleState, setPuzzleState] = useState<PuzzleState>({});
   const [shareMsg, setShareMsg] = useState<ShareData | null>(null);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   const today = getTodayStr();
   const archiveDates = useMemo(() => getMonthDates(today), [today]);
@@ -2293,6 +2424,7 @@ export default function Derivative() {
     setRevealed(saved.revealed || false);
     setPuzzleState(saved.state || {});
     setShareMsg(null);
+    setIsHelpOpen(false);
     const data = load();
     if (!data._hasPlayed) save({ ...data, _hasPlayed: true });
     setView("game");
@@ -3020,7 +3152,54 @@ export default function Derivative() {
             />
           </div>
 
-          <PuzzleHeader puzzle={puzzle} selDate={selDate} />
+          <PuzzleHeader puzzle={puzzle} selDate={selDate} onOpenHelp={() => setIsHelpOpen(true)} />
+
+          {isHelpOpen && (
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label={`${TYPE_LABELS[puzzle.type] || puzzle.type} gameplay help`}
+              style={{
+                position: "fixed",
+                inset: 0,
+                background: "rgba(0,0,0,0.62)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                zIndex: 20,
+                padding: "1rem",
+              }}
+              onClick={() => setIsHelpOpen(false)}
+            >
+              <div
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  width: "min(560px, 100%)",
+                  background: `linear-gradient(180deg, ${COLORS.surface2}, ${COLORS.surface})`,
+                  border: `1px solid ${TYPE_COLORS[puzzle.type] || COLORS.goldDark}`,
+                  borderRadius: "6px",
+                  boxShadow: `0 0 28px ${COLORS.goldGlow}`,
+                  padding: "1rem 1rem 0.9rem",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.75rem", marginBottom: "0.7rem" }}>
+                  <div style={{ ...S.mono, fontSize: "0.72rem", color: TYPE_COLORS[puzzle.type] || COLORS.gold, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                    {HELP_MODAL_BY_TYPE[puzzle.type].title}
+                  </div>
+                  <button className="deriv-btn" style={{ ...S.btnSm, padding: "0.25rem 0.55rem" }} onClick={() => setIsHelpOpen(false)}>
+                    close
+                  </button>
+                </div>
+                <ul style={{ margin: 0, paddingLeft: "1rem", color: COLORS.textSecondary, display: "grid", gap: "0.45rem" }}>
+                  {HELP_MODAL_BY_TYPE[puzzle.type].points.map((point) => (
+                    <li key={point} style={{ fontSize: "0.8rem", lineHeight: 1.6 }}>
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
 
           {puzzle.type === "ROOT" && (
             <RootPuzzle
