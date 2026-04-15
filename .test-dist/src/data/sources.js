@@ -63,6 +63,7 @@ const DATASET_SOURCE_INDEX = {
     woman_centric: { sourceIds: ["oed", "etymonline", "wiktionary", "wikipedia"], confidence: "probable", notes: "Etymology data is well-attested in standard references; semantic-shift and reclamation narratives are interpretive summaries. Hero/Villain framing is editorial." },
     lgbtq: { sourceIds: ["oed", "etymonline", "wiktionary", "wikipedia"], confidence: "disputed", notes: "LGBTQ etymology and reclamation histories draw on activist and cultural scholarship; some first-use attributions (e.g. ballroom vocabulary, Stonewall accounts) are contested or incomplete in the written record. Cultural and political framing is editorial." },
     capitonym: { sourceIds: ["oed", "etymonline", "wiktionary", "wikipedia"], confidence: "probable", notes: "Capitonym pairings and their etymologies are well-attested in standard references; historical-colonial framing and Hero/Villain narrative are editorial." },
+    contronym: { sourceIds: ["oed", "etymonline", "merriam_webster", "wiktionary"], confidence: "verified", notes: "Contronym (auto-antonym / Janus word) status for each entry is well-attested in standard references. The grouping of words by the nature of their internal opposition is editorial." },
 };
 function applyDatasetProvenance(entries, datasetKey) {
     const config = DATASET_SOURCE_INDEX[datasetKey];

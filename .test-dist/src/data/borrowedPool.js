@@ -11,6 +11,7 @@ const moorishArabicPool_1 = require("./moorishArabicPool");
 const womanCentricPool_1 = require("./womanCentricPool");
 const lgbtqPool_1 = require("./lgbtqPool");
 const capitonymPool_1 = require("./capitonymPool");
+const contronymPool_1 = require("./contronymPool");
 exports.BORROWED_POOL = [
     ...frenchFakeouts_1.FRENCH_FALSE_FRIENDS_POOL,
     ...norseCollisions_1.NORSE_BORROWED_POOL,
@@ -22,6 +23,7 @@ exports.BORROWED_POOL = [
     ...womanCentricPool_1.WOMAN_CENTRIC_POOL,
     ...lgbtqPool_1.LGBTQ_POOL,
     ...capitonymPool_1.CAPITONYM_POOL,
+    ...contronymPool_1.CONTRONYM_POOL,
     {
         root: "Arabic extraction",
         lang: "Arabic → English",
