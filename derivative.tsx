@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
+import type { HebrewYiddishEntry } from "./src/types";
 import { generateDailyPuzzle } from "./generator";
 import RootGraph from "./components/RootGraph";
 import PuzzleHelpModal from "./components/PuzzleHelpModal";
@@ -2203,7 +2204,7 @@ const IdiomPuzzle = ({
 };
 
 export default function Derivative() {
-  const [view, setView] = useState<"splash" | "ready" | "archive" | "game">("splash");
+  const [view, setView] = useState<"splash" | "ready" | "archive" | "game" | "lexicon">("splash");
   const [selDate, setSelDate] = useState<string | null>(null);
   const [puzzle, setPuzzle] = useState<Puzzle | null>(null);
   const [progress, setProgress] = useState<ProgressStore>(load());
@@ -2212,9 +2213,19 @@ export default function Derivative() {
   const [shareMsg, setShareMsg] = useState<ShareData | null>(null);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [lexiconPool, setLexiconPool] = useState<HebrewYiddishEntry[] | null>(null);
+  const [lexiconFilter, setLexiconFilter] = useState<"All" | "Easy" | "Medium" | "Hard">("All");
 
   const today = getTodayStr();
   const [archiveMonth, setArchiveMonth] = useState<string>(() => today.slice(0, 7));
+
+  useEffect(() => {
+    if (view === "lexicon" && !lexiconPool) {
+      import("./src/data/hebrewYiddishPool").then((mod) => {
+        setLexiconPool(mod.HEBREW_YIDDISH_POOL);
+      });
+    }
+  }, [view, lexiconPool]);
 
   const archiveDates = useMemo(() => {
     const allDates = getMonthDates(archiveMonth + "-01");
@@ -2570,6 +2581,10 @@ export default function Derivative() {
             archive
           </button>
 
+          <button className="arch-link" style={{ marginTop: "0.65rem" }} onClick={() => setView("lexicon")}>
+            lexicon
+          </button>
+
           <a
             href="https://www.themeansofproduction.press"
             target="_blank"
@@ -2779,6 +2794,10 @@ export default function Derivative() {
 
           <button className="arch-link" onClick={() => setView("archive")}>
             archive
+          </button>
+
+          <button className="arch-link" style={{ marginTop: "0.65rem" }} onClick={() => setView("lexicon")}>
+            lexicon
           </button>
 
           <a
@@ -3022,8 +3041,175 @@ export default function Derivative() {
           >
             themeansofproduction.press
           </a>
+          <button className="arch-link" style={{ marginTop: "0.65rem" }} onClick={() => setView("lexicon")}>
+            lexicon
+          </button>
         </div>
         <TutorialModal visible={showTutorial} onClose={() => setShowTutorial(false)} />
+      </div>
+    );
+  }
+
+  if (view === "lexicon") {
+    const difficultyColors: Record<string, string> = {
+      Easy: COLORS.cyan,
+      Medium: COLORS.gold,
+      Hard: COLORS.goldDim,
+    };
+    const filterOptions = ["All", "Easy", "Medium", "Hard"] as const;
+    const visiblePool = lexiconPool
+      ? lexiconFilter === "All"
+        ? lexiconPool
+        : lexiconPool.filter((e) => e.difficulty === lexiconFilter)
+      : null;
+
+    return (
+      <div style={{ ...bgStyle, padding: "2rem" }}>
+        <GlobalFX />
+        <Starfield />
+        <AmbientOverlays />
+
+        <div style={{ position: "relative", zIndex: 1, maxWidth: "700px", margin: "0 auto" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1.5rem" }}>
+            <button className="deriv-btn" style={S.btnSm} onClick={() => setView("ready")}>
+              ← back
+            </button>
+            <span
+              style={{
+                ...S.mono,
+                color: COLORS.gold,
+                fontSize: "0.75rem",
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                flex: 1,
+                textAlign: "center",
+              }}
+            >
+              Hebrew &amp; Yiddish Lexicon
+            </span>
+          </div>
+
+          <div
+            style={{
+              ...S.mono,
+              fontSize: "0.6rem",
+              color: COLORS.textSecondary,
+              letterSpacing: "0.1em",
+              marginBottom: "1rem",
+              lineHeight: 1.7,
+            }}
+          >
+            Words that entered English through Jewish linguistic heritage — Yiddish survival wit,
+            Hebrew sacred vocabulary, and the language of a people who refused to disappear.
+          </div>
+
+          {/* Difficulty filter */}
+          <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem", flexWrap: "wrap" }}>
+            {filterOptions.map((f) => (
+              <button
+                key={f}
+                className="deriv-btn"
+                style={{
+                  ...S.btnSm,
+                  borderColor: lexiconFilter === f
+                    ? (f === "All" ? COLORS.gold : (difficultyColors[f] ?? COLORS.gold))
+                    : COLORS.blackLine,
+                  color: lexiconFilter === f
+                    ? (f === "All" ? COLORS.gold : (difficultyColors[f] ?? COLORS.gold))
+                    : COLORS.textSecondary,
+                }}
+                onClick={() => setLexiconFilter(f)}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
+
+          {/* Word cards */}
+          {!visiblePool ? (
+            <div style={{ ...S.mono, fontSize: "0.7rem", color: COLORS.textMuted, letterSpacing: "0.1em" }}>
+              loading...
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
+              {visiblePool.map((entry) => {
+                const dc = difficultyColors[entry.difficulty] ?? COLORS.gold;
+                return (
+                  <div
+                    key={entry.word}
+                    style={{
+                      background: COLORS.surface,
+                      border: `1px solid ${COLORS.blackLine}`,
+                      borderLeft: `3px solid ${dc}`,
+                      borderRadius: "3px",
+                      padding: "1rem 1.1rem",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "baseline", gap: "0.75rem", marginBottom: "0.3rem" }}>
+                      <span
+                        style={{
+                          ...S.mono,
+                          fontSize: "1rem",
+                          color: COLORS.textPrimary,
+                          fontWeight: 500,
+                          letterSpacing: "0.04em",
+                        }}
+                      >
+                        {entry.word}
+                      </span>
+                      <span
+                        style={{
+                          ...S.mono,
+                          fontSize: "0.54rem",
+                          color: dc,
+                          letterSpacing: "0.12em",
+                          textTransform: "uppercase",
+                          flexShrink: 0,
+                        }}
+                      >
+                        {entry.difficulty}
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        ...S.mono,
+                        fontSize: "0.6rem",
+                        color: COLORS.textMuted,
+                        letterSpacing: "0.06em",
+                        marginBottom: "0.5rem",
+                      }}
+                    >
+                      {entry.origin}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "0.82rem",
+                        color: COLORS.textSecondary,
+                        lineHeight: 1.6,
+                        marginBottom: "0.6rem",
+                        fontStyle: "italic",
+                      }}
+                    >
+                      {entry.definition}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "0.78rem",
+                        color: COLORS.textSecondary,
+                        lineHeight: 1.75,
+                        borderTop: `1px solid ${COLORS.blackLine}`,
+                        paddingTop: "0.5rem",
+                        opacity: 0.85,
+                      }}
+                    >
+                      {entry.insight}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
     );
   }

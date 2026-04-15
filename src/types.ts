@@ -67,3 +67,11 @@ export type IdiomEntry = {
   revealHeadline: string;
   revealBody: string;
 };
+
+export type HebrewYiddishEntry = {
+  word: string;
+  origin: string;
+  definition: string;
+  insight: string;
+  difficulty: "Easy" | "Medium" | "Hard";
+};
