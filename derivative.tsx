@@ -2263,10 +2263,7 @@ const IdiomPuzzle = ({
 };
 
 export default function Derivative() {
-  const isFirstTime = !load()._hasPlayed;
-  const [view, setView] = useState<"splash" | "ready" | "archive" | "game">(
-    isFirstTime ? "splash" : "ready"
-  );
+  const [view, setView] = useState<"splash" | "ready" | "archive" | "game">("splash");
   const [selDate, setSelDate] = useState<string | null>(null);
   const [puzzle, setPuzzle] = useState<Puzzle | null>(null);
   const [progress, setProgress] = useState<ProgressStore>(load());
@@ -2792,7 +2789,7 @@ export default function Derivative() {
 
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1.5rem" }}>
-            <button className="deriv-btn" style={S.btnSm} onClick={() => setView(isFirstTime ? "splash" : "ready")}>
+            <button className="deriv-btn" style={S.btnSm} onClick={() => setView("ready")}>
               ← back
             </button>
             <span
@@ -2989,7 +2986,7 @@ export default function Derivative() {
               marginBottom: "1.25rem",
             }}
           >
-            <button className="deriv-btn" style={S.btnSm} onClick={() => setView(isFirstTime ? "splash" : "ready")}>
+            <button className="deriv-btn" style={S.btnSm} onClick={() => setView("ready")}>
               ← back
             </button>
             <span
