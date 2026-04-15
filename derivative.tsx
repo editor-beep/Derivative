@@ -7,13 +7,6 @@ import { getDifficulty, DIFFICULTY_META, type DifficultyLevel } from "./difficul
 import { TYPE_LABELS, TYPE_SUBLABELS, COLORS, TYPE_COLORS, STORAGE_KEY, SPLASH_IMAGE } from "./constants";
 import { getUtcDateKey } from "./src/dateUtils";
 import { hydrateProgressStore, withDiscoveredSystem } from "./progressSystems";
-import {
-  DEFAULT_TIME_LIMIT_SEC,
-  hasTimedOut,
-  loadTimedModeSettings,
-  saveTimedModeSettings,
-  type TimedModeSettings,
-} from "./src/timedMode";
 
 const load = (): ProgressStore => {
   try {
@@ -63,56 +56,6 @@ const getRoot = (puzzle: Puzzle) => puzzle.meta?.root || puzzle.root || "";
 const getLang = (puzzle: Puzzle) => puzzle.meta?.lang || puzzle.lang || "";
 const getMeaning = (puzzle: Puzzle) => puzzle.meta?.meaning || puzzle.meaning || "";
 
-const useTimedInteraction = ({
-  timedMode,
-  timeLimitSec,
-  onTimeout,
-  resetKey,
-}: TimedModeSettings & { onTimeout: () => void; resetKey: string }) => {
-  const [remainingSec, setRemainingSec] = useState<number | null>(null);
-  const [startedAtMs, setStartedAtMs] = useState<number | null>(null);
-  const didTimeoutRef = useRef(false);
-
-  useEffect(() => {
-    setRemainingSec(null);
-    setStartedAtMs(null);
-    didTimeoutRef.current = false;
-  }, [resetKey, timedMode, timeLimitSec]);
-
-  useEffect(() => {
-    if (!timedMode || startedAtMs === null || didTimeoutRef.current) return;
-    const update = () => {
-      const elapsedMs = Date.now() - startedAtMs;
-      const secondsLeft = Math.max(0, Math.ceil((timeLimitSec * 1000 - elapsedMs) / 1000));
-      setRemainingSec(secondsLeft);
-      if (hasTimedOut({ timedMode, timeLimitSec, elapsedMs })) {
-        didTimeoutRef.current = true;
-        setRemainingSec(0);
-        setStartedAtMs(null);
-        onTimeout();
-      }
-    };
-
-    update();
-    const interval = window.setInterval(update, 200);
-    return () => window.clearInterval(interval);
-  }, [onTimeout, startedAtMs, timeLimitSec, timedMode]);
-
-  const startInteraction = () => {
-    if (!timedMode || startedAtMs !== null) return;
-    didTimeoutRef.current = false;
-    setStartedAtMs(Date.now());
-    setRemainingSec(timeLimitSec);
-  };
-
-  const resetInteraction = () => {
-    setStartedAtMs(null);
-    setRemainingSec(null);
-    didTimeoutRef.current = false;
-  };
-
-  return { remainingSec, startInteraction, resetInteraction };
-};
 
 const S = {
   mono: { fontFamily: "var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace)" },
@@ -1229,13 +1172,11 @@ const RootPuzzle = ({
   found,
   onWord,
   revealed,
-  timedSettings,
 }: {
   puzzle: Puzzle;
   found: string[];
   onWord: (word: string, isRequired: boolean) => void;
   revealed: boolean;
-  timedSettings: TimedModeSettings;
 }) => {
   const [input, setInput] = useState("");
   const [flash, setFlash] = useState<null | { msg: string; ok: boolean; bonus?: boolean }>(null);
@@ -1246,23 +1187,9 @@ const RootPuzzle = ({
     setTimeout(() => ref.current?.focus(), 100);
   }, []);
 
-  const handleTimedFailure = () => {
-    setShake(true);
-    setFlash({ msg: "time expired", ok: false });
-    setTimeout(() => setShake(false), 500);
-    setTimeout(() => setFlash(null), 1300);
-  };
-
-  const { remainingSec, startInteraction, resetInteraction } = useTimedInteraction({
-    ...timedSettings,
-    onTimeout: handleTimedFailure,
-    resetKey: `${puzzle.date}-${puzzle.type}-root`,
-  });
-
   const submit = () => {
     const w = input.trim().toLowerCase();
     if (!w || !puzzle.targets || !puzzle.required) return;
-    resetInteraction();
 
     setInput("");
 
@@ -1314,7 +1241,6 @@ const RootPuzzle = ({
                 ref={ref}
                 value={input}
                 onChange={(e) => {
-                  startInteraction();
                   setInput(e.target.value.toLowerCase());
                 }}
                 onKeyDown={(e) => e.key === "Enter" && submit()}
@@ -1349,11 +1275,6 @@ const RootPuzzle = ({
                 }}
               >
                 {flash.msg}
-              </div>
-            )}
-            {timedSettings.timedMode && !revealed && (
-              <div style={{ ...S.mono, fontSize: "0.55rem", color: COLORS.textMuted, letterSpacing: "0.1em" }}>
-                time left: {remainingSec ?? timedSettings.timeLimitSec}s
               </div>
             )}
           </div>
@@ -1629,33 +1550,19 @@ const MatchPuzzle = ({
   state,
   onState,
   revealed,
-  timedSettings,
 }: {
   puzzle: Puzzle;
   state: PuzzleState;
   onState: (s: PuzzleState) => void;
   revealed: boolean;
-  timedSettings: TimedModeSettings;
 }) => {
   const pairs = puzzle.pairs || [];
   const choices = Array.from(new Set(pairs.map((pair) => pair.target)));
   const selected = state?.assigned || {};
   const correctCount = pairs.filter((pair) => selected[pair.source] === pair.target).length;
-  const [timeoutFlash, setTimeoutFlash] = useState(false);
-
-  const { remainingSec, startInteraction, resetInteraction } = useTimedInteraction({
-    ...timedSettings,
-    onTimeout: () => {
-      setTimeoutFlash(true);
-      setTimeout(() => setTimeoutFlash(false), 1200);
-    },
-    resetKey: `${puzzle.date}-${puzzle.type}-match`,
-  });
 
   const onChange = (source: string, target: string) => {
-    startInteraction();
     onState({ ...state, assigned: { ...selected, [source]: target } });
-    resetInteraction();
   };
 
   return (
@@ -1670,11 +1577,6 @@ const MatchPuzzle = ({
       <div style={{ ...S.mono, fontSize: "0.58rem", color: COLORS.textFaint, marginBottom: "0.75rem" }}>
         {correctCount}/{pairs.length} matched correctly
       </div>
-      {timedSettings.timedMode && (
-        <div style={{ ...S.mono, fontSize: "0.55rem", color: timeoutFlash ? COLORS.red : COLORS.textMuted, marginBottom: "0.6rem", letterSpacing: "0.1em" }}>
-          {timeoutFlash ? "time expired" : `time left: ${remainingSec ?? timedSettings.timeLimitSec}s`}
-        </div>
-      )}
       <div style={{ display: "grid", gap: "0.6rem" }}>
         {pairs.map((pair) => {
           const chosen = selected[pair.source] || "";
@@ -1721,33 +1623,21 @@ const GrimmPuzzle = ({
   state,
   onState,
   revealed,
-  timedSettings,
 }: {
   puzzle: Puzzle;
   state: PuzzleState;
   onState: (s: PuzzleState) => void;
   revealed: boolean;
-  timedSettings: TimedModeSettings;
 }) => {
   const answers = state?.answers || {};
   const [inputs, setInputs] = useState<Record<number, string>>({});
   const [feedback, setFeedback] = useState<Record<number, string | null>>({});
-  const [timerExpired, setTimerExpired] = useState(false);
 
   const pairs = puzzle.pairs || [];
-  const { remainingSec, startInteraction, resetInteraction } = useTimedInteraction({
-    ...timedSettings,
-    onTimeout: () => {
-      setTimerExpired(true);
-      setTimeout(() => setTimerExpired(false), 1200);
-    },
-    resetKey: `${puzzle.date}-${puzzle.type}-grimm`,
-  });
 
   const submit = (idx: number) => {
     const val = (inputs[idx] || "").trim().toLowerCase();
     if (!val) return;
-    resetInteraction();
     const pair = pairs[idx];
     if (!pair) return;
     const correct = val === pair.target.toLowerCase();
@@ -1788,12 +1678,6 @@ const GrimmPuzzle = ({
         >
           {correctCount}/{total} found
         </div>
-        {timedSettings.timedMode && (
-          <div style={{ ...S.mono, fontSize: "0.55rem", color: timerExpired ? COLORS.red : COLORS.textMuted, marginBottom: "0.6rem", letterSpacing: "0.1em" }}>
-            {timerExpired ? "time expired" : `time left: ${remainingSec ?? timedSettings.timeLimitSec}s`}
-          </div>
-        )}
-
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           {pairs.map((pair, idx) => {
             const solved = !!answers[idx] || revealed;
@@ -1842,7 +1726,6 @@ const GrimmPuzzle = ({
                     <input
                       value={inputs[idx] || ""}
                       onChange={(e) => {
-                        startInteraction();
                         setInputs((i) => ({ ...i, [idx]: e.target.value.toLowerCase() }));
                       }}
                       onKeyDown={(e) => e.key === "Enter" && submit(idx)}
@@ -1893,35 +1776,23 @@ const SemanticPuzzle = ({
   state,
   onState,
   revealed,
-  timedSettings,
 }: {
   puzzle: Puzzle;
   state: PuzzleState;
   onState: (s: PuzzleState) => void;
   revealed: boolean;
-  timedSettings: TimedModeSettings;
 }) => {
   const answers = state?.answers || {};
   const [inputs, setInputs] = useState<Record<number, string>>({});
   const [feedback, setFeedback] = useState<Record<number, string | null>>({});
-  const [timerExpired, setTimerExpired] = useState(false);
 
   const timeline = puzzle.timeline || [];
   const blanks = timeline.filter((t) => t.blank);
   const correctCount = blanks.filter((_, i) => answers[i]).length;
-  const { remainingSec, startInteraction, resetInteraction } = useTimedInteraction({
-    ...timedSettings,
-    onTimeout: () => {
-      setTimerExpired(true);
-      setTimeout(() => setTimerExpired(false), 1200);
-    },
-    resetKey: `${puzzle.date}-${puzzle.type}-semantic`,
-  });
 
   const submit = (blankIdx: number, correctMeaning: string) => {
     const val = (inputs[blankIdx] || "").trim().toLowerCase();
     if (!val) return;
-    resetInteraction();
 
     const keywords = correctMeaning
       .toLowerCase()
@@ -1981,12 +1852,6 @@ const SemanticPuzzle = ({
         >
           {correctCount}/{blanks.length} filled
         </div>
-        {timedSettings.timedMode && (
-          <div style={{ ...S.mono, fontSize: "0.55rem", color: timerExpired ? COLORS.red : COLORS.textMuted, marginBottom: "0.6rem", letterSpacing: "0.1em" }}>
-            {timerExpired ? "time expired" : `time left: ${remainingSec ?? timedSettings.timeLimitSec}s`}
-          </div>
-        )}
-
         <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
           {timeline.map((item, idx) => {
             const isBlank = item.blank;
@@ -2054,7 +1919,6 @@ const SemanticPuzzle = ({
                         <input
                           value={inputs[myBlankIdx] || ""}
                           onChange={(e) => {
-                            startInteraction();
                             setInputs((i) => ({ ...i, [myBlankIdx]: e.target.value }));
                           }}
                           onKeyDown={(e) =>
@@ -2119,13 +1983,11 @@ const IdiomPuzzle = ({
   state,
   onState,
   revealed,
-  timedSettings,
 }: {
   puzzle: Puzzle;
   state: PuzzleState;
   onState: (s: PuzzleState) => void;
   revealed: boolean;
-  timedSettings: TimedModeSettings;
 }) => {
   const [input, setInput] = useState("");
   const [flash, setFlash] = useState<null | { msg: string; ok: boolean }>(null);
@@ -2140,17 +2002,6 @@ const IdiomPuzzle = ({
     setTimeout(() => ref.current?.focus(), 100);
   }, []);
 
-  const { remainingSec, startInteraction, resetInteraction } = useTimedInteraction({
-    ...timedSettings,
-    onTimeout: () => {
-      setShake(true);
-      setFlash({ msg: "time expired", ok: false });
-      setTimeout(() => setShake(false), 500);
-      setTimeout(() => setFlash(null), 1400);
-    },
-    resetKey: `${puzzle.date}-${puzzle.type}-idiom`,
-  });
-
   const isAllFound = idiomFound.length === answerWords.length;
   const isComplete = isAllFound || revealed;
   const color = TYPE_COLORS["IDIOM"];
@@ -2159,7 +2010,6 @@ const IdiomPuzzle = ({
     const raw = input.trim().toLowerCase();
     setInput("");
     if (!raw) return;
-    resetInteraction();
 
     // Full-phrase entry: reveal all positions at once
     if (raw === answer.toLowerCase()) {
@@ -2285,7 +2135,6 @@ const IdiomPuzzle = ({
                 ref={ref}
                 value={input}
                 onChange={(e) => {
-                  startInteraction();
                   setInput(e.target.value.toLowerCase());
                 }}
                 onKeyDown={(e) => e.key === "Enter" && submit()}
@@ -2313,11 +2162,6 @@ const IdiomPuzzle = ({
                 }}
               >
                 {flash.msg}
-              </div>
-            )}
-            {timedSettings.timedMode && (
-              <div style={{ ...S.mono, fontSize: "0.55rem", color: COLORS.textMuted, letterSpacing: "0.1em" }}>
-                time left: {remainingSec ?? timedSettings.timeLimitSec}s
               </div>
             )}
           </div>
@@ -2363,7 +2207,6 @@ export default function Derivative() {
   const [selDate, setSelDate] = useState<string | null>(null);
   const [puzzle, setPuzzle] = useState<Puzzle | null>(null);
   const [progress, setProgress] = useState<ProgressStore>(load());
-  const [timedSettings, setTimedSettings] = useState<TimedModeSettings>(loadTimedModeSettings());
   const [revealed, setRevealed] = useState(false);
   const [puzzleState, setPuzzleState] = useState<PuzzleState>({});
   const [shareMsg, setShareMsg] = useState<ShareData | null>(null);
@@ -2372,10 +2215,6 @@ export default function Derivative() {
 
   const today = getTodayStr();
   const archiveDates = useMemo(() => getMonthDates(today), [today]);
-
-  useEffect(() => {
-    saveTimedModeSettings(timedSettings);
-  }, [timedSettings]);
 
   const getProgress = (dateStr: string): PuzzleProgressEntry => {
     const entry = progress[dateStr];
@@ -3065,17 +2904,6 @@ export default function Derivative() {
       "BORROWED",
       "TOPONYM",
     ].includes(puzzle.type);
-    const updateTimedMode = (checked: boolean) =>
-      setTimedSettings((current) => ({ ...current, timedMode: checked }));
-    const updateTimeLimit = (value: string) => {
-      const parsed = Number(value);
-      if (!Number.isFinite(parsed)) return;
-      setTimedSettings((current) => ({
-        ...current,
-        timeLimitSec: Math.max(5, Math.min(180, Math.floor(parsed))),
-      }));
-    };
-
     return (
       <div
         style={{
@@ -3116,22 +2944,6 @@ export default function Derivative() {
               archive
             </button>
           </div>
-          <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "0.55rem", marginBottom: "0.85rem" }}>
-            <label style={{ ...S.mono, fontSize: "0.57rem", color: COLORS.textMuted, letterSpacing: "0.1em", display: "inline-flex", alignItems: "center", gap: "0.35rem", textTransform: "uppercase" }}>
-              <input type="checkbox" checked={timedSettings.timedMode} onChange={(e) => updateTimedMode(e.target.checked)} />
-              timed mode
-            </label>
-            <input
-              type="number"
-              min={5}
-              max={180}
-              disabled={!timedSettings.timedMode}
-              value={timedSettings.timeLimitSec}
-              onChange={(e) => updateTimeLimit(e.target.value)}
-              style={{ ...S.input, width: "88px", padding: "0.2rem 0.45rem", fontSize: "0.68rem", opacity: timedSettings.timedMode ? 1 : 0.5 }}
-            />
-          </div>
-
           <PuzzleHeader puzzle={puzzle} selDate={selDate} onOpenHelp={() => setIsHelpOpen(true)} />
 
           {isHelpOpen && <PuzzleHelpModal puzzleType={puzzle.type} onClose={() => setIsHelpOpen(false)} />}
@@ -3142,7 +2954,6 @@ export default function Derivative() {
               found={puzzleState.found || []}
               onWord={handleWordFound}
               revealed={revealed}
-              timedSettings={timedSettings}
             />
           )}
 
@@ -3161,7 +2972,6 @@ export default function Derivative() {
               state={puzzleState}
               onState={handlePuzzleState}
               revealed={revealed}
-              timedSettings={timedSettings}
             />
           )}
 
@@ -3171,7 +2981,6 @@ export default function Derivative() {
               state={puzzleState}
               onState={handlePuzzleState}
               revealed={revealed}
-              timedSettings={timedSettings}
             />
           )}
 
@@ -3181,7 +2990,6 @@ export default function Derivative() {
               state={puzzleState}
               onState={handlePuzzleState}
               revealed={revealed}
-              timedSettings={timedSettings}
             />
           )}
 
@@ -3191,7 +2999,6 @@ export default function Derivative() {
               state={puzzleState}
               onState={handlePuzzleState}
               revealed={revealed}
-              timedSettings={timedSettings}
             />
           )}
 
