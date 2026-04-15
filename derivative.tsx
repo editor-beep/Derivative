@@ -2569,6 +2569,23 @@ export default function Derivative() {
           <button className="arch-link" onClick={() => setView("archive")}>
             archive
           </button>
+
+          <a
+            href="https://www.themeansofproduction.press"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              ...S.mono,
+              display: "block",
+              marginTop: "2.2rem",
+              fontSize: "0.62rem",
+              color: COLORS.textMuted,
+              letterSpacing: "0.08em",
+              textDecoration: "none",
+            }}
+          >
+            themeansofproduction.press
+          </a>
         </div>
       </div>
     );
@@ -2717,6 +2734,23 @@ export default function Derivative() {
           <button className="arch-link" onClick={() => setView("archive")}>
             archive
           </button>
+
+          <a
+            href="https://www.themeansofproduction.press"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              ...S.mono,
+              display: "block",
+              marginTop: "2.2rem",
+              fontSize: "0.62rem",
+              color: COLORS.textMuted,
+              letterSpacing: "0.08em",
+              textDecoration: "none",
+            }}
+          >
+            themeansofproduction.press
+          </a>
         </div>
       </div>
     );
@@ -2926,6 +2960,22 @@ export default function Derivative() {
               );
             })}
           </div>
+          <a
+            href="https://www.themeansofproduction.press"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              ...S.mono,
+              display: "block",
+              marginTop: "1.5rem",
+              fontSize: "0.62rem",
+              color: COLORS.textMuted,
+              letterSpacing: "0.08em",
+              textDecoration: "none",
+            }}
+          >
+            themeansofproduction.press
+          </a>
         </div>
         <TutorialModal visible={showTutorial} onClose={() => setShowTutorial(false)} />
       </div>
