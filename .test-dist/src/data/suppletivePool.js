@@ -11,19 +11,19 @@ exports.SUPPLETIVE_POOL = [
         groups: [
             {
                 id: "go",
-                displayLabel: "Group A", solutionLabel: "go (present)",
+                displayLabel: "present", solutionLabel: "go (present)",
                 accepts: ["go", "goes", "going"],
                 related: ["depart", "leave"],
             },
             {
                 id: "went",
-                displayLabel: "Group B", solutionLabel: "went (past)",
+                displayLabel: "past", solutionLabel: "went (past)",
                 accepts: ["went"],
                 related: ["wended", "journeyed"],
             },
             {
                 id: "gone",
-                displayLabel: "Group C", solutionLabel: "gone (participle)",
+                displayLabel: "participle", solutionLabel: "gone (participle)",
                 accepts: ["gone"],
                 related: ["absent", "departed"],
             },
@@ -38,19 +38,19 @@ exports.SUPPLETIVE_POOL = [
         groups: [
             {
                 id: "pos",
-                displayLabel: "Group A", solutionLabel: "positive",
+                displayLabel: "positive", solutionLabel: "positive",
                 accepts: ["good", "well"],
                 related: ["fine", "nice"],
             },
             {
                 id: "comp",
-                displayLabel: "Group B", solutionLabel: "comparative",
+                displayLabel: "comparative", solutionLabel: "comparative",
                 accepts: ["better", "worse"],
                 related: ["superior", "inferior"],
             },
             {
                 id: "sup",
-                displayLabel: "Group C", solutionLabel: "superlative",
+                displayLabel: "superlative", solutionLabel: "superlative",
                 accepts: ["best", "worst"],
                 related: ["optimal", "minimal"],
             },
@@ -65,19 +65,19 @@ exports.SUPPLETIVE_POOL = [
         groups: [
             {
                 id: "pres",
-                displayLabel: "Group A", solutionLabel: "present (be-root)",
+                displayLabel: "be-root", solutionLabel: "present (be-root)",
                 accepts: ["be", "being", "been"],
                 related: ["exist", "remain"],
             },
             {
                 id: "am_is",
-                displayLabel: "Group B", solutionLabel: "present (es-root)",
+                displayLabel: "es-root", solutionLabel: "present (es-root)",
                 accepts: ["am", "is", "are"],
                 related: ["seems"],
             },
             {
                 id: "past",
-                displayLabel: "Group C", solutionLabel: "past (wes-root)",
+                displayLabel: "wes-root", solutionLabel: "past (wes-root)",
                 accepts: ["was", "were"],
                 related: ["existed"],
             },
@@ -101,14 +101,14 @@ exports.SUPPLETIVE_POOL = [
         lang: "Old English + mixed comparatives",
         meaning: "false comparative system",
         groups: [
-            { id: "size", displayLabel: "Group A", solutionLabel: "size", accepts: ["small", "little"], related: [] },
+            { id: "size", displayLabel: "size", solutionLabel: "size", accepts: ["small", "little"], related: [] },
             {
                 id: "quantity",
-                displayLabel: "Group B", solutionLabel: "quantity",
+                displayLabel: "quantity", solutionLabel: "quantity",
                 accepts: ["fewer", "less"],
                 related: [],
             },
-            { id: "intensity", displayLabel: "Group C", solutionLabel: "intensity", accepts: [], related: [] },
+            { id: "intensity", displayLabel: "intensity", solutionLabel: "intensity", accepts: [], related: [] },
         ],
         pool: ["little", "less", "least", "small", "fewer", "minimum"],
         tension: "This puzzle offers clean categories, but the pattern fractures: English comparatives are stitched from multiple historical systems.",

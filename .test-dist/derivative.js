@@ -9,11 +9,11 @@ const jsx_runtime_1 = require("react/jsx-runtime");
 const react_1 = require("react");
 const generator_1 = require("./generator");
 const RootGraph_1 = __importDefault(require("./components/RootGraph"));
+const PuzzleHelpModal_1 = __importDefault(require("./components/PuzzleHelpModal"));
 const difficulty_1 = require("./difficulty");
 const constants_1 = require("./constants");
 const dateUtils_1 = require("./src/dateUtils");
 const progressSystems_1 = require("./progressSystems");
-const timedMode_1 = require("./src/timedMode");
 const load = () => {
     try {
         const parsed = JSON.parse(localStorage.getItem(constants_1.STORAGE_KEY) || "{}");
@@ -56,47 +56,6 @@ const getMonthDates = (anchorDateStr) => {
 const getRoot = (puzzle) => puzzle.meta?.root || puzzle.root || "";
 const getLang = (puzzle) => puzzle.meta?.lang || puzzle.lang || "";
 const getMeaning = (puzzle) => puzzle.meta?.meaning || puzzle.meaning || "";
-const useTimedInteraction = ({ timedMode, timeLimitSec, onTimeout, resetKey, }) => {
-    const [remainingSec, setRemainingSec] = (0, react_1.useState)(null);
-    const [startedAtMs, setStartedAtMs] = (0, react_1.useState)(null);
-    const didTimeoutRef = (0, react_1.useRef)(false);
-    (0, react_1.useEffect)(() => {
-        setRemainingSec(null);
-        setStartedAtMs(null);
-        didTimeoutRef.current = false;
-    }, [resetKey, timedMode, timeLimitSec]);
-    (0, react_1.useEffect)(() => {
-        if (!timedMode || startedAtMs === null || didTimeoutRef.current)
-            return;
-        const update = () => {
-            const elapsedMs = Date.now() - startedAtMs;
-            const secondsLeft = Math.max(0, Math.ceil((timeLimitSec * 1000 - elapsedMs) / 1000));
-            setRemainingSec(secondsLeft);
-            if ((0, timedMode_1.hasTimedOut)({ timedMode, timeLimitSec, elapsedMs })) {
-                didTimeoutRef.current = true;
-                setRemainingSec(0);
-                setStartedAtMs(null);
-                onTimeout();
-            }
-        };
-        update();
-        const interval = window.setInterval(update, 200);
-        return () => window.clearInterval(interval);
-    }, [onTimeout, startedAtMs, timeLimitSec, timedMode]);
-    const startInteraction = () => {
-        if (!timedMode || startedAtMs !== null)
-            return;
-        didTimeoutRef.current = false;
-        setStartedAtMs(Date.now());
-        setRemainingSec(timeLimitSec);
-    };
-    const resetInteraction = () => {
-        setStartedAtMs(null);
-        setRemainingSec(null);
-        didTimeoutRef.current = false;
-    };
-    return { remainingSec, startInteraction, resetInteraction };
-};
 const S = {
     mono: { fontFamily: "var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace)" },
     btn: {
@@ -656,7 +615,30 @@ const ShareCard = ({ data }) => {
                             fontSize: ch === "◈" ? "0.82rem" : "0.74rem",
                         }, children: ch }, j)))) : ((0, jsx_runtime_1.jsx)("span", { style: { color: section.color, whiteSpace: "pre-wrap" }, children: section.text })) }, i))) }), (0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: { ...S.btnSm, marginTop: "0.75rem" }, onClick: copy, children: copied ? "copied ✓" : "copy to clipboard" })] }));
 };
-const PuzzleHeader = ({ puzzle, selDate, }) => {
+const TutorialModal = ({ visible, onClose, }) => {
+    if (!visible)
+        return null;
+    return ((0, jsx_runtime_1.jsx)("div", { style: {
+            position: "fixed",
+            inset: 0,
+            zIndex: 50,
+            background: "rgba(0,0,0,0.72)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "1rem",
+        }, children: (0, jsx_runtime_1.jsxs)("div", { style: {
+                width: "min(760px, 100%)",
+                maxHeight: "88vh",
+                overflowY: "auto",
+                background: constants_1.COLORS.bg2,
+                border: `1px solid ${constants_1.COLORS.goldDark}`,
+                borderRadius: "4px",
+                padding: "1.1rem 1.15rem",
+                boxShadow: `0 0 28px ${constants_1.COLORS.goldGlow}`,
+            }, children: [(0, jsx_runtime_1.jsx)("div", { style: { ...S.mono, fontSize: "0.76rem", color: constants_1.COLORS.gold, letterSpacing: "0.12em", marginBottom: "0.75rem", textTransform: "uppercase" }, children: "derivative // initiation protocol" }), (0, jsx_runtime_1.jsxs)("div", { style: { color: constants_1.COLORS.textSecondary, lineHeight: 1.8, fontSize: "0.82rem" }, children: [(0, jsx_runtime_1.jsx)("p", { style: { margin: "0 0 0.7rem" }, children: "I want to play a game. Each date in this archive contains one scheduled puzzle. Your task is not recall. Your task is detection." }), (0, jsx_runtime_1.jsxs)("p", { style: { margin: "0 0 0.55rem" }, children: [(0, jsx_runtime_1.jsx)("strong", { style: { color: constants_1.COLORS.textPrimary }, children: "Puzzle systems:" }), " ", "Root (reconstruct root-linked words), Semantic (trace meaning drift), Suppletive (forms that do not match but belong), Grimm (sound-shift laws), Collision (language contact), PIE (proto-language inheritance), Deception (false pattern traps), False Family (look-alikes, not relatives), Phantom Root (fake roots), Idiom (reconstruct expression), Borrowed (loan paths), Toponym (hidden place-name origin), Match (pair source and target)."] }), (0, jsx_runtime_1.jsxs)("p", { style: { margin: "0 0 0.55rem" }, children: [(0, jsx_runtime_1.jsx)("strong", { style: { color: constants_1.COLORS.textPrimary }, children: "Difficulty tiers:" }), " ", "Word Curious, Vocabulary Vanguard, Etymologist, Doctor of English History."] }), (0, jsx_runtime_1.jsxs)("p", { style: { margin: 0 }, children: [(0, jsx_runtime_1.jsx)("strong", { style: { color: constants_1.COLORS.textPrimary }, children: "After reveal:" }), " ", "Generate the share card to copy a spoiler-safe artifact with date, puzzle/difficulty icons, and your \u25C8/\u25C7 performance tracker."] })] }), (0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: { ...S.btnPrimary, marginTop: "1rem" }, onClick: onClose, children: "begin \u2192" })] }) }));
+};
+const PuzzleHeader = ({ puzzle, selDate, onOpenHelp, }) => {
     const dateLabel = new Date(selDate + "T12:00:00").toLocaleDateString("en-US", {
         month: "long",
         day: "numeric",
@@ -692,9 +674,21 @@ const PuzzleHeader = ({ puzzle, selDate, }) => {
                     lineHeight: 1.72,
                     maxWidth: "62ch",
                     background: "linear-gradient(90deg, rgba(232,184,75,0.03), rgba(232,184,75,0.0))",
-                }, children: puzzle.prompt }))] }));
+                }, children: puzzle.prompt })), (0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", onClick: onOpenHelp, "aria-label": `Open ${constants_1.TYPE_LABELS[puzzle.type] || puzzle.type} gameplay help`, style: {
+                    ...S.btnSm,
+                    marginTop: "0.75rem",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "30px",
+                    height: "30px",
+                    padding: 0,
+                    fontSize: "0.88rem",
+                    borderRadius: "999px",
+                    lineHeight: 1,
+                }, children: "?" })] }));
 };
-const RootPuzzle = ({ puzzle, found, onWord, revealed, timedSettings, }) => {
+const RootPuzzle = ({ puzzle, found, onWord, revealed, }) => {
     const [input, setInput] = (0, react_1.useState)("");
     const [flash, setFlash] = (0, react_1.useState)(null);
     const [shake, setShake] = (0, react_1.useState)(false);
@@ -702,22 +696,10 @@ const RootPuzzle = ({ puzzle, found, onWord, revealed, timedSettings, }) => {
     (0, react_1.useEffect)(() => {
         setTimeout(() => ref.current?.focus(), 100);
     }, []);
-    const handleTimedFailure = () => {
-        setShake(true);
-        setFlash({ msg: "time expired", ok: false });
-        setTimeout(() => setShake(false), 500);
-        setTimeout(() => setFlash(null), 1300);
-    };
-    const { remainingSec, startInteraction, resetInteraction } = useTimedInteraction({
-        ...timedSettings,
-        onTimeout: handleTimedFailure,
-        resetKey: `${puzzle.date}-${puzzle.type}-root`,
-    });
     const submit = () => {
         const w = input.trim().toLowerCase();
         if (!w || !puzzle.targets || !puzzle.required)
             return;
-        resetInteraction();
         setInput("");
         if (found.includes(w)) {
             setFlash({ msg: "already found", ok: false });
@@ -747,7 +729,6 @@ const RootPuzzle = ({ puzzle, found, onWord, revealed, timedSettings, }) => {
             padding: "1rem",
             background: `linear-gradient(180deg, ${constants_1.COLORS.surface2}, ${constants_1.COLORS.surface})`,
         }, children: [(0, jsx_runtime_1.jsx)(SystemMesh, { intensity: 1 }), (0, jsx_runtime_1.jsxs)("div", { style: { position: "relative", zIndex: 1 }, children: [!revealed && ((0, jsx_runtime_1.jsxs)("div", { style: { marginBottom: "1.1rem" }, children: [(0, jsx_runtime_1.jsxs)("div", { style: { display: "flex", gap: "8px", marginBottom: "0.45rem" }, children: [(0, jsx_runtime_1.jsx)("input", { ref: ref, value: input, onChange: (e) => {
-                                            startInteraction();
                                             setInput(e.target.value.toLowerCase());
                                         }, onKeyDown: (e) => e.key === "Enter" && submit(), placeholder: `build a word using "${root}"…`, style: {
                                             ...S.input,
@@ -767,7 +748,7 @@ const RootPuzzle = ({ puzzle, found, onWord, revealed, timedSettings, }) => {
                                         : constants_1.COLORS.red,
                                     letterSpacing: "0.1em",
                                     textTransform: "uppercase",
-                                }, children: flash.msg })), timedSettings.timedMode && !revealed && ((0, jsx_runtime_1.jsxs)("div", { style: { ...S.mono, fontSize: "0.55rem", color: constants_1.COLORS.textMuted, letterSpacing: "0.1em" }, children: ["time left: ", remainingSec ?? timedSettings.timeLimitSec, "s"] }))] })), (0, jsx_runtime_1.jsxs)("div", { style: {
+                                }, children: flash.msg }))] })), (0, jsx_runtime_1.jsxs)("div", { style: {
                             ...S.mono,
                             fontSize: "0.58rem",
                             color: constants_1.COLORS.textFaint,
@@ -863,33 +844,22 @@ const StepPuzzle = ({ puzzle, state, onState, revealed, }) => {
     }
     if (!currentStep)
         return null;
-    return ((0, jsx_runtime_1.jsxs)("div", { style: cardStyle, children: [(0, jsx_runtime_1.jsx)(SystemMesh, { intensity: 0.92 }), (0, jsx_runtime_1.jsxs)("div", { style: { position: "relative", zIndex: 1 }, children: [(0, jsx_runtime_1.jsxs)("div", { style: { marginBottom: "1.1rem" }, children: [(0, jsx_runtime_1.jsxs)("div", { style: { ...S.mono, fontSize: "0.54rem", color: constants_1.COLORS.textFaint, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: "0.3rem" }, children: ["step ", answeredCount + 1, " of ", steps.length] }), (0, jsx_runtime_1.jsx)("div", { style: { height: "2px", background: "rgba(232,184,75,0.12)", borderRadius: "1px" }, children: (0, jsx_runtime_1.jsx)("div", { style: { height: "100%", width: `${progressPct}%`, background: constants_1.COLORS.goldDim, borderRadius: "1px", transition: "width 0.35s ease" } }) })] }), currentStep.type === "CLASSIFY" && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)("div", { style: { ...S.mono, fontSize: "0.54rem", color: constants_1.COLORS.textFaint, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: "0.75rem" }, children: "classify this word" }), (0, jsx_runtime_1.jsx)("div", { style: { fontSize: "2rem", fontWeight: 600, color: constants_1.COLORS.textPrimary, letterSpacing: "0.03em", marginBottom: "1.4rem", textShadow: "0 0 20px rgba(232,184,75,0.12)" }, children: currentStep.word }), renderOptions(currentStep.options)] })), currentStep.type === "GUESS_SYSTEM" && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)("div", { style: { ...S.mono, fontSize: "0.54rem", color: constants_1.COLORS.textFaint, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: "0.75rem" }, children: "what system underlies these words?" }), renderOptions(currentStep.options)] })), currentStep.type === "INFO" && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)("div", { style: { ...S.mono, fontSize: "0.72rem", color: constants_1.COLORS.textSecondary, lineHeight: 1.6, padding: "0.75rem 0 1rem" }, children: currentStep.text }), (0, jsx_runtime_1.jsx)("button", { onClick: () => submitAnswer("__info__"), className: "deriv-btn", style: { ...S.btnSm, padding: "0.5rem 1.1rem", fontSize: "0.68rem", letterSpacing: "0.06em" }, children: "continue" })] })), flash !== null && ((0, jsx_runtime_1.jsx)("div", { style: { ...S.mono, fontSize: "0.63rem", letterSpacing: "0.1em", textTransform: "uppercase", color: flash.correct ? constants_1.COLORS.gold : constants_1.COLORS.red, marginTop: "0.9rem" }, children: flash.text }))] })] }));
+    return ((0, jsx_runtime_1.jsxs)("div", { style: cardStyle, children: [(0, jsx_runtime_1.jsx)(SystemMesh, { intensity: 0.92 }), (0, jsx_runtime_1.jsxs)("div", { style: { position: "relative", zIndex: 1 }, children: [(0, jsx_runtime_1.jsxs)("div", { style: { marginBottom: "1.1rem" }, children: [(0, jsx_runtime_1.jsxs)("div", { style: { ...S.mono, fontSize: "0.54rem", color: constants_1.COLORS.textSecondary, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: "0.3rem" }, children: ["step ", answeredCount + 1, " of ", steps.length] }), (0, jsx_runtime_1.jsx)("div", { style: { height: "2px", background: "rgba(232,184,75,0.12)", borderRadius: "1px" }, children: (0, jsx_runtime_1.jsx)("div", { style: { height: "100%", width: `${progressPct}%`, background: constants_1.COLORS.goldDim, borderRadius: "1px", transition: "width 0.35s ease" } }) })] }), currentStep.type === "CLASSIFY" && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)("div", { style: { ...S.mono, fontSize: "0.54rem", color: constants_1.COLORS.textSecondary, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: "0.75rem" }, children: "classify this word" }), (0, jsx_runtime_1.jsx)("div", { style: { fontSize: "2rem", fontWeight: 600, color: constants_1.COLORS.textPrimary, letterSpacing: "0.03em", marginBottom: "1.4rem", textShadow: "0 0 20px rgba(232,184,75,0.12)" }, children: currentStep.word }), renderOptions(currentStep.options)] })), currentStep.type === "GUESS_SYSTEM" && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)("div", { style: { ...S.mono, fontSize: "0.54rem", color: constants_1.COLORS.textFaint, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: "0.75rem" }, children: "what system underlies these words?" }), renderOptions(currentStep.options)] })), currentStep.type === "INFO" && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)("div", { style: { ...S.mono, fontSize: "0.72rem", color: constants_1.COLORS.textSecondary, lineHeight: 1.6, padding: "0.75rem 0 1rem" }, children: currentStep.text }), (0, jsx_runtime_1.jsx)("button", { onClick: () => submitAnswer("__info__"), className: "deriv-btn", style: { ...S.btnSm, padding: "0.5rem 1.1rem", fontSize: "0.68rem", letterSpacing: "0.06em" }, children: "continue" })] })), flash !== null && ((0, jsx_runtime_1.jsx)("div", { style: { ...S.mono, fontSize: "0.63rem", letterSpacing: "0.1em", textTransform: "uppercase", color: flash.correct ? constants_1.COLORS.gold : constants_1.COLORS.red, marginTop: "0.9rem" }, children: flash.text }))] })] }));
 };
-const MatchPuzzle = ({ puzzle, state, onState, revealed, timedSettings, }) => {
+const MatchPuzzle = ({ puzzle, state, onState, revealed, }) => {
     const pairs = puzzle.pairs || [];
     const choices = Array.from(new Set(pairs.map((pair) => pair.target)));
     const selected = state?.assigned || {};
     const correctCount = pairs.filter((pair) => selected[pair.source] === pair.target).length;
-    const [timeoutFlash, setTimeoutFlash] = (0, react_1.useState)(false);
-    const { remainingSec, startInteraction, resetInteraction } = useTimedInteraction({
-        ...timedSettings,
-        onTimeout: () => {
-            setTimeoutFlash(true);
-            setTimeout(() => setTimeoutFlash(false), 1200);
-        },
-        resetKey: `${puzzle.date}-${puzzle.type}-match`,
-    });
     const onChange = (source, target) => {
-        startInteraction();
         onState({ ...state, assigned: { ...selected, [source]: target } });
-        resetInteraction();
     };
     return ((0, jsx_runtime_1.jsxs)("div", { style: {
             border: `1px solid ${constants_1.COLORS.blackLine}`,
             borderRadius: "4px",
             padding: "1rem",
             background: `linear-gradient(180deg, ${constants_1.COLORS.surface2}, ${constants_1.COLORS.surface})`,
-        }, children: [(0, jsx_runtime_1.jsxs)("div", { style: { ...S.mono, fontSize: "0.58rem", color: constants_1.COLORS.textFaint, marginBottom: "0.75rem" }, children: [correctCount, "/", pairs.length, " matched correctly"] }), timedSettings.timedMode && ((0, jsx_runtime_1.jsx)("div", { style: { ...S.mono, fontSize: "0.55rem", color: timeoutFlash ? constants_1.COLORS.red : constants_1.COLORS.textMuted, marginBottom: "0.6rem", letterSpacing: "0.1em" }, children: timeoutFlash ? "time expired" : `time left: ${remainingSec ?? timedSettings.timeLimitSec}s` })), (0, jsx_runtime_1.jsx)("div", { style: { display: "grid", gap: "0.6rem" }, children: pairs.map((pair) => {
+        }, children: [(0, jsx_runtime_1.jsxs)("div", { style: { ...S.mono, fontSize: "0.58rem", color: constants_1.COLORS.textFaint, marginBottom: "0.75rem" }, children: [correctCount, "/", pairs.length, " matched correctly"] }), (0, jsx_runtime_1.jsx)("div", { style: { display: "grid", gap: "0.6rem" }, children: pairs.map((pair) => {
                     const chosen = selected[pair.source] || "";
                     const isCorrect = chosen === pair.target;
                     return ((0, jsx_runtime_1.jsxs)("div", { style: {
@@ -905,25 +875,15 @@ const MatchPuzzle = ({ puzzle, state, onState, revealed, timedSettings, }) => {
                                 }, children: [(0, jsx_runtime_1.jsx)("option", { value: "", children: "select gloss\u2026" }), choices.map((choice) => ((0, jsx_runtime_1.jsx)("option", { value: choice, children: choice }, choice)))] })] }, pair.source));
                 }) })] }));
 };
-const GrimmPuzzle = ({ puzzle, state, onState, revealed, timedSettings, }) => {
+const GrimmPuzzle = ({ puzzle, state, onState, revealed, }) => {
     const answers = state?.answers || {};
     const [inputs, setInputs] = (0, react_1.useState)({});
     const [feedback, setFeedback] = (0, react_1.useState)({});
-    const [timerExpired, setTimerExpired] = (0, react_1.useState)(false);
     const pairs = puzzle.pairs || [];
-    const { remainingSec, startInteraction, resetInteraction } = useTimedInteraction({
-        ...timedSettings,
-        onTimeout: () => {
-            setTimerExpired(true);
-            setTimeout(() => setTimerExpired(false), 1200);
-        },
-        resetKey: `${puzzle.date}-${puzzle.type}-grimm`,
-    });
     const submit = (idx) => {
         const val = (inputs[idx] || "").trim().toLowerCase();
         if (!val)
             return;
-        resetInteraction();
         const pair = pairs[idx];
         if (!pair)
             return;
@@ -953,7 +913,7 @@ const GrimmPuzzle = ({ puzzle, state, onState, revealed, timedSettings, }) => {
                             letterSpacing: "0.14em",
                             textTransform: "uppercase",
                             marginBottom: "0.75rem",
-                        }, children: [correctCount, "/", total, " found"] }), timedSettings.timedMode && ((0, jsx_runtime_1.jsx)("div", { style: { ...S.mono, fontSize: "0.55rem", color: timerExpired ? constants_1.COLORS.red : constants_1.COLORS.textMuted, marginBottom: "0.6rem", letterSpacing: "0.1em" }, children: timerExpired ? "time expired" : `time left: ${remainingSec ?? timedSettings.timeLimitSec}s` })), (0, jsx_runtime_1.jsx)("div", { style: { display: "flex", flexDirection: "column", gap: "10px" }, children: pairs.map((pair, idx) => {
+                        }, children: [correctCount, "/", total, " found"] }), (0, jsx_runtime_1.jsx)("div", { style: { display: "flex", flexDirection: "column", gap: "10px" }, children: pairs.map((pair, idx) => {
                             const solved = !!answers[idx] || revealed;
                             const fb = feedback[idx];
                             return ((0, jsx_runtime_1.jsxs)("div", { style: {
@@ -971,7 +931,6 @@ const GrimmPuzzle = ({ puzzle, state, onState, revealed, timedSettings, }) => {
                                             color: constants_1.COLORS.textSecondary,
                                             lineHeight: 1.4,
                                         }, children: pair.source }), (0, jsx_runtime_1.jsx)("div", { style: { ...S.mono, fontSize: "0.65rem", color: constants_1.COLORS.textFaint, flexShrink: 0 }, children: "\u2192" }), solved ? ((0, jsx_runtime_1.jsxs)("div", { style: { ...S.mono, fontSize: "0.85rem", color: constants_1.COLORS.gold, flex: 1 }, children: [pair.target, pair.note && ((0, jsx_runtime_1.jsx)("span", { style: { color: constants_1.COLORS.textMuted, fontSize: "0.62rem", marginLeft: "0.5rem" }, children: pair.note }))] })) : ((0, jsx_runtime_1.jsxs)("div", { style: { display: "flex", gap: "6px", flex: 1 }, children: [(0, jsx_runtime_1.jsx)("input", { value: inputs[idx] || "", onChange: (e) => {
-                                                    startInteraction();
                                                     setInputs((i) => ({ ...i, [idx]: e.target.value.toLowerCase() }));
                                                 }, onKeyDown: (e) => e.key === "Enter" && submit(idx), placeholder: "english word\u2026", style: {
                                                     ...S.input,
@@ -989,27 +948,17 @@ const GrimmPuzzle = ({ puzzle, state, onState, revealed, timedSettings, }) => {
                                         }, children: fb }))] }, idx));
                         }) })] })] }));
 };
-const SemanticPuzzle = ({ puzzle, state, onState, revealed, timedSettings, }) => {
+const SemanticPuzzle = ({ puzzle, state, onState, revealed, }) => {
     const answers = state?.answers || {};
     const [inputs, setInputs] = (0, react_1.useState)({});
     const [feedback, setFeedback] = (0, react_1.useState)({});
-    const [timerExpired, setTimerExpired] = (0, react_1.useState)(false);
     const timeline = puzzle.timeline || [];
     const blanks = timeline.filter((t) => t.blank);
     const correctCount = blanks.filter((_, i) => answers[i]).length;
-    const { remainingSec, startInteraction, resetInteraction } = useTimedInteraction({
-        ...timedSettings,
-        onTimeout: () => {
-            setTimerExpired(true);
-            setTimeout(() => setTimerExpired(false), 1200);
-        },
-        resetKey: `${puzzle.date}-${puzzle.type}-semantic`,
-    });
     const submit = (blankIdx, correctMeaning) => {
         const val = (inputs[blankIdx] || "").trim().toLowerCase();
         if (!val)
             return;
-        resetInteraction();
         const keywords = correctMeaning
             .toLowerCase()
             .split(/[\s,;:—–-]+/)
@@ -1046,7 +995,7 @@ const SemanticPuzzle = ({ puzzle, state, onState, revealed, timedSettings, }) =>
                             letterSpacing: "0.14em",
                             textTransform: "uppercase",
                             marginBottom: "0.75rem",
-                        }, children: [correctCount, "/", blanks.length, " filled"] }), timedSettings.timedMode && ((0, jsx_runtime_1.jsx)("div", { style: { ...S.mono, fontSize: "0.55rem", color: timerExpired ? constants_1.COLORS.red : constants_1.COLORS.textMuted, marginBottom: "0.6rem", letterSpacing: "0.1em" }, children: timerExpired ? "time expired" : `time left: ${remainingSec ?? timedSettings.timeLimitSec}s` })), (0, jsx_runtime_1.jsx)("div", { style: { display: "flex", flexDirection: "column", gap: 0 }, children: timeline.map((item, idx) => {
+                        }, children: [correctCount, "/", blanks.length, " filled"] }), (0, jsx_runtime_1.jsx)("div", { style: { display: "flex", flexDirection: "column", gap: 0 }, children: timeline.map((item, idx) => {
                             const isBlank = item.blank;
                             const myBlankIdx = isBlank ? blankIdx++ : -1;
                             const solved = isBlank && (!!answers[myBlankIdx] || revealed);
@@ -1083,7 +1032,6 @@ const SemanticPuzzle = ({ puzzle, state, onState, revealed, timedSettings, }) =>
                                                     textTransform: "uppercase",
                                                     marginBottom: "0.2rem",
                                                 }, children: item.era }), isBlank && !solved ? ((0, jsx_runtime_1.jsxs)("div", { children: [(0, jsx_runtime_1.jsxs)("div", { style: { display: "flex", gap: "6px" }, children: [(0, jsx_runtime_1.jsx)("input", { value: inputs[myBlankIdx] || "", onChange: (e) => {
-                                                                    startInteraction();
                                                                     setInputs((i) => ({ ...i, [myBlankIdx]: e.target.value }));
                                                                 }, onKeyDown: (e) => e.key === "Enter" && submit(myBlankIdx, item.meaning), placeholder: "what did it mean here?", style: {
                                                                     ...S.input,
@@ -1105,7 +1053,7 @@ const SemanticPuzzle = ({ puzzle, state, onState, revealed, timedSettings, }) =>
                                                 }, children: item.meaning }))] })] }, idx));
                         }) })] })] }));
 };
-const IdiomPuzzle = ({ puzzle, state, onState, revealed, timedSettings, }) => {
+const IdiomPuzzle = ({ puzzle, state, onState, revealed, }) => {
     const [input, setInput] = (0, react_1.useState)("");
     const [flash, setFlash] = (0, react_1.useState)(null);
     const [shake, setShake] = (0, react_1.useState)(false);
@@ -1116,16 +1064,6 @@ const IdiomPuzzle = ({ puzzle, state, onState, revealed, timedSettings, }) => {
     (0, react_1.useEffect)(() => {
         setTimeout(() => ref.current?.focus(), 100);
     }, []);
-    const { remainingSec, startInteraction, resetInteraction } = useTimedInteraction({
-        ...timedSettings,
-        onTimeout: () => {
-            setShake(true);
-            setFlash({ msg: "time expired", ok: false });
-            setTimeout(() => setShake(false), 500);
-            setTimeout(() => setFlash(null), 1400);
-        },
-        resetKey: `${puzzle.date}-${puzzle.type}-idiom`,
-    });
     const isAllFound = idiomFound.length === answerWords.length;
     const isComplete = isAllFound || revealed;
     const color = constants_1.TYPE_COLORS["IDIOM"];
@@ -1134,7 +1072,6 @@ const IdiomPuzzle = ({ puzzle, state, onState, revealed, timedSettings, }) => {
         setInput("");
         if (!raw)
             return;
-        resetInteraction();
         // Full-phrase entry: reveal all positions at once
         if (raw === answer.toLowerCase()) {
             const allIndices = answerWords.map((_, i) => i);
@@ -1216,7 +1153,6 @@ const IdiomPuzzle = ({ puzzle, state, onState, revealed, timedSettings, }) => {
                                             letterSpacing: "0.08em",
                                         }, children: word.length }))] }, i));
                         }) }), !isComplete && ((0, jsx_runtime_1.jsxs)("div", { style: { marginBottom: "0.65rem" }, children: [(0, jsx_runtime_1.jsxs)("div", { style: { display: "flex", gap: "8px", marginBottom: "0.45rem" }, children: [(0, jsx_runtime_1.jsx)("input", { ref: ref, value: input, onChange: (e) => {
-                                            startInteraction();
                                             setInput(e.target.value.toLowerCase());
                                         }, onKeyDown: (e) => e.key === "Enter" && submit(), placeholder: "guess a word\u2026", style: {
                                             ...S.input,
@@ -1230,7 +1166,7 @@ const IdiomPuzzle = ({ puzzle, state, onState, revealed, timedSettings, }) => {
                                     color: flash.ok ? color : constants_1.COLORS.red,
                                     letterSpacing: "0.1em",
                                     textTransform: "uppercase",
-                                }, children: flash.msg })), timedSettings.timedMode && ((0, jsx_runtime_1.jsxs)("div", { style: { ...S.mono, fontSize: "0.55rem", color: constants_1.COLORS.textMuted, letterSpacing: "0.1em" }, children: ["time left: ", remainingSec ?? timedSettings.timeLimitSec, "s"] }))] })), isAllFound && !revealed && ((0, jsx_runtime_1.jsx)("div", { style: {
+                                }, children: flash.msg }))] })), isAllFound && !revealed && ((0, jsx_runtime_1.jsx)("div", { style: {
                             ...S.mono,
                             fontSize: "0.6rem",
                             color,
@@ -1248,20 +1184,21 @@ const IdiomPuzzle = ({ puzzle, state, onState, revealed, timedSettings, }) => {
                         }, children: [idiomFound.length, "/", answerWords.length, " words found"] })] })] }));
 };
 function Derivative() {
-    const isFirstTime = !load()._hasPlayed;
-    const [view, setView] = (0, react_1.useState)(isFirstTime ? "splash" : "ready");
+    const [view, setView] = (0, react_1.useState)("splash");
     const [selDate, setSelDate] = (0, react_1.useState)(null);
     const [puzzle, setPuzzle] = (0, react_1.useState)(null);
     const [progress, setProgress] = (0, react_1.useState)(load());
-    const [timedSettings, setTimedSettings] = (0, react_1.useState)((0, timedMode_1.loadTimedModeSettings)());
     const [revealed, setRevealed] = (0, react_1.useState)(false);
     const [puzzleState, setPuzzleState] = (0, react_1.useState)({});
     const [shareMsg, setShareMsg] = (0, react_1.useState)(null);
+    const [isHelpOpen, setIsHelpOpen] = (0, react_1.useState)(false);
+    const [showTutorial, setShowTutorial] = (0, react_1.useState)(false);
     const today = getTodayStr();
-    const archiveDates = (0, react_1.useMemo)(() => getMonthDates(today), [today]);
-    (0, react_1.useEffect)(() => {
-        (0, timedMode_1.saveTimedModeSettings)(timedSettings);
-    }, [timedSettings]);
+    const [archiveMonth, setArchiveMonth] = (0, react_1.useState)(() => today.slice(0, 7));
+    const archiveDates = (0, react_1.useMemo)(() => {
+        const allDates = getMonthDates(archiveMonth + "-01");
+        return allDates.filter((d) => d <= today);
+    }, [archiveMonth, today]);
     const getProgress = (dateStr) => {
         const entry = progress[dateStr];
         return isPuzzleProgressEntry(entry) ? entry : {};
@@ -1276,9 +1213,14 @@ function Derivative() {
         setRevealed(saved.revealed || false);
         setPuzzleState(saved.state || {});
         setShareMsg(null);
+        setIsHelpOpen(false);
         const data = load();
-        if (!data._hasPlayed)
-            save({ ...data, _hasPlayed: true });
+        const isFirstEntry = !data._hasSeenTutorial;
+        if (!data._hasPlayed || isFirstEntry) {
+            save({ ...data, _hasPlayed: true, _hasSeenTutorial: true });
+        }
+        if (isFirstEntry)
+            setShowTutorial(true);
         setView("game");
     };
     const updProgress = (dateStr, newState, newRevealed, discoveredType) => {
@@ -1482,7 +1424,7 @@ function Derivative() {
                         backgroundImage: `url(${constants_1.SPLASH_IMAGE})`,
                         backgroundSize: "cover",
                         backgroundPosition: "center",
-                        opacity: 0.15,
+                        opacity: 0.35,
                         zIndex: 0,
                     } }), (0, jsx_runtime_1.jsx)("div", { style: {
                         position: "absolute",
@@ -1596,17 +1538,30 @@ function Derivative() {
                                     }, children: statusDot.label })] }), (0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: { ...S.btnPrimary, marginBottom: "1.4rem", padding: "0.55rem 1.8rem" }, onClick: () => openPuzzle(today), children: "play today \u2192" }), (0, jsx_runtime_1.jsx)("button", { className: "arch-link", onClick: () => setView("archive"), children: "archive" })] })] }));
     }
     if (view === "archive") {
-        const monthLabel = new Date(today + "T12:00:00").toLocaleDateString("en-US", {
+        const monthLabel = new Date(archiveMonth + "-15T12:00:00").toLocaleDateString("en-US", {
             month: "long",
             year: "numeric",
         });
-        return ((0, jsx_runtime_1.jsxs)("div", { style: { ...bgStyle, padding: "2rem" }, children: [(0, jsx_runtime_1.jsx)(GlobalFX, {}), (0, jsx_runtime_1.jsx)(Starfield, {}), (0, jsx_runtime_1.jsx)(AmbientOverlays, {}), (0, jsx_runtime_1.jsxs)("div", { style: { position: "relative", zIndex: 1 }, children: [(0, jsx_runtime_1.jsxs)("div", { style: { display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1.5rem" }, children: [(0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: S.btnSm, onClick: () => setView(isFirstTime ? "splash" : "ready"), children: "\u2190 back" }), (0, jsx_runtime_1.jsxs)("span", { style: {
+        const currentYear = parseInt(today.slice(0, 4), 10);
+        const janMonth = `${currentYear}-01`;
+        const canGoPrev = archiveMonth > janMonth;
+        const canGoNext = archiveMonth < today.slice(0, 7);
+        const shiftMonth = (delta) => {
+            const [y, m] = archiveMonth.split("-").map(Number);
+            const d = new Date(y, (m ?? 1) - 1 + delta, 1);
+            const ny = d.getFullYear();
+            const nm = String(d.getMonth() + 1).padStart(2, "0");
+            setArchiveMonth(`${ny}-${nm}`);
+        };
+        return ((0, jsx_runtime_1.jsxs)("div", { style: { ...bgStyle, padding: "2rem" }, children: [(0, jsx_runtime_1.jsx)(GlobalFX, {}), (0, jsx_runtime_1.jsx)(Starfield, {}), (0, jsx_runtime_1.jsx)(AmbientOverlays, {}), (0, jsx_runtime_1.jsxs)("div", { style: { position: "relative", zIndex: 1 }, children: [(0, jsx_runtime_1.jsxs)("div", { style: { display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1.5rem" }, children: [(0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: S.btnSm, onClick: () => setView("ready"), children: "\u2190 back" }), (0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: { ...S.btnSm, padding: "0.18rem 0.5rem", minWidth: "1.9rem", opacity: canGoPrev ? 1 : 0.3 }, onClick: () => canGoPrev && shiftMonth(-1), disabled: !canGoPrev, "aria-label": "Previous month", children: "\u2039" }), (0, jsx_runtime_1.jsxs)("span", { style: {
                                         ...S.mono,
                                         color: constants_1.COLORS.gold,
                                         fontSize: "0.75rem",
                                         letterSpacing: "0.14em",
                                         textTransform: "uppercase",
-                                    }, children: ["Archive \u2014 ", monthLabel] })] }), (0, jsx_runtime_1.jsxs)("div", { style: {
+                                        flex: 1,
+                                        textAlign: "center",
+                                    }, children: ["Archive \u2014 ", monthLabel] }), (0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: { ...S.btnSm, padding: "0.18rem 0.5rem", minWidth: "1.9rem", opacity: canGoNext ? 1 : 0.3 }, onClick: () => canGoNext && shiftMonth(1), disabled: !canGoNext, "aria-label": "Next month", children: "\u203A" }), (0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: { ...S.btnSm, padding: "0.18rem 0.5rem", minWidth: "1.9rem" }, onClick: () => setShowTutorial(true), "aria-label": "Open tutorial", title: "Tutorial", children: "?" })] }), (0, jsx_runtime_1.jsxs)("div", { style: {
                                 display: "grid",
                                 gridTemplateColumns: "repeat(7,1fr)",
                                 gap: "6px",
@@ -1619,7 +1574,7 @@ function Derivative() {
                                         letterSpacing: "0.1em",
                                         paddingBottom: "4px",
                                     }, children: d }, i))), (() => {
-                                    const [yearRaw, monthRaw] = today.split("-").map(Number);
+                                    const [yearRaw, monthRaw] = archiveMonth.split("-").map(Number);
                                     const year = yearRaw ?? new Date().getFullYear();
                                     const month = monthRaw ?? new Date().getMonth() + 1;
                                     return [...Array(new Date(year, month - 1, 1).getDay())].map((_, i) => ((0, jsx_runtime_1.jsx)("div", {}, "p" + i)));
@@ -1681,7 +1636,7 @@ function Derivative() {
                                         alignItems: "center",
                                         gap: "0.3rem",
                                     }, children: [(0, jsx_runtime_1.jsx)("span", { style: { display: "inline-block", width: "12px", height: "2px", background: m.color, borderRadius: "1px" } }), m.label] }, level));
-                            }) })] })] }));
+                            }) })] }), (0, jsx_runtime_1.jsx)(TutorialModal, { visible: showTutorial, onClose: () => setShowTutorial(false) })] }));
     }
     if (view === "game" && puzzle && selDate) {
         const complete = isComplete();
@@ -1695,16 +1650,6 @@ function Derivative() {
             "BORROWED",
             "TOPONYM",
         ].includes(puzzle.type);
-        const updateTimedMode = (checked) => setTimedSettings((current) => ({ ...current, timedMode: checked }));
-        const updateTimeLimit = (value) => {
-            const parsed = Number(value);
-            if (!Number.isFinite(parsed))
-                return;
-            setTimedSettings((current) => ({
-                ...current,
-                timeLimitSec: Math.max(5, Math.min(180, Math.floor(parsed))),
-            }));
-        };
         return ((0, jsx_runtime_1.jsxs)("div", { style: {
                 ...bgStyle,
                 padding: "1.5rem 1.5rem 2.5rem",
@@ -1715,13 +1660,13 @@ function Derivative() {
                                 alignItems: "center",
                                 justifyContent: "space-between",
                                 marginBottom: "1.25rem",
-                            }, children: [(0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: S.btnSm, onClick: () => setView(isFirstTime ? "splash" : "ready"), children: "\u2190 back" }), (0, jsx_runtime_1.jsx)("span", { style: {
+                            }, children: [(0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: S.btnSm, onClick: () => setView("ready"), children: "\u2190 back" }), (0, jsx_runtime_1.jsx)("span", { style: {
                                         ...S.mono,
                                         fontSize: "0.6rem",
                                         color: constants_1.COLORS.textMuted,
                                         letterSpacing: "0.12em",
                                         textTransform: "uppercase",
-                                    }, children: "derivative system" }), (0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: S.btnSm, onClick: () => setView("archive"), children: "archive" })] }), (0, jsx_runtime_1.jsxs)("div", { style: { display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "0.55rem", marginBottom: "0.85rem" }, children: [(0, jsx_runtime_1.jsxs)("label", { style: { ...S.mono, fontSize: "0.57rem", color: constants_1.COLORS.textMuted, letterSpacing: "0.1em", display: "inline-flex", alignItems: "center", gap: "0.35rem", textTransform: "uppercase" }, children: [(0, jsx_runtime_1.jsx)("input", { type: "checkbox", checked: timedSettings.timedMode, onChange: (e) => updateTimedMode(e.target.checked) }), "timed mode"] }), (0, jsx_runtime_1.jsx)("input", { type: "number", min: 5, max: 180, disabled: !timedSettings.timedMode, value: timedSettings.timeLimitSec, onChange: (e) => updateTimeLimit(e.target.value), style: { ...S.input, width: "88px", padding: "0.2rem 0.45rem", fontSize: "0.68rem", opacity: timedSettings.timedMode ? 1 : 0.5 } })] }), (0, jsx_runtime_1.jsx)(PuzzleHeader, { puzzle: puzzle, selDate: selDate }), puzzle.type === "ROOT" && ((0, jsx_runtime_1.jsx)(RootPuzzle, { puzzle: puzzle, found: puzzleState.found || [], onWord: handleWordFound, revealed: revealed, timedSettings: timedSettings })), isSortType && ((0, jsx_runtime_1.jsx)(StepPuzzle, { puzzle: puzzle, state: puzzleState, onState: handlePuzzleState, revealed: revealed })), puzzle.type === "MATCH" && ((0, jsx_runtime_1.jsx)(MatchPuzzle, { puzzle: puzzle, state: puzzleState, onState: handlePuzzleState, revealed: revealed, timedSettings: timedSettings })), puzzle.type === "GRIMM" && ((0, jsx_runtime_1.jsx)(GrimmPuzzle, { puzzle: puzzle, state: puzzleState, onState: handlePuzzleState, revealed: revealed, timedSettings: timedSettings })), puzzle.type === "SEMANTIC" && ((0, jsx_runtime_1.jsx)(SemanticPuzzle, { puzzle: puzzle, state: puzzleState, onState: handlePuzzleState, revealed: revealed, timedSettings: timedSettings })), puzzle.type === "IDIOM" && ((0, jsx_runtime_1.jsx)(IdiomPuzzle, { puzzle: puzzle, state: puzzleState, onState: handlePuzzleState, revealed: revealed, timedSettings: timedSettings })), !revealed && ((0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: { ...S.btnSm, marginTop: "1rem" }, onClick: handleReveal, children: "reveal machinery \u2192" })), (0, jsx_runtime_1.jsx)(exports.RevealSection, { puzzle: puzzle, visible: revealed || complete, onShare: buildShare }), shareMsg && (0, jsx_runtime_1.jsx)(ShareCard, { data: shareMsg })] })] }));
+                                    }, children: "derivative system" }), (0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: S.btnSm, onClick: () => setView("archive"), children: "archive" })] }), (0, jsx_runtime_1.jsx)(PuzzleHeader, { puzzle: puzzle, selDate: selDate, onOpenHelp: () => setIsHelpOpen(true) }), isHelpOpen && (0, jsx_runtime_1.jsx)(PuzzleHelpModal_1.default, { puzzleType: puzzle.type, onClose: () => setIsHelpOpen(false) }), puzzle.type === "ROOT" && ((0, jsx_runtime_1.jsx)(RootPuzzle, { puzzle: puzzle, found: puzzleState.found || [], onWord: handleWordFound, revealed: revealed })), isSortType && ((0, jsx_runtime_1.jsx)(StepPuzzle, { puzzle: puzzle, state: puzzleState, onState: handlePuzzleState, revealed: revealed })), puzzle.type === "MATCH" && ((0, jsx_runtime_1.jsx)(MatchPuzzle, { puzzle: puzzle, state: puzzleState, onState: handlePuzzleState, revealed: revealed })), puzzle.type === "GRIMM" && ((0, jsx_runtime_1.jsx)(GrimmPuzzle, { puzzle: puzzle, state: puzzleState, onState: handlePuzzleState, revealed: revealed })), puzzle.type === "SEMANTIC" && ((0, jsx_runtime_1.jsx)(SemanticPuzzle, { puzzle: puzzle, state: puzzleState, onState: handlePuzzleState, revealed: revealed })), puzzle.type === "IDIOM" && ((0, jsx_runtime_1.jsx)(IdiomPuzzle, { puzzle: puzzle, state: puzzleState, onState: handlePuzzleState, revealed: revealed })), !revealed && ((0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: { ...S.btnSm, marginTop: "1rem" }, onClick: handleReveal, children: "reveal machinery \u2192" })), (0, jsx_runtime_1.jsx)(exports.RevealSection, { puzzle: puzzle, visible: revealed || complete, onShare: buildShare }), shareMsg && (0, jsx_runtime_1.jsx)(ShareCard, { data: shareMsg }), (0, jsx_runtime_1.jsx)(TutorialModal, { visible: showTutorial, onClose: () => setShowTutorial(false) })] })] }));
     }
     return null;
 }
