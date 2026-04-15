@@ -84,7 +84,7 @@ const _ROOT_POOL_RAW = [
     targets: ["decide", "decision", "incision", "incisive", "scissors", "precise", "concise", "homicide", "suicide", "genocide"],
     required: ["decide", "decision", "incision", "precise", "homicide"],
     tension: "Latin 'caedere' (to cut/kill) is the hidden blade in English abstraction — 'decision' is a cutting through options, 'incisive' is cutting to the point, while 'homicide' returns to the original meaning. The 14th-century legal vocabulary that gave us 'precise' (cut off with exactness) and 'concise' (cut down) was also the vocabulary that gave courts the power to decide who lived and died",
-    forms: ["cide", "cis", "cision", "cise"],
+    forms: ["cide", "cis", "cise"],
   },
   {
     root: "cap",

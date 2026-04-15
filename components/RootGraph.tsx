@@ -194,7 +194,7 @@ export default function RootGraph({
             fill="#8a7050"
             fontFamily="monospace"
           >
-            {forms.map((f) => `-${f}`).join(" · ")}
+            {forms.map((f) => `-${f}-`).join(" · ")}
           </text>
         )}
 
