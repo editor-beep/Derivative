@@ -17,7 +17,7 @@ export const TOPONYM_POOL = [
     groups: [
       {
         id: "french",
-        displayLabel: "Textile lineage A",
+        displayLabel: "french regions",
         solutionLabel: "Named after French cities or regions",
         hint: "Continental weaving centers tied to early modern luxury cloth circuits.",
         hintLevel2: "Old-regime French textile branding that survived industrial relocation.",
@@ -26,7 +26,7 @@ export const TOPONYM_POOL = [
       },
       {
         id: "middle_east",
-        displayLabel: "Textile lineage B",
+        displayLabel: "silk road",
         solutionLabel: "Named after Middle Eastern / Silk Road cities",
         hint: "Mediterranean and caravan-exchange entrepôts on long-distance cloth routes.",
         hintLevel2: "Levantine and Mesopotamian market nodes relayed through Silk Road commerce.",
@@ -35,7 +35,7 @@ export const TOPONYM_POOL = [
       },
       {
         id: "south_asia",
-        displayLabel: "Textile lineage C",
+        displayLabel: "south asia",
         solutionLabel: "Named after South Asian colonial trade ports",
         hint: "Indian Ocean export points absorbed into imperial cotton and wool supply chains.",
         hintLevel2: "Colonial port-to-market lineage where local crafts became global commodity tags.",
@@ -60,7 +60,7 @@ export const TOPONYM_POOL = [
     groups: [
       {
         id: "french_italian",
-        displayLabel: "Food origin set A",
+        displayLabel: "french & italian",
         solutionLabel: "Named after French or Italian aristocratic estates / regions",
         hint: "Courtly European terroir branding that later generalized in mass markets.",
         hintLevel2: "Estate-and-region prestige terms detached from strict geographic controls.",
@@ -69,7 +69,7 @@ export const TOPONYM_POOL = [
       },
       {
         id: "german",
-        displayLabel: "Food origin set B",
+        displayLabel: "german ports",
         solutionLabel: "Named after German port cities",
         hint: "Industrial port lineage carried by migration into Atlantic food culture.",
         hintLevel2: "North/Central European urban export identities retooled as American street food labels.",
@@ -78,7 +78,7 @@ export const TOPONYM_POOL = [
       },
       {
         id: "british",
-        displayLabel: "Food origin set C",
+        displayLabel: "british isles",
         solutionLabel: "Named after British regional heritage sites",
         hint: "Island production districts where place-certification shaped taste identity.",
         hintLevel2: "British locality markers preserved as quality signals beyond local production.",
@@ -105,7 +105,7 @@ export const TOPONYM_POOL = [
     groups: [
       {
         id: "battle",
-        displayLabel: "Conflict lineage A",
+        displayLabel: "battle sites",
         solutionLabel: "Named after battle sites or military events",
         hint: "War-zone naming residue transformed into fashion and color vocabulary.",
         hintLevel2: "Military campaign and test-site memory sanitized into consumer shorthand.",
@@ -114,7 +114,7 @@ export const TOPONYM_POOL = [
       },
       {
         id: "colonial",
-        displayLabel: "Conflict lineage B",
+        displayLabel: "colonial extraction",
         solutionLabel: "Named after colonial extraction sites",
         hint: "Plantation and export-enclave terms from coercive imperial production systems.",
         hintLevel2: "Commodity words rooted in colonial extraction corridors rather than neutral trade.",
@@ -142,7 +142,7 @@ export const TOPONYM_POOL = [
     groups: [
       {
         id: "islands",
-        displayLabel: "Garment lineage A",
+        displayLabel: "islands",
         solutionLabel: "Named after islands or island regions",
         hint: "Insular production geographies turned into globally portable clothing terms.",
         hintLevel2: "Island and borderland labels detached from contested local histories.",
@@ -151,7 +151,7 @@ export const TOPONYM_POOL = [
       },
       {
         id: "cities",
-        displayLabel: "Garment lineage B",
+        displayLabel: "city quarters",
         solutionLabel: "Named after cities or urban enclaves",
         hint: "Urban trade and elite district names absorbed into generic apparel language.",
         hintLevel2: "Port-city and enclave branding that outlived its original social setting.",

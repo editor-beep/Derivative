@@ -6,13 +6,13 @@ export const FALSE_FAMILY_POOL = [
     groups: [
       {
         id: "hear",
-        displayLabel: "Group A", solutionLabel: "ear (hearing organ) — OE ēare",
+        displayLabel: "hearing organ", solutionLabel: "ear (hearing organ) — OE ēare",
         accepts: ["ear", "eardrum", "earlap", "aural"],
         related: ["listen", "hearing"],
       },
       {
         id: "grain",
-        displayLabel: "Group B", solutionLabel: "ear (of grain) — OE ēar",
+        displayLabel: "grain stalk", solutionLabel: "ear (of grain) — OE ēar",
         accepts: ["earworm", "spike", "kernel"],
         related: ["grain", "corn"],
       },
@@ -40,19 +40,19 @@ export const FALSE_FAMILY_POOL = [
     groups: [
       {
         id: "noise",
-        displayLabel: "Group A", solutionLabel: "sound (noise) — Latin sonus",
+        displayLabel: "noise", solutionLabel: "sound (noise) — Latin sonus",
         accepts: ["sonic", "resound", "resonance", "ultrasound"],
         related: ["noise"],
       },
       {
         id: "water",
-        displayLabel: "Group B", solutionLabel: "sound (water channel) — Old Norse sund",
+        displayLabel: "water channel", solutionLabel: "sound (water channel) — Old Norse sund",
         accepts: ["fathom", "strait", "inlet"],
         related: ["swim"],
       },
       {
         id: "healthy",
-        displayLabel: "Group C", solutionLabel: "sound (healthy) — Old English gesund",
+        displayLabel: "healthy", solutionLabel: "sound (healthy) — Old English gesund",
         accepts: ["unsound", "soundly", "soundness"],
         related: ["healthy"],
       },

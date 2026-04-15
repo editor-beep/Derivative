@@ -16,13 +16,13 @@ export const NORSE_CONSONANT_POOL = [
     groups: [
       {
         id: "norse",
-        displayLabel: "Group A", solutionLabel: "Old Norse stream (hard sk-)",
+        displayLabel: "norse sk-", solutionLabel: "Old Norse stream (hard sk-)",
         accepts: ["skirt", "skull", "skin", "skill", "sky"],
         related: ["scrape", "scare"],
       },
       {
         id: "oe",
-        displayLabel: "Group B", solutionLabel: "Old English stream (soft sh-)",
+        displayLabel: "english sh-", solutionLabel: "Old English stream (soft sh-)",
         accepts: ["shirt", "shell", "shin", "share", "shore"],
         related: ["shape", "shed"],
       },
@@ -38,13 +38,13 @@ export const NORSE_CONSONANT_POOL = [
     groups: [
       {
         id: "norse",
-        displayLabel: "Group A", solutionLabel: "Old Norse stream (hard sk-)",
+        displayLabel: "norse sk-", solutionLabel: "Old Norse stream (hard sk-)",
         accepts: ["scatter", "skid", "scrape", "score"],
         related: ["screech", "scowl"],
       },
       {
         id: "oe",
-        displayLabel: "Group B", solutionLabel: "Old English stream (soft sh-)",
+        displayLabel: "english sh-", solutionLabel: "Old English stream (soft sh-)",
         accepts: ["shatter", "slide", "shred", "shear"],
         related: ["shriek", "shy"],
       },
@@ -60,13 +60,13 @@ export const NORSE_CONSONANT_POOL = [
     groups: [
       {
         id: "norse",
-        displayLabel: "Group A", solutionLabel: "Old Norse stream (hard k-)",
+        displayLabel: "norse k-", solutionLabel: "Old Norse stream (hard k-)",
         accepts: ["kirk", "dike", "egg"],
         related: ["garth", "beck"],
       },
       {
         id: "oe",
-        displayLabel: "Group B", solutionLabel: "Old English stream (soft ch-/dg-)",
+        displayLabel: "english ch-", solutionLabel: "Old English stream (soft ch-/dg-)",
         accepts: ["church", "ditch", "edge"],
         related: ["yard", "brook"],
       },
@@ -89,13 +89,13 @@ export const NORSE_BORROWED_POOL = [
     groups: [
       {
         id: "norse_winner",
-        displayLabel: "Group A", solutionLabel: "Norse th- forms (the winners)",
+        displayLabel: "norse th-", solutionLabel: "Norse th- forms (the winners)",
         accepts: ["they", "them", "their", "both", "same"],
         related: ["their", "theirs"],
       },
       {
         id: "oe_loser",
-        displayLabel: "Group B", solutionLabel: "Old English h- forms (displaced)",
+        displayLabel: "english h-", solutionLabel: "Old English h- forms (displaced)",
         accepts: ["hie", "hem", "here", "ba", "ilk"],
         related: ["he", "him"],
       },
@@ -111,13 +111,13 @@ export const NORSE_BORROWED_POOL = [
     groups: [
       {
         id: "norse",
-        displayLabel: "Group A", solutionLabel: "Norse landscape words (still in place names)",
+        displayLabel: "norse landscape", solutionLabel: "Norse landscape words (still in place names)",
         accepts: ["fell", "beck", "tarn", "dale", "gill", "ness", "wick", "holm", "thorp", "by"],
         related: ["scar", "force"],
       },
       {
         id: "english",
-        displayLabel: "Group B", solutionLabel: "English equivalents",
+        displayLabel: "english words", solutionLabel: "English equivalents",
         accepts: ["hill", "stream", "lake", "valley", "ravine"],
         related: ["headland", "bay", "island", "village", "town", "moor", "cliff"],
       },
@@ -133,13 +133,13 @@ export const NORSE_BORROWED_POOL = [
     groups: [
       {
         id: "norse",
-        displayLabel: "Group A", solutionLabel: "Norse social words",
+        displayLabel: "norse words", solutionLabel: "Norse social words",
         accepts: ["law", "husband", "fellow", "skill", "trust", "loan", "anger", "wrong", "happy", "guest"],
         related: ["ransack", "outlaw"],
       },
       {
         id: "concept",
-        displayLabel: "Group B", solutionLabel: "What each word originally meant",
+        displayLabel: "original meanings", solutionLabel: "What each word originally meant",
         accepts: [],
         related: ["things laid down", "house-bound one", "fee-layer (partner)", "to distinguish", "stronghold of mind", "formal debt", "grief-sorrow", "crooked", "having luck", "recognized stranger", "judgment", "serf"],
       },
@@ -167,13 +167,13 @@ export const NORSE_BORROWED_POOL = [
     groups: [
       {
         id: "norse_winner",
-        displayLabel: "Group A", solutionLabel: "Norse winner (what we say now)",
+        displayLabel: "norse winner", solutionLabel: "Norse winner (what we say now)",
         accepts: ["take", "die", "sky", "leg", "skin", "call", "hit", "ill", "ugly", "want"],
         related: ["get", "give", "raise"],
       },
       {
         id: "oe_loser",
-        displayLabel: "Group B", solutionLabel: "Old English loser (what we no longer say)",
+        displayLabel: "english displaced", solutionLabel: "Old English loser (what we no longer say)",
         accepts: ["nim", "clepe", "smite"],
         related: ["starve (any death)", "heaven (physical)", "limb (specific)", "hide (human)", "sick (mental)", "unfair", "wish (lack)", "yclept", "slay"],
       },
@@ -189,13 +189,13 @@ export const NORSE_BORROWED_POOL = [
     groups: [
       {
         id: "norse",
-        displayLabel: "Group A", solutionLabel: "Norse everyday words",
+        displayLabel: "norse words", solutionLabel: "Norse everyday words",
         accepts: ["egg", "knife", "cake", "bag", "seat", "gap", "loose", "flat", "get", "window"],
         related: ["steak", "root"],
       },
       {
         id: "origin",
-        displayLabel: "Group B", solutionLabel: "What displaced or what the Norse word replaced",
+        displayLabel: "replaced by", solutionLabel: "What displaced or what the Norse word replaced",
         accepts: [],
         related: ["ey (Saxon form)", "seax (Saxon blade)", "bread type", "sack", "stool", "opening", "tied", "level", "catch/seize", "vind-auga (wind-eye)", "hlaef", "dwellan"],
       },

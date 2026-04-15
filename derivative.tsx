@@ -1570,7 +1570,7 @@ const StepPuzzle = ({
       <SystemMesh intensity={0.92} />
       <div style={{ position: "relative", zIndex: 1 }}>
         <div style={{ marginBottom: "1.1rem" }}>
-          <div style={{ ...S.mono, fontSize: "0.54rem", color: COLORS.textFaint, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: "0.3rem" }}>
+          <div style={{ ...S.mono, fontSize: "0.54rem", color: COLORS.textSecondary, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: "0.3rem" }}>
             step {answeredCount + 1} of {steps.length}
           </div>
           <div style={{ height: "2px", background: "rgba(232,184,75,0.12)", borderRadius: "1px" }}>
@@ -1580,7 +1580,7 @@ const StepPuzzle = ({
 
         {currentStep.type === "CLASSIFY" && (
           <>
-            <div style={{ ...S.mono, fontSize: "0.54rem", color: COLORS.textFaint, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
+            <div style={{ ...S.mono, fontSize: "0.54rem", color: COLORS.textSecondary, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
               classify this word
             </div>
             <div style={{ fontSize: "2rem", fontWeight: 600, color: COLORS.textPrimary, letterSpacing: "0.03em", marginBottom: "1.4rem", textShadow: "0 0 20px rgba(232,184,75,0.12)" }}>
