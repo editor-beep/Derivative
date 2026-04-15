@@ -39,7 +39,7 @@ const TEMPLATE_BY_TYPE: Partial<Record<PuzzleType, BodyTemplate>> = {
       insight.type === "IDIOM"
         ? `You broke the seal on "${insight.data.phrase}" and named the culture it was seized from`
         : "You named the source the phrase was seized from",
-    matters: (_insight, context) => `That matters because every ${context.language} idiom is a site of extraction — and now the ideology fossilised inside it is exposed`,
+    matters: (_insight, context) => `That matters because every ${context.language} idiom is a site of extraction — and now the ideology fossilized inside it is exposed`,
   },
   DECEPTION: {
     happened: (_insight, context) => `A false ${context.system || "pattern"} was engineered — a visual trap so the eye would obey the spelling and never question the ancestry`,
