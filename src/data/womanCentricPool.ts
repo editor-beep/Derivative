@@ -1,235 +1,117 @@
 // womanCentricPool.ts
-// Reference lexicon of woman-centric words — terms reclaimed, redefined, or
-// coined by women to name their own experience, expose oppressive structures,
-// and build community.
+// Woman-centric words structured as BORROWED puzzle entries —
+// terms reclaimed, redefined, or coined by women to name their own experience,
+// expose oppressive structures, and build community.
 //
-// These entries expose the hidden power beneath language, organized by thematic
-// tier (reclamation, sisterhood, labor, challenging the Villain, biological Hero)
-// and annotated with etymology, definition, cultural insight, and the
-// Hero/Villain framing of the game.
+// Covers all 30 words across three sort puzzles:
+//   Puzzle 1 — slurs turned weapons, and new self-naming
+//   Puzzle 2 — naming invisible labor and collective networks
+//   Puzzle 3 — language as sacred power
 
 import { applyDatasetProvenance } from "./sources";
-import type { WomanCentricEntry } from "../types";
+import type { SortPoolEntry } from "../types";
 
-export const WOMAN_CENTRIC_POOL: WomanCentricEntry[] = [
-  // --- TIER 1: RECLAMATION OF THE "DEVIL" ---
+export const WOMAN_CENTRIC_POOL: SortPoolEntry[] = [
+  // --- PUZZLE 1: Words weaponized — and reclaimed ---
   {
-    word: "Witch",
-    origin: "Old English (wicce)",
-    definition: "A woman thought to have magic powers.",
-    insight: "The Villain used this word to execute independent or knowledgeable women. The Hero reclaimed it as a symbol of ancestral wisdom and untamable power.",
-    difficulty: "Easy",
-  },
-  {
-    word: "Crone",
-    origin: "Old French (carogne - 'carrion/old ewe')",
-    definition: "An old woman.",
-    insight: "The Villain used this to mark a woman as 'useless' once she aged. The Hero reclaimed it to honor the 'Wise Woman' stage of life.",
-    difficulty: "Medium",
-  },
-  {
-    word: "Hussy",
-    origin: "Contraction of 'housewife' (huswif).",
-    definition: "An impudent or immoral girl/woman.",
-    insight: "Originally just meant a female head of household. The Villain twisted it into a slur to punish women who stepped outside the home; the Hero wears it to signal defiance.",
-    difficulty: "Medium",
-  },
-  {
-    word: "Bitch",
-    origin: "Old English (bicce)",
-    definition: "A female dog; a reclaimed term for a strong woman.",
-    insight: "Used by the Villain to punish women who speak up. The Hero flipped the script: 'Bitch' became 'Being In Total Control of Herself.'",
-    difficulty: "Easy",
-  },
-  {
-    word: "Spinster",
-    origin: "Middle English (one who spins thread).",
-    definition: "An unmarried woman.",
-    insight: "Originally a title of economic independence (a woman who could support herself). The Villain made it an insult; the Hero reclaims it as 'self-partnered' autonomy.",
-    difficulty: "Medium",
+    root: "feminist word reclamation",
+    lang: "Old English / Middle English / 20th-century coinage → feminist lexicon",
+    meaning: "words used as weapons against women — and turned back into armor",
+    groups: [
+      {
+        id: "slurs_reclaimed",
+        displayLabel: "slurs turned armor",
+        solutionLabel: "Words the Villain turned into slurs — the Hero wears as armor",
+        hint: "These words were designed to shame or silence. They got reclaimed instead.",
+        hintLevel2: "Think about words for an old woman, an unmarried woman, a dog, a sorceress, and a housewife — all turned into insults, then reclaimed.",
+        accepts: ["witch", "crone", "hussy", "bitch", "spinster"],
+        related: ["shrew", "harridan"],
+      },
+      {
+        id: "self_naming",
+        displayLabel: "built for self-definition",
+        solutionLabel: "Words the Hero built to name herself on her own terms",
+        hint: "These weren't twisted from something else — they were invented or revived to assert independence.",
+        hintLevel2: "Think about a neutral title, an alternative spelling, a history rewritten, a female society, and a bond of struggle.",
+        accepts: ["ms.", "womyn", "herstory", "sorority", "sister"],
+        related: ["sibling", "comrade"],
+      },
+    ],
+    pool: ["witch", "crone", "hussy", "bitch", "spinster", "ms.", "womyn", "herstory", "sorority", "sister"],
+    tension:
+      "The Villain's strategy was semantic: call a woman a witch, a hussy, a crone, and you mark her for punishment. The Hero's counter-strategy was also semantic: reclaim every slur, coin new titles, and rename the record. Witch reclaimed ancestral knowledge from its execution warrant. Hussy was once just 'housewife' — the Villain narrowed it to insult, the Hero widened it to defiance. Bitch, spinster, crone — all repatriated. Meanwhile, ms. surgically removed the Villain from her title. Womyn removed 'men' from her name. Herstory replaced his with hers in the archive. Each move was a land grab in language.",
+    questionPrompt: "Sort these words by what kind of linguistic move they represent.",
+    revealHeadline: "The dictionary was a weapon. Then the Hero picked it up.",
+    revealBody:
+      "Two strategies, side by side. The first: reclamation — taking back words designed to wound. Witch (Old English wicce) was a neutral knowledge-keeper before it became an execution charge; the Villain turned it into law, the Hero turned it back into identity. Bitch (Old English bicce, female dog) was an insult precisely because it suggested autonomy and aggression; reclaiming it names exactly the quality the Hero was being punished for having. The second strategy: coinage — building new vocabulary the Villain couldn't corrupt. Ms. appeared in the 17th century, languished, and was revived in 1972 to sever the grammatical link between a woman's name and her marital ownership. Womyn removed 'men' from the center of her language. Herstory rewrote the archive. These aren't just word games — they are territorial disputes.",
   },
 
-  // --- TIER 2: SISTERHOOD & AUTONOMY ---
+  // --- PUZZLE 2: Naming the invisible ---
   {
-    word: "Ms.",
-    origin: "17th Century / 20th Century revival.",
-    definition: "A title used before a woman's name regardless of marital status.",
-    insight: "A linguistic strike. The Hero refused to be defined by her 'owner' (Master or Mr.), creating a title that signaled her existence as an individual.",
-    difficulty: "Easy",
-  },
-  {
-    word: "Sorority",
-    origin: "Latin (soror - 'sister')",
-    definition: "A society for women.",
-    insight: "While the Villain's 'Fraternities' held the power, the Hero built 'Sororities' to ensure that sisterhood was a recognized social force.",
-    difficulty: "Easy",
-  },
-  {
-    word: "Midwife",
-    origin: "Old English (mid-wif - 'with-woman')",
-    definition: "A person trained to assist women in childbirth.",
-    insight: "The Hero's original medical science. It centers the experience of being 'with woman' rather than the Villain's clinical intervention.",
-    difficulty: "Medium",
-  },
-  {
-    word: "Gossip",
-    origin: "Old English (god-sib - 'godparent/relative')",
-    definition: "Casual conversation or reports about other people.",
-    insight: "Originally meant a woman's close female friend. The Villain demonized female bonding as 'idle talk' to isolate them; the Hero knows it is a vital information network.",
-    difficulty: "Medium",
-  },
-  {
-    word: "Matriarch",
-    origin: "Greek (mētēr - 'mother')",
-    definition: "A woman who is the head of a family or tribe.",
-    insight: "A direct challenge to the Villain's 'Patriarch.' It centers the Hero as the architect of lineage and community survival.",
-    difficulty: "Easy",
+    root: "naming invisible structures and networks",
+    lang: "Old English / feminist sociology / 20th-century coinage → political vocabulary",
+    meaning: "words that made the invisible visible — the labor, the network, the weapon",
+    groups: [
+      {
+        id: "invisible_labor",
+        displayLabel: "naming the unpaid work",
+        solutionLabel: "Words that named labor the Villain refused to count",
+        hint: "These words made invisible work visible — giving it a name meant giving it a value.",
+        hintLevel2: "Think about domestic maintenance, the weight of emotional management, a barrier you can see through but can't pass, a sacred bleeding space, and the original birth attendant.",
+        accepts: ["housework", "emotional labor", "glass ceiling", "red tent", "midwife"],
+        related: ["care work", "second shift"],
+      },
+      {
+        id: "female_network",
+        displayLabel: "naming the network",
+        solutionLabel: "Words the Villain demonized — but that named real female power",
+        hint: "These words were dismissed as trivial or dangerous. They named the infrastructure of female survival.",
+        hintLevel2: "Think about a word for a female friend turned into 'idle talk,' a female head of lineage, a gathering of witches, a masked activist collective, and someone who lights the spark.",
+        accepts: ["gossip", "matriarch", "coven", "guerrilla", "firebrand"],
+        related: ["circle", "collective"],
+      },
+    ],
+    pool: ["housework", "emotional labor", "glass ceiling", "red tent", "midwife", "gossip", "matriarch", "coven", "guerrilla", "firebrand"],
+    tension:
+      "The Villain's second tool was erasure: make the labor invisible, demonize the network, pretend the infrastructure didn't exist. Housework wasn't 'real work' — until feminism named it as exactly that, unpaid and foundational. Emotional labor (Arlie Hochschild, 1983) named the psychic management that women performed for free in every domestic and professional relationship. Glass ceiling (Marilyn Loden, 1978) named the barrier you could see through but couldn't pass — the name made it real enough to litigate. Gossip's origin (Old English godsib — 'godparent') reveals what the Villain erased: it was a word for a woman's closest confidant, her community anchor, her information network. The Villain demonized it as 'idle chatter' precisely because the network was powerful. Coven (Latin convenire — to come together) was called a conspiracy. The Hero called it a support group.",
+    questionPrompt: "Sort these words by what kind of invisible structure they made visible.",
+    revealHeadline: "If you can name it, you can fight it.",
+    revealBody:
+      "The Hero's most powerful move was not the slogan — it was the noun. Housework could not be argued once it was named. Emotional labor (coined by sociologist Arlie Hochschild to describe flight attendants trained to manage passengers' feelings) became the framework for every unpaid psychic service women provided: the calendar management, the social smoothing, the maintenance of other people's self-esteem. Glass ceiling became the target. Red tent reclaimed the menstrual cycle from 'unclean' to 'sacred retreat' — the tent in the biblical narrative was a place of female gathering, not exile. Midwife (Old English mid-wif: 'with-woman') names the original birth attendant, whose knowledge the Villain systematically criminalized to install male physicians. Gossip named the network. Matriarch named the alternative hierarchy. Coven named the assembly. Guerrilla named the tactic. Firebrand named the role. Each word was a brick in a structure the Villain couldn't quite knock down.",
   },
 
-  // --- TIER 3: THE LABOR OF THE HERO ---
+  // --- PUZZLE 3: Language as sacred power ---
   {
-    word: "Housework",
-    origin: "Compound term",
-    definition: "The work of cleaning, cooking, and maintenance.",
-    insight: "The Villain calls this 'chores.' The Hero names it 'Unpaid Labor,' revealing the invisible engine that keeps the Villain's world running.",
-    difficulty: "Easy",
-  },
-  {
-    word: "Emotional Labor",
-    origin: "Modern Feminist Sociology",
-    definition: "The effort of managing emotions and relationships.",
-    insight: "The Hero gave a name to the invisible 'weight' women carry, making the Villain's psychological expectations visible and debatable.",
-    difficulty: "Medium",
-  },
-  {
-    word: "Glass Ceiling",
-    origin: "20th Century metaphor",
-    definition: "An invisible barrier preventing women from rising in ranks.",
-    insight: "A map of the Villain's hidden fortress. By naming the barrier, the Hero makes it something that can be shattered.",
-    difficulty: "Easy",
-  },
-  {
-    word: "Red Tent",
-    origin: "Biblical/Metaphorical",
-    definition: "A space for women to gather during menstruation.",
-    insight: "The Villain called it 'unclean.' The Hero called it 'sacred retreat,' turning a physical cycle into a moment of communal strength.",
-    difficulty: "Hard",
-  },
-
-  // --- TIER 4: CHALLENGING THE VILLAIN'S LOGIC ---
-  {
-    word: "Mansplaining",
-    origin: "21st Century Portmanteau",
-    definition: "When a man explains something to a woman in a patronizing way.",
-    insight: "The Hero weaponized humor to identify the Villain's habit of assuming intellectual superiority. It's a tool of instant disarmament.",
-    difficulty: "Easy",
-  },
-  {
-    word: "Gaslighting",
-    origin: "1938 Play 'Gas Light'",
-    definition: "Manipulating someone into doubting their own sanity.",
-    insight: "By naming this specific type of psychological warfare, the Hero gave every woman a shield against the Villain's lies.",
-    difficulty: "Easy",
-  },
-  {
-    word: "Intersectional",
-    origin: "Black Feminist Theory (Kimberlé Crenshaw)",
-    definition: "The overlap of various social identities (race, gender, class).",
-    insight: "The Hero recognized that the Villain attacks from many angles at once. This word allows the Hero to fight on all fronts simultaneously.",
-    difficulty: "Hard",
-  },
-  {
-    word: "Womanism",
-    origin: "Alice Walker (1983)",
-    definition: "A form of feminism focused on the experiences of Black women.",
-    insight: "The Hero realized the Villain's 'Feminism' sometimes excluded women of color. Womanism reclaimed the center of the struggle.",
-    difficulty: "Hard",
-  },
-  {
-    word: "The Muse",
-    origin: "Greek Mythology",
-    definition: "A woman who is a source of artistic inspiration.",
-    insight: "The Villain tried to make the Hero a passive object. The Hero reclaimed the Muse as the 'active creator' who simply uses her own image.",
-    difficulty: "Medium",
-  },
-
-  // --- TIER 5: THE BIOLOGICAL HERO ---
-  {
-    word: "Menarche",
-    origin: "Greek (mēn - 'month' + arkhē - 'beginning')",
-    definition: "The first occurrence of menstruation.",
-    insight: "A clinical term reclaimed by the Hero to celebrate the beginning of the 'Cycle of Power' rather than a 'curse' from the Villain.",
-    difficulty: "Hard",
-  },
-  {
-    word: "Goddess",
-    origin: "Old English / Latin",
-    definition: "A female deity.",
-    insight: "In a world with a 'Father God,' the Hero asserts the existence of the 'Mother,' reclaiming the divine as a mirror of herself.",
-    difficulty: "Easy",
-  },
-  {
-    word: "Amazon",
-    origin: "Greek Mythology",
-    definition: "A member of a legendary race of female warriors.",
-    insight: "The Villain told stories of Amazons as 'monsters' to be defeated. The Hero tells them as blueprints for a world without the Villain.",
-    difficulty: "Medium",
-  },
-  {
-    word: "Matrilineal",
-    origin: "Latin (māter - 'mother' + linea - 'line')",
-    definition: "Tracing descent through the female line.",
-    insight: "The Villain's greatest fear. It erases the 'Last Name' of the master and returns the identity to the womb.",
-    difficulty: "Medium",
-  },
-  {
-    word: "Herstory",
-    origin: "Portmanteau (1970s)",
-    definition: "History viewed from a female perspective.",
-    insight: "A linguistic pun used to reveal that 'History' was usually just 'His Story.' The Hero rewrites the books to include herself.",
-    difficulty: "Easy",
-  },
-  {
-    word: "Coven",
-    origin: "Latin (convenire - 'to come together')",
-    definition: "A gathering of witches.",
-    insight: "The Villain sees a conspiracy. The Hero sees a support group. It is the ultimate 'Unit' for the disenfranchised.",
-    difficulty: "Medium",
-  },
-  {
-    word: "Womyn",
-    origin: "Alternative spelling (1970s)",
-    definition: "A spelling of 'women' that avoids the 'men' suffix.",
-    insight: "A literal surgical removal of the Villain from the Hero's name. A declaration of total linguistic independence.",
-    difficulty: "Hard",
-  },
-  {
-    word: "Sister",
-    origin: "Old English (sweostor)",
-    definition: "A woman or girl in relation to other daughters.",
-    insight: "Beyond biology, the Hero uses this to describe every woman in the struggle. It turns a group into an army of kin.",
-    difficulty: "Easy",
-  },
-  {
-    word: "Guerrilla",
-    origin: "Spanish (guerra - 'war')",
-    definition: "Independent fighting (e.g., 'Guerrilla Girls').",
-    insight: "The Hero uses the Villain's tactics of surprise and mask-wearing to expose the corruption of the Art and Power worlds.",
-    difficulty: "Medium",
-  },
-  {
-    word: "Firebrand",
-    origin: "English (a piece of burning wood).",
-    definition: "A person who is passionate about a particular cause.",
-    insight: "The Hero is the 'spark' that threatens to burn down the Villain's oppressive structures. She is heat and light personified.",
-    difficulty: "Medium",
-  },
-  {
-    word: "Oracle",
-    origin: "Latin (orare - 'to speak')",
-    definition: "A priestess acting as a medium for divine advice.",
-    insight: "The Villain seeks the Oracle's advice but fears her truth. The Hero is the one who speaks the future that the Villain cannot stop.",
-    difficulty: "Hard",
+    root: "language as sacred and intellectual power",
+    lang: "Greek / Latin / Black feminist theory → feminist lexicon",
+    meaning: "words that claimed divinity, named oppression's tactics, and rewrote the body",
+    groups: [
+      {
+        id: "exposing_tactics",
+        displayLabel: "exposing the oppressor's tactics",
+        solutionLabel: "Words that named the Villain's specific psychological and structural tools",
+        hint: "These words gave a clinical name to things women already knew were happening to them.",
+        hintLevel2: "Think about a patronizing explanation, a psychological manipulation technique, a theory of overlapping oppressions, and a feminism centered on Black women's experience.",
+        accepts: ["mansplaining", "gaslighting", "intersectional", "womanism"],
+        related: ["tone policing", "respectability politics"],
+      },
+      {
+        id: "claiming_the_sacred",
+        displayLabel: "claiming the divine and the body",
+        solutionLabel: "Words that claimed divinity, mythology, and the body as female territory",
+        hint: "These words assert that the sacred, the mythological, and the biological all belong to the Hero.",
+        hintLevel2: "Think about the Greek war-women, a female deity, the voice of the divine, the beginning of the cycle, the primordial creative force, and descent through the mother's line.",
+        accepts: ["amazon", "goddess", "oracle", "menarche", "muse", "matrilineal"],
+        related: ["artemis", "hera"],
+      },
+    ],
+    pool: ["mansplaining", "gaslighting", "intersectional", "womanism", "amazon", "goddess", "oracle", "menarche", "muse", "matrilineal"],
+    tension:
+      "The Villain's third front was intellectual: claim expertise, monopolize the divine, and turn the body into a medical problem. Mansplaining (Rebecca Solnit, 2008, popularized from her essay 'Men Explain Things to Me') named the specific act of a man explaining a woman's own expertise back to her — not as arrogance but as structural assumption of male knowledge authority. Gaslighting (from the 1938 play Gaslight) named a tactic the Hero already knew but couldn't convict: systematic reality-distortion designed to make a woman doubt her own perceptions. Intersectional (Kimberlé Crenshaw, 1989) named what Black women already experienced — that the Villain attacks from multiple axes at once, and a feminism that addresses only gender while ignoring race leaves the most targeted women undefended. Meanwhile: goddess, oracle, amazon, muse — the Hero reclaimed every supernatural and mythological figure the Villain had cordoned off as decorative or dangerous. Menarche renamed the body's opening act from 'curse' to 'beginning of power.'",
+    questionPrompt: "Sort these words by what kind of power they represent or expose.",
+    revealHeadline: "The Hero took back the divine. Then she took back the diagnosis.",
+    revealBody:
+      "Two simultaneous reclamations. The first: naming the tactic. Gaslighting was named for a specific play — a husband systematically dims the gas lights in their home while denying the lights are changing, until his wife doubts her own perception. The word gave a clinical label to a pattern so common in domestic and political life that once named, it became immediately litigatable. Mansplaining did the same for intellectual authority — naming the assumption, not just the incident. Intersectional and womanism arrived from Black feminist theory to correct the default: mainstream feminism's implicit framing of 'woman' as a white, middle-class subject. The second reclamation: the sacred. Amazon (Greek mythology's all-female warrior nation) was told as a cautionary tale by the Villain — in the Hero's retelling, it is a blueprint. Goddess asserts the divine feminine in a world with only a Father God. Oracle claims speech-as-prophecy. Menarche (Greek mēn + arkhē: month + beginning) frames first menstruation as a threshold of power, not a medical inconvenience. Muse recasts the creative source as active, not decorative. Matrilineal erases the master's name from the genealogy.",
   },
 ];
 

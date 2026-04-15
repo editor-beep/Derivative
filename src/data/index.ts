@@ -12,6 +12,7 @@ export { TOPONYM_POOL } from "./toponyms";
 export { AFRICAN_DIASPORA_POOL } from "./africanDiasporaPool";
 export { MOORISH_ARABIC_POOL } from "./moorishArabicPool";
 export { WOMAN_CENTRIC_POOL } from "./womanCentricPool";
+export { LGBTQ_POOL } from "./lgbtqPool";
 export { ACADEMIC_ROOT_TABLE } from "./academicRootTable";
 
 export { SOURCES } from "./sources";
