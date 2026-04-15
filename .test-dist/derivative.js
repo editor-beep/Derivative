@@ -429,7 +429,7 @@ const DifficultyBadge = ({ puzzleType, lensId }) => {
                 }, children: meta.label }), (0, jsx_runtime_1.jsxs)("div", { style: {
                     ...S.mono,
                     fontSize: "0.5rem",
-                    color: `${meta.color}99`,
+                    color: `${meta.color}CC`,
                     letterSpacing: "0.1em",
                     textTransform: "uppercase",
                 }, children: ["\u00B7 ", meta.sublabel] })] }));
@@ -457,7 +457,7 @@ const TypeBadge = ({ type, lensId }) => {
                         }, children: constants_1.TYPE_LABELS[type] || type })] }), (0, jsx_runtime_1.jsx)("div", { style: {
                     ...S.mono,
                     fontSize: "0.52rem",
-                    color: "rgba(78,207,207,0.62)",
+                    color: "rgba(78,207,207,0.82)",
                     letterSpacing: "0.12em",
                     textTransform: "uppercase",
                     marginTop: "0.24rem",
@@ -504,7 +504,7 @@ const RevealCard = ({ puzzle, onShare, }) => {
                             color: constants_1.COLORS.textMuted,
                             letterSpacing: "0.08em",
                             marginBottom: "0.9rem",
-                            opacity: 0.82,
+                            opacity: 1,
                         }, children: claim })), (0, jsx_runtime_1.jsx)("div", { style: {
                             display: "flex",
                             flexDirection: "column",
@@ -775,7 +775,7 @@ const StepPuzzle = ({ puzzle, state, onState, revealed, }) => {
     };
     const renderOptions = (options, optionHints) => ((0, jsx_runtime_1.jsx)("div", { style: { display: "flex", flexDirection: "column", gap: "7px" }, children: options.map((opt) => {
             const hint = optionHints?.[opt];
-            return ((0, jsx_runtime_1.jsxs)("button", { disabled: locked, onClick: () => submitAnswer(opt), className: "deriv-btn", style: { ...S.btnSm, width: "100%", textAlign: "left", padding: "0.6rem 0.9rem", fontSize: "0.72rem", opacity: locked ? 0.55 : 1, cursor: locked ? "default" : "pointer", letterSpacing: "0.04em" }, children: [(0, jsx_runtime_1.jsx)("span", { children: opt }), hint && ((0, jsx_runtime_1.jsx)("span", { style: { display: "block", fontSize: "0.58rem", color: constants_1.COLORS.textFaint, marginTop: "0.18rem", letterSpacing: "0.1em", fontStyle: "italic", textTransform: "none" }, children: hint }))] }, opt));
+            return ((0, jsx_runtime_1.jsxs)("button", { disabled: locked, onClick: () => submitAnswer(opt), className: "deriv-btn", style: { ...S.btnSm, width: "100%", textAlign: "left", padding: "0.6rem 0.9rem", fontSize: "0.72rem", opacity: locked ? 0.75 : 1, cursor: locked ? "default" : "pointer", letterSpacing: "0.04em" }, children: [(0, jsx_runtime_1.jsx)("span", { children: opt }), hint && ((0, jsx_runtime_1.jsx)("span", { style: { display: "block", fontSize: "0.58rem", color: constants_1.COLORS.textFaint, marginTop: "0.18rem", letterSpacing: "0.1em", fontStyle: "italic", textTransform: "none" }, children: hint }))] }, opt));
         }) }));
     if (allDone || revealed) {
         return ((0, jsx_runtime_1.jsxs)("div", { style: cardStyle, children: [(0, jsx_runtime_1.jsx)(SystemMesh, { intensity: 0.85 }), (0, jsx_runtime_1.jsxs)("div", { style: { position: "relative", zIndex: 1 }, children: [(0, jsx_runtime_1.jsxs)("div", { style: { ...S.mono, fontSize: "0.56rem", letterSpacing: "0.14em", textTransform: "uppercase", color: constants_1.COLORS.textFaint, marginBottom: "0.85rem" }, children: [correctClassify, " / ", totalClassify, " classified correctly"] }), (0, jsx_runtime_1.jsx)("div", { style: { display: "flex", flexDirection: "column", gap: "5px" }, children: classifyEntries.map(({ s: step, i }) => {

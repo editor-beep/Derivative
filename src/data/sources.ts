@@ -61,6 +61,7 @@ const DATASET_SOURCE_INDEX: Record<string, { sourceIds: string[]; confidence: En
   moorish_arabic: { sourceIds: ["oed", "etymonline", "wiktionary", "wikipedia"], confidence: "probable", notes: "Arabic-Iberian etymologies are well-attested in comparative linguistics; some intermediate borrowing routes (e.g. via Medieval Latin or Old French) are simplified. Cultural and Hero/Villain framing is editorial." },
   woman_centric: { sourceIds: ["oed", "etymonline", "wiktionary", "wikipedia"], confidence: "probable", notes: "Etymology data is well-attested in standard references; semantic-shift and reclamation narratives are interpretive summaries. Hero/Villain framing is editorial." },
   lgbtq: { sourceIds: ["oed", "etymonline", "wiktionary", "wikipedia"], confidence: "disputed", notes: "LGBTQ etymology and reclamation histories draw on activist and cultural scholarship; some first-use attributions (e.g. ballroom vocabulary, Stonewall accounts) are contested or incomplete in the written record. Cultural and political framing is editorial." },
+  contronym: { sourceIds: ["oed", "etymonline", "merriam_webster", "wiktionary"], confidence: "verified", notes: "Contronym (auto-antonym / Janus word) status for each entry is well-attested in standard references. The grouping of words by the nature of their internal opposition is editorial." },
 };
 
 export function applyDatasetProvenance<TEntry extends object>(entries: TEntry[], datasetKey: keyof typeof DATASET_SOURCE_INDEX): void {
