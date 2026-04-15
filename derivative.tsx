@@ -2748,9 +2748,9 @@ export default function Derivative() {
             <button
               className="deriv-btn"
               style={{ ...S.btnSm, padding: "0.18rem 0.5rem", minWidth: "1.9rem" }}
-              onClick={() => window.location.reload()}
-              aria-label="Reload archive"
-              title="Reload"
+              onClick={() => setShowTutorial(true)}
+              aria-label="Open tutorial"
+              title="Tutorial"
             >
               ?
             </button>
@@ -2888,6 +2888,7 @@ export default function Derivative() {
             })}
           </div>
         </div>
+        <TutorialModal visible={showTutorial} onClose={() => setShowTutorial(false)} />
       </div>
     );
   }
