@@ -128,6 +128,6 @@ const styles = react_native_1.StyleSheet.create({
     },
     metaText: {
         fontSize: 14,
-        opacity: 0.7,
+        opacity: 0.9,
     },
 });
