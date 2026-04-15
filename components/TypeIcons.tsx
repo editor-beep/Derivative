@@ -1,7 +1,6 @@
 // TypeIcons.tsx — SVG icon components for each puzzle type and difficulty level.
 // Imported by the game UI; not a source of puzzle content itself.
 
-import React from "react";
 import type { ReactElement, ReactNode } from "react";
 import type { PuzzleType } from "../types";
 import type { DifficultyLevel } from "../difficulty";

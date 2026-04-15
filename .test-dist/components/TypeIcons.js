@@ -1,13 +1,7 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DIFFICULTY_ICONS = exports.TYPE_ICONS = exports.IconDifficultyVeryHard = exports.IconDifficultyHard = exports.IconDifficultyMedium = exports.IconDifficultyEasy = exports.IconToponym = exports.IconBorrowed = exports.IconIdiom = exports.IconPhantomRoot = exports.IconFalseFamily = exports.IconDeception = exports.IconPIE = exports.IconCollision = exports.IconSemantic = exports.IconGrimm = exports.IconSuppletive = exports.IconRoot = void 0;
 const jsx_runtime_1 = require("react/jsx-runtime");
-// TypeIcons.tsx — SVG icon components for each puzzle type and difficulty level.
-// Imported by the game UI; not a source of puzzle content itself.
-const react_1 = __importDefault(require("react"));
 const IconBase = ({ children, color, }) => ((0, jsx_runtime_1.jsx)("svg", { viewBox: "0 0 24 24", width: "15", height: "15", "aria-hidden": "true", style: { display: "block", filter: `drop-shadow(0 0 6px ${color}33)` }, children: children }));
 const IconRoot = ({ color }) => ((0, jsx_runtime_1.jsxs)(IconBase, { color: color, children: [(0, jsx_runtime_1.jsx)("circle", { cx: "12", cy: "12", r: "7.5", fill: "none", stroke: color, strokeWidth: "1.4" }), (0, jsx_runtime_1.jsx)("circle", { cx: "12", cy: "12", r: "1.7", fill: color }), (0, jsx_runtime_1.jsx)("path", { d: "M12 4.5v3.2M12 16.3v3.2M4.5 12h3.2M16.3 12h3.2", stroke: color, strokeWidth: "1.2" }), (0, jsx_runtime_1.jsx)("path", { d: "M7.4 7.4l2.1 2.1M14.5 14.5l2.1 2.1M16.6 7.4l-2.1 2.1M9.5 14.5l-2.1 2.1", stroke: color, strokeWidth: "1.1" })] }));
 exports.IconRoot = IconRoot;
