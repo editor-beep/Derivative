@@ -113,7 +113,7 @@ export default function RootGraph({
           textTransform: "uppercase",
           fontSize: "9px",
           color: "#5a4a38",
-          opacity: 0.65,
+          opacity: 0.85,
         }}
       >
         <div style={{ position: "absolute", top: 12, left: 14 }}>derivational system</div>

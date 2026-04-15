@@ -526,7 +526,7 @@ const DifficultyBadge = ({ puzzleType, lensId }: { puzzleType: string; lensId: L
         style={{
           ...S.mono,
           fontSize: "0.5rem",
-          color: `${meta.color}99`,
+          color: `${meta.color}CC`,
           letterSpacing: "0.1em",
           textTransform: "uppercase",
         }}
@@ -574,7 +574,7 @@ const TypeBadge = ({ type, lensId }: { type: PuzzleType; lensId?: LensId }) => {
         style={{
           ...S.mono,
           fontSize: "0.52rem",
-          color: "rgba(78,207,207,0.62)",
+          color: "rgba(78,207,207,0.82)",
           letterSpacing: "0.12em",
           textTransform: "uppercase",
           marginTop: "0.24rem",
@@ -667,7 +667,7 @@ export const RevealCard = ({
               color: COLORS.textMuted,
               letterSpacing: "0.08em",
               marginBottom: "0.9rem",
-              opacity: 0.82,
+              opacity: 1,
             }}
           >
             {claim}
@@ -1240,7 +1240,7 @@ const StepPuzzle = ({
             disabled={locked}
             onClick={() => submitAnswer(opt)}
             className="deriv-btn"
-            style={{ ...S.btnSm, width: "100%", textAlign: "left", padding: "0.6rem 0.9rem", fontSize: "0.72rem", opacity: locked ? 0.55 : 1, cursor: locked ? "default" : "pointer", letterSpacing: "0.04em" }}
+            style={{ ...S.btnSm, width: "100%", textAlign: "left", padding: "0.6rem 0.9rem", fontSize: "0.72rem", opacity: locked ? 0.75 : 1, cursor: locked ? "default" : "pointer", letterSpacing: "0.04em" }}
           >
             <span>{opt}</span>
             {hint && (
