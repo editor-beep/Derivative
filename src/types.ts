@@ -75,3 +75,11 @@ export type HebrewYiddishEntry = {
   insight: string;
   difficulty: "Easy" | "Medium" | "Hard";
 };
+
+export type MoorishArabicEntry = {
+  word: string;
+  origin: string;
+  definition: string;
+  insight: string;
+  difficulty: "Easy" | "Medium" | "Hard";
+};
