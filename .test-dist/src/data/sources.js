@@ -58,6 +58,7 @@ const DATASET_SOURCE_INDEX = {
     folk_etymology: { sourceIds: ["oed", "etymonline", "wiktionary"], confidence: "probable", notes: "Folk-etymology examples include simplified teaching forms." },
     toponyms: { sourceIds: ["oed", "etymonline", "wikipedia"], confidence: "disputed", notes: "Toponymic origins are generally sourced; political interpretation may be contested." },
     academic_root_table: { sourceIds: ["oed", "wiktionary"], confidence: "verified", notes: "Reference-table rows summarize well-attested classical stems." },
+    african_diaspora: { sourceIds: ["etymonline", "wiktionary", "wikipedia"], confidence: "disputed", notes: "African-origin etymologies draw on contested historical linguistics; Wolof/AAVE connections are debated in scholarly literature. Cultural and political framing is editorial." },
 };
 function applyDatasetProvenance(entries, datasetKey) {
     const config = DATASET_SOURCE_INDEX[datasetKey];

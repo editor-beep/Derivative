@@ -9,6 +9,7 @@ export { SUPPLETIVE_EXTENDED_POOL } from "./suppletiveParadigms";
 export { FOLK_ETYMOLOGY_POOL } from "./folkEtymology";
 export { TOPONYM_POOL } from "./toponyms";
 
+export { AFRICAN_DIASPORA_POOL } from "./africanDiasporaPool";
 export { ACADEMIC_ROOT_TABLE } from "./academicRootTable";
 
 export { SOURCES } from "./sources";
