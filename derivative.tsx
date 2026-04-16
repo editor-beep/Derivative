@@ -828,75 +828,21 @@ const ShareCard = ({ data }: { data: ShareData }) => {
   );
 };
 
-const TutorialModal = ({
-  visible,
-  onClose,
-}: {
-  visible: boolean;
-  onClose: () => void;
-}) => {
-  if (!visible) return null;
-
-  return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 50,
-        background: "rgba(0,0,0,0.72)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "1rem",
-      }}
-    >
-      <div
-        style={{
-          width: "min(760px, 100%)",
-          maxHeight: "88vh",
-          overflowY: "auto",
-          background: COLORS.bg2,
-          border: `1px solid ${COLORS.goldDark}`,
-          borderRadius: "4px",
-          padding: "1.1rem 1.15rem",
-          boxShadow: `0 0 28px ${COLORS.goldGlow}`,
-        }}
-      >
-        <div style={{ ...S.mono, fontSize: "0.76rem", color: COLORS.gold, letterSpacing: "0.12em", marginBottom: "0.75rem", textTransform: "uppercase" }}>
-          derivative // initiation protocol
-        </div>
-
-        <div style={{ color: COLORS.textSecondary, lineHeight: 1.8, fontSize: "0.82rem" }}>
-          <p style={{ margin: "0 0 0.7rem" }}>
-            I want to play a game. Each date in this archive contains one scheduled puzzle. Your task is not recall. Your task is detection.
-          </p>
-
-          <p style={{ margin: "0 0 0.55rem" }}>
-            <strong style={{ color: COLORS.textPrimary }}>Puzzle systems:</strong>{" "}
-            Root (reconstruct root-linked words), Semantic (trace meaning drift), Suppletive (forms that do not match but belong),
-            Grimm (sound-shift laws), Collision (language contact), PIE (proto-language inheritance), Deception (false pattern traps),
-            False Family (look-alikes, not relatives), Phantom Root (fake roots), Idiom (reconstruct expression), Borrowed (loan paths),
-            Toponym (hidden place-name origin), Match (pair source and target).
-          </p>
-
-          <p style={{ margin: "0 0 0.55rem" }}>
-            <strong style={{ color: COLORS.textPrimary }}>Difficulty tiers:</strong>{" "}
-            Word Curious, Vocabulary Vanguard, Etymologist, Doctor of English History.
-          </p>
-
-          <p style={{ margin: 0 }}>
-            <strong style={{ color: COLORS.textPrimary }}>After reveal:</strong>{" "}
-            Generate the share card to copy a spoiler-safe artifact with date, puzzle/difficulty icons, and your ◈/◇ performance tracker.
-          </p>
-        </div>
-
-        <button className="deriv-btn" style={{ ...S.btnPrimary, marginTop: "1rem" }} onClick={onClose}>
-          begin →
-        </button>
-      </div>
-    </div>
-  );
-};
+const PUZZLE_TYPE_HELP: Array<{ type: PuzzleType; description: string }> = [
+  { type: "ROOT", description: "Find words built from the same historical root." },
+  { type: "SEMANTIC", description: "Track how a word's meaning shifts across time." },
+  { type: "SUPPLETIVE", description: "Sort forms that belong to one paradigm even when their stems differ." },
+  { type: "GRIMM", description: "Apply historical sound-shift patterns between language stages." },
+  { type: "COLLISION", description: "Separate words shaped by contact between language systems." },
+  { type: "PIE", description: "Trace descendants back to Proto-Indo-European inheritance." },
+  { type: "DECEPTION", description: "Catch false patterns that look right but are etymological traps." },
+  { type: "FALSE_FAMILY", description: "Identify look-alikes that are not actually related." },
+  { type: "PHANTOM_ROOT", description: "Detect roots that were inferred but never truly existed as claimed." },
+  { type: "IDIOM", description: "Reconstruct a fixed expression from fragments and clues." },
+  { type: "BORROWED", description: "Follow loanwords and borrowing routes into English." },
+  { type: "TOPONYM", description: "Spot hidden place-name origins embedded in everyday words." },
+  { type: "MATCH", description: "Match lexical items to the correct gloss or concept." },
+];
 
 const PuzzleHeader = ({
   puzzle,
@@ -2059,7 +2005,7 @@ const IdiomPuzzle = ({
 };
 
 export default function Derivative() {
-  const [view, setView] = useState<"splash" | "ready" | "archive" | "game">("splash");
+  const [view, setView] = useState<"splash" | "ready" | "archive" | "game" | "howTo">("splash");
   const [selDate, setSelDate] = useState<string | null>(null);
   const [puzzle, setPuzzle] = useState<Puzzle | null>(null);
   const [progress, setProgress] = useState<ProgressStore>(load());
@@ -2067,7 +2013,6 @@ export default function Derivative() {
   const [puzzleState, setPuzzleState] = useState<PuzzleState>({});
   const [shareMsg, setShareMsg] = useState<ShareData | null>(null);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
-  const [showTutorial, setShowTutorial] = useState(false);
 
   // Streak state
   const [streakToastMsg, setStreakToastMsg] = useState<string | null>(null);
@@ -2099,11 +2044,9 @@ export default function Derivative() {
     setShareMsg(null);
     setIsHelpOpen(false);
     const data = load();
-    const isFirstEntry = !data._hasSeenTutorial;
-    if (!data._hasPlayed || isFirstEntry) {
+    if (!data._hasPlayed || !data._hasSeenTutorial) {
       save({ ...data, _hasPlayed: true, _hasSeenTutorial: true });
     }
-    if (isFirstEntry) setShowTutorial(true);
     setView("game");
   };
 
@@ -2457,6 +2400,10 @@ export default function Derivative() {
             enter →
           </button>
 
+          <button className="arch-link" onClick={() => setView("howTo")} style={{ marginBottom: "0.6rem" }}>
+            how to play
+          </button>
+
           <button className="arch-link" onClick={() => setView("archive")}>
             archive
           </button>
@@ -2477,6 +2424,141 @@ export default function Derivative() {
           >
             themeansofproduction.press
           </a>
+        </div>
+      </div>
+    );
+  }
+
+  if (view === "howTo") {
+    return (
+      <div
+        style={{
+          ...bgStyle,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100dvh",
+          padding: "4rem 2rem 3rem",
+          textAlign: "center",
+        }}
+      >
+        <GlobalFX />
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundImage: `url(${SPLASH_IMAGE})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            opacity: 0.8,
+            zIndex: 0,
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background:
+              "linear-gradient(to bottom, rgba(7,6,5,0.2) 0%, rgba(7,6,5,0.45) 60%, rgba(7,6,5,0.6) 100%)",
+            zIndex: 0,
+          }}
+        />
+        <Starfield />
+        <AmbientOverlays />
+
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "stretch",
+            maxWidth: "780px",
+            width: "100%",
+            background: "rgba(7, 6, 5, 0.42)",
+            border: "1px solid rgba(197, 158, 79, 0.28)",
+            borderRadius: "14px",
+            padding: "1.5rem 1.4rem",
+            textAlign: "left",
+            maxHeight: "80dvh",
+            overflowY: "auto",
+          }}
+        >
+          <div style={{ ...S.mono, color: COLORS.gold, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: "0.9rem", fontSize: "0.82rem" }}>
+            How to play
+          </div>
+          <p style={{ color: COLORS.textSecondary, margin: "0 0 1rem", fontSize: "0.82rem", lineHeight: 1.8 }}>
+            Solve one scheduled puzzle each day. Use hints from morphology, sound change, meaning drift, and language contact.
+            Build your streak by solving daily, and use the archive to revisit earlier dates.
+          </p>
+
+          <div style={{ ...S.mono, color: COLORS.textPrimary, fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "0.6rem" }}>
+            Puzzle types
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "0.55rem", marginBottom: "1rem" }}>
+            {PUZZLE_TYPE_HELP.map((entry) => {
+              const Icon = TYPE_ICONS[entry.type];
+              const color = TYPE_COLORS[entry.type] || COLORS.gold;
+              return (
+                <div key={entry.type} style={{ border: `1px solid ${color}44`, background: `${color}11`, borderRadius: "4px", padding: "0.55rem 0.6rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.45rem", marginBottom: "0.35rem" }}>
+                    <Icon color={color} />
+                    <span style={{ ...S.mono, color, fontSize: "0.62rem", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                      {TYPE_SHARE_ICONS[entry.type]} {TYPE_LABELS[entry.type]}
+                    </span>
+                  </div>
+                  <div style={{ color: COLORS.textSecondary, fontSize: "0.76rem", lineHeight: 1.5 }}>
+                    {entry.description}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div style={{ ...S.mono, color: COLORS.textPrimary, fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "0.6rem" }}>
+            Difficulty levels
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "0.55rem", marginBottom: "1rem" }}>
+            {(["EASY", "MEDIUM", "HARD", "VERY_HARD"] as const).map((level) => {
+              const meta = DIFFICULTY_META[level];
+              const Icon = DIFFICULTY_ICONS[level];
+              return (
+                <div key={level} style={{ border: `1px solid ${meta.color}44`, background: `${meta.color}11`, borderRadius: "4px", padding: "0.55rem 0.6rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
+                    <Icon color={meta.color} />
+                    <span style={{ ...S.mono, color: meta.color, fontSize: "0.62rem", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                      {DIFFICULTY_SHARE_ICONS[level]} {meta.label}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div style={{ color: COLORS.textSecondary, fontSize: "0.8rem", lineHeight: 1.8, marginBottom: "1rem" }}>
+            <p style={{ margin: "0 0 0.45rem" }}>
+              <strong style={{ color: COLORS.textPrimary }}>Streaks:</strong> play every day to grow your 🔥 streak. Milestones trigger special streak messages.
+            </p>
+            <p style={{ margin: 0 }}>
+              <strong style={{ color: COLORS.textPrimary }}>Archive:</strong> tap <em>archive</em> from landing or game headers to open any earlier puzzle date and practice missed systems.
+            </p>
+          </div>
+
+          <div style={{ display: "flex", gap: "0.65rem", justifyContent: "space-between", flexWrap: "wrap" }}>
+            <button className="deriv-btn" style={S.btnSm} onClick={() => setView("splash")}>
+              ← back
+            </button>
+            <button className="deriv-btn" style={S.btnPrimary} onClick={() => openPuzzle(today)}>
+              play today →
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -2799,14 +2881,8 @@ export default function Derivative() {
             >
               ›
             </button>
-            <button
-              className="deriv-btn"
-              style={{ ...S.btnSm, padding: "0.18rem 0.5rem", minWidth: "1.9rem" }}
-              onClick={() => setShowTutorial(true)}
-              aria-label="Open tutorial"
-              title="Tutorial"
-            >
-              ?
+            <button className="deriv-btn" style={S.btnSm} onClick={() => setView("howTo")}>
+              how to play
             </button>
           </div>
 
@@ -2958,7 +3034,6 @@ export default function Derivative() {
             themeansofproduction.press
           </a>
         </div>
-        <TutorialModal visible={showTutorial} onClose={() => setShowTutorial(false)} />
       </div>
     );
   }
@@ -3101,7 +3176,6 @@ export default function Derivative() {
 
           <RevealSection puzzle={puzzle} visible={revealed || complete} onShare={buildShare} />
           {shareMsg && <ShareCard data={shareMsg} />}
-          <TutorialModal visible={showTutorial} onClose={() => setShowTutorial(false)} />
         </div>
         <StreakToast
           message={streakToastMsg}
