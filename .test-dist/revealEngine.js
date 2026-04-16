@@ -143,7 +143,7 @@ function buildBody(insight) {
         return `${happened}. ${playerDid}. ${matters}.`;
     }
     const template = TEMPLATE_BY_TYPE[insight.type];
-    const happenedSource = insight.type !== "ROOT" && "revealBody" in insight.data && typeof insight.data.revealBody === "string"
+    const happenedSource = "revealBody" in insight.data && typeof insight.data.revealBody === "string"
         ? insight.data.revealBody
         : insight.tension;
     const happened = oneClause(template?.happened(insight, context) ?? happenedSource, "The cage finally cracked open");
