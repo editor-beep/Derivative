@@ -15,9 +15,6 @@ const difficulty_1 = require("./difficulty");
 const constants_1 = require("./constants");
 const dateUtils_1 = require("./src/dateUtils");
 const progressSystems_1 = require("./progressSystems");
-const streakSystem_1 = require("./streakSystem");
-const useStreak_1 = require("./useStreak");
-const StreakToast_1 = __importDefault(require("./components/StreakToast"));
 const load = () => {
     try {
         const parsed = JSON.parse(localStorage.getItem(constants_1.STORAGE_KEY) || "{}");
@@ -284,35 +281,6 @@ const GlobalFX = () => ((0, jsx_runtime_1.jsx)("style", { children: `
       background-size: 200% 100%;
       animation: shimmer 7s linear infinite;
     }
-
-    @keyframes toastSlideIn {
-      0%   { opacity: 0; transform: translateX(-50%) translateY(18px) scale(0.96); }
-      100% { opacity: 1; transform: translateX(-50%) translateY(0)     scale(1);    }
-    }
-
-    @keyframes streakPop {
-      0%   { transform: scale(1);    }
-      40%  { transform: scale(1.55); }
-      65%  { transform: scale(0.88); }
-      100% { transform: scale(1);    }
-    }
-
-    @keyframes streakBurst {
-      0%   { transform: scale(1);    filter: brightness(1);    text-shadow: 0 0 0 transparent; }
-      30%  { transform: scale(1.7);  filter: brightness(1.6);  text-shadow: 0 0 18px rgba(232,184,75,0.7); }
-      60%  { transform: scale(0.9);  filter: brightness(1.2);  text-shadow: 0 0 8px rgba(232,184,75,0.4); }
-      100% { transform: scale(1);    filter: brightness(1);    text-shadow: 0 0 0 transparent; }
-    }
-
-    .streak-pop {
-      display: inline-block;
-      animation: streakPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    }
-
-    .streak-milestone-burst {
-      display: inline-block;
-      animation: streakBurst 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    }
   ` }));
 const AmbientOverlays = () => ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)("div", { style: {
                 position: "absolute",
@@ -355,12 +323,18 @@ const AmbientOverlays = () => ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, {
                 zIndex: 0,
                 opacity: 0.5,
             } })] }));
-const Starfield = () => {
-    const canvasRef = (0, react_1.useRef)(null);
-    (0, react_1.useEffect)(() => {
-        const el = canvasRef.current;
-        if (!el)
+const Starfield = () => ((0, jsx_runtime_1.jsx)("canvas", { style: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        zIndex: 0,
+        pointerEvents: "none",
+    }, ref: (el) => {
+        if (!el || el._init)
             return;
+        el._init = true;
         const ctx = el.getContext("2d");
         if (!ctx)
             return;
@@ -382,7 +356,6 @@ const Starfield = () => {
             a: Math.floor(Math.random() * stars.length),
             b: Math.floor(Math.random() * stars.length),
         }));
-        let rafId = 0;
         const draw = () => {
             ctx.clearRect(0, 0, el.width, el.height);
             links.forEach((l) => {
@@ -413,25 +386,11 @@ const Starfield = () => {
                     : `rgba(232,184,75,${s.o})`;
                 ctx.fill();
             });
-            rafId = requestAnimationFrame(draw);
+            requestAnimationFrame(draw);
         };
         draw();
         window.addEventListener("resize", resize);
-        return () => {
-            cancelAnimationFrame(rafId);
-            window.removeEventListener("resize", resize);
-        };
-    }, []);
-    return ((0, jsx_runtime_1.jsx)("canvas", { style: {
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            zIndex: 0,
-            pointerEvents: "none",
-        }, ref: canvasRef }));
-};
+    } }));
 const SystemMesh = ({ intensity = 1 }) => ((0, jsx_runtime_1.jsx)("div", { style: {
         position: "absolute",
         inset: 0,
@@ -1184,11 +1143,6 @@ function Derivative() {
     const [shareMsg, setShareMsg] = (0, react_1.useState)(null);
     const [isHelpOpen, setIsHelpOpen] = (0, react_1.useState)(false);
     const [showTutorial, setShowTutorial] = (0, react_1.useState)(false);
-    // Streak state
-    const [streakToastMsg, setStreakToastMsg] = (0, react_1.useState)(null);
-    const [streakToastIsMilestone, setStreakToastIsMilestone] = (0, react_1.useState)(false);
-    const [streakAnimKey, setStreakAnimKey] = (0, react_1.useState)(0);
-    const { currentStreak } = (0, useStreak_1.useStreak)(progress);
     const today = getTodayStr();
     const [archiveMonth, setArchiveMonth] = (0, react_1.useState)(() => today.slice(0, 7));
     const archiveDates = (0, react_1.useMemo)(() => {
@@ -1227,23 +1181,6 @@ function Derivative() {
             next = discovery.nextStore;
             if (discovery.wasAdded && discovery.uncoveredSystem) {
                 console.log(`You uncovered: ${discovery.uncoveredSystem}`);
-            }
-            // Update streak only for today's puzzle
-            if (dateStr === today) {
-                const streakResult = (0, streakSystem_1.updateStreak)(next, today);
-                if (streakResult.changed) {
-                    next = streakResult.nextStore;
-                    setStreakAnimKey((k) => k + 1);
-                    if (streakResult.milestoneReached !== null) {
-                        setStreakToastMsg(streakSystem_1.STREAK_MILESTONE_MESSAGES[streakResult.milestoneReached] ??
-                            `${streakResult.newCurrent}-day streak 🔥 Keep going!`);
-                        setStreakToastIsMilestone(true);
-                    }
-                    else {
-                        setStreakToastMsg((0, streakSystem_1.getEncouragementMessage)(streakResult.newCurrent));
-                        setStreakToastIsMilestone(false);
-                    }
-                }
             }
         }
         setProgress(next);
@@ -1553,7 +1490,7 @@ function Derivative() {
                                 display: "flex",
                                 alignItems: "center",
                                 gap: "0.7rem",
-                                marginBottom: currentStreak > 0 ? "0.6rem" : "1.2rem",
+                                marginBottom: "1.2rem",
                             }, children: [(0, jsx_runtime_1.jsx)("span", { style: {
                                         ...S.mono,
                                         fontSize: "0.78rem",
@@ -1564,23 +1501,7 @@ function Derivative() {
                                         letterSpacing: "0.1em",
                                         color: constants_1.COLORS.textMuted,
                                         textTransform: "uppercase",
-                                    }, children: statusDot.label })] }), currentStreak > 0 && ((0, jsx_runtime_1.jsxs)("div", { style: {
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "0.4rem",
-                                marginBottom: "1.2rem",
-                            }, children: [(0, jsx_runtime_1.jsxs)("span", { className: (0, streakSystem_1.isMilestone)(currentStreak) ? "streak-milestone-burst" : undefined, style: {
-                                        ...S.mono,
-                                        fontSize: "0.72rem",
-                                        color: (0, streakSystem_1.isMilestone)(currentStreak) ? constants_1.COLORS.gold : "#EA580C",
-                                        letterSpacing: "0.06em",
-                                    }, children: ["\uD83D\uDD25 ", currentStreak] }, streakAnimKey), (0, jsx_runtime_1.jsx)("span", { style: {
-                                        ...S.mono,
-                                        fontSize: "0.58rem",
-                                        color: constants_1.COLORS.textMuted,
-                                        letterSpacing: "0.08em",
-                                        textTransform: "uppercase",
-                                    }, children: currentStreak === 1 ? "day streak" : "day streak" })] })), (() => {
+                                    }, children: statusDot.label })] }), (() => {
                             const scheduledLevels = (0, difficulty_1.getDayOfWeekDifficulty)(today);
                             return ((0, jsx_runtime_1.jsx)("div", { style: {
                                     display: "flex",
@@ -1615,7 +1536,7 @@ function Derivative() {
                                 color: constants_1.COLORS.textMuted,
                                 letterSpacing: "0.08em",
                                 textDecoration: "none",
-                            }, children: "themeansofproduction.press" })] }), (0, jsx_runtime_1.jsx)(StreakToast_1.default, { message: streakToastMsg, isMilestone: streakToastIsMilestone, onDismiss: () => setStreakToastMsg(null) })] }));
+                            }, children: "themeansofproduction.press" })] })] }));
     }
     if (view === "archive") {
         // Use the 15th to avoid timezone edge cases when parsing the month label
@@ -1628,11 +1549,7 @@ function Derivative() {
         const canGoPrev = archiveMonth > janMonth;
         const canGoNext = archiveMonth < today.slice(0, 7);
         const shiftMonth = (delta) => {
-            const [yearPart, monthPart] = archiveMonth.split("-");
-            const y = Number(yearPart);
-            const m = Number(monthPart);
-            if (!Number.isFinite(y) || !Number.isFinite(m))
-                return;
+            const [y, m] = archiveMonth.split("-").map(Number);
             const d = new Date(y, m - 1 + delta, 1);
             const ny = d.getFullYear();
             const nm = String(d.getMonth() + 1).padStart(2, "0");
@@ -1753,18 +1670,13 @@ function Derivative() {
                                 alignItems: "center",
                                 justifyContent: "space-between",
                                 marginBottom: "1.25rem",
-                            }, children: [(0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: S.btnSm, onClick: () => setView("ready"), children: "\u2190 back" }), (0, jsx_runtime_1.jsxs)("div", { style: { display: "flex", flexDirection: "column", alignItems: "center", gap: "0.22rem" }, children: [(0, jsx_runtime_1.jsx)("span", { style: {
-                                                ...S.mono,
-                                                fontSize: "0.6rem",
-                                                color: constants_1.COLORS.textMuted,
-                                                letterSpacing: "0.12em",
-                                                textTransform: "uppercase",
-                                            }, children: "derivative system" }), currentStreak > 0 && ((0, jsx_runtime_1.jsxs)("span", { className: (0, streakSystem_1.isMilestone)(currentStreak) ? "streak-milestone-burst" : "streak-pop", style: {
-                                                ...S.mono,
-                                                fontSize: "0.65rem",
-                                                color: (0, streakSystem_1.isMilestone)(currentStreak) ? constants_1.COLORS.gold : "#EA580C",
-                                                letterSpacing: "0.06em",
-                                            }, children: ["\uD83D\uDD25 ", currentStreak] }, streakAnimKey))] }), (0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: S.btnSm, onClick: () => setView("archive"), children: "archive" })] }), (0, jsx_runtime_1.jsx)(PuzzleHeader, { puzzle: puzzle, selDate: selDate, onOpenHelp: () => setIsHelpOpen(true) }), isHelpOpen && (0, jsx_runtime_1.jsx)(PuzzleHelpModal_1.default, { puzzleType: puzzle.type, onClose: () => setIsHelpOpen(false) }), puzzle.type === "ROOT" && ((0, jsx_runtime_1.jsx)(RootPuzzle, { puzzle: puzzle, found: puzzleState.found || [], onWord: handleWordFound, revealed: revealed })), isSortType && ((0, jsx_runtime_1.jsx)(StepPuzzle, { puzzle: puzzle, state: puzzleState, onState: handlePuzzleState, revealed: revealed })), puzzle.type === "MATCH" && ((0, jsx_runtime_1.jsx)(MatchPuzzle, { puzzle: puzzle, state: puzzleState, onState: handlePuzzleState, revealed: revealed })), puzzle.type === "GRIMM" && ((0, jsx_runtime_1.jsx)(GrimmPuzzle, { puzzle: puzzle, state: puzzleState, onState: handlePuzzleState, revealed: revealed })), puzzle.type === "SEMANTIC" && ((0, jsx_runtime_1.jsx)(SemanticPuzzle, { puzzle: puzzle, state: puzzleState, onState: handlePuzzleState, revealed: revealed })), puzzle.type === "IDIOM" && ((0, jsx_runtime_1.jsx)(IdiomPuzzle, { puzzle: puzzle, state: puzzleState, onState: handlePuzzleState, revealed: revealed })), !revealed && ((0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: { ...S.btnSm, marginTop: "1rem" }, onClick: handleReveal, children: "breach the record \u2192" })), (0, jsx_runtime_1.jsx)(exports.RevealSection, { puzzle: puzzle, visible: revealed || complete, onShare: buildShare }), shareMsg && (0, jsx_runtime_1.jsx)(ShareCard, { data: shareMsg }), (0, jsx_runtime_1.jsx)(TutorialModal, { visible: showTutorial, onClose: () => setShowTutorial(false) })] }), (0, jsx_runtime_1.jsx)(StreakToast_1.default, { message: streakToastMsg, isMilestone: streakToastIsMilestone, onDismiss: () => setStreakToastMsg(null) })] }));
+                            }, children: [(0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: S.btnSm, onClick: () => setView("ready"), children: "\u2190 back" }), (0, jsx_runtime_1.jsx)("span", { style: {
+                                        ...S.mono,
+                                        fontSize: "0.6rem",
+                                        color: constants_1.COLORS.textMuted,
+                                        letterSpacing: "0.12em",
+                                        textTransform: "uppercase",
+                                    }, children: "derivative system" }), (0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: S.btnSm, onClick: () => setView("archive"), children: "archive" })] }), (0, jsx_runtime_1.jsx)(PuzzleHeader, { puzzle: puzzle, selDate: selDate, onOpenHelp: () => setIsHelpOpen(true) }), isHelpOpen && (0, jsx_runtime_1.jsx)(PuzzleHelpModal_1.default, { puzzleType: puzzle.type, onClose: () => setIsHelpOpen(false) }), puzzle.type === "ROOT" && ((0, jsx_runtime_1.jsx)(RootPuzzle, { puzzle: puzzle, found: puzzleState.found || [], onWord: handleWordFound, revealed: revealed })), isSortType && ((0, jsx_runtime_1.jsx)(StepPuzzle, { puzzle: puzzle, state: puzzleState, onState: handlePuzzleState, revealed: revealed })), puzzle.type === "MATCH" && ((0, jsx_runtime_1.jsx)(MatchPuzzle, { puzzle: puzzle, state: puzzleState, onState: handlePuzzleState, revealed: revealed })), puzzle.type === "GRIMM" && ((0, jsx_runtime_1.jsx)(GrimmPuzzle, { puzzle: puzzle, state: puzzleState, onState: handlePuzzleState, revealed: revealed })), puzzle.type === "SEMANTIC" && ((0, jsx_runtime_1.jsx)(SemanticPuzzle, { puzzle: puzzle, state: puzzleState, onState: handlePuzzleState, revealed: revealed })), puzzle.type === "IDIOM" && ((0, jsx_runtime_1.jsx)(IdiomPuzzle, { puzzle: puzzle, state: puzzleState, onState: handlePuzzleState, revealed: revealed })), !revealed && ((0, jsx_runtime_1.jsx)("button", { className: "deriv-btn", style: { ...S.btnSm, marginTop: "1rem" }, onClick: handleReveal, children: "breach the record \u2192" })), (0, jsx_runtime_1.jsx)(exports.RevealSection, { puzzle: puzzle, visible: revealed || complete, onShare: buildShare }), shareMsg && (0, jsx_runtime_1.jsx)(ShareCard, { data: shareMsg }), (0, jsx_runtime_1.jsx)(TutorialModal, { visible: showTutorial, onClose: () => setShowTutorial(false) })] })] }));
     }
     return null;
 }
