@@ -28,7 +28,9 @@ const load = (): ProgressStore => {
 const save = (data: ProgressStore): void => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  } catch {}
+  } catch (e) {
+    console.error("[derivative] Progress save failed:", e);
+  }
 };
 
 const puzzleCache: Record<string, Puzzle | undefined> = {};
@@ -385,99 +387,97 @@ const AmbientOverlays = () => (
   </>
 );
 
-const Starfield = () => (
-  <canvas
-    style={{
-      position: "absolute",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      zIndex: 0,
-      pointerEvents: "none",
-    }}
-    ref={(el: (HTMLCanvasElement & { _init?: boolean }) | null) => {
-      if (!el || el._init) return;
-      el._init = true;
-      const ctx = el.getContext("2d");
-      if (!ctx) return;
+type StarParticle = { x: number; y: number; r: number; o: number; s: number; d: 1 | -1; cyan: boolean };
+type StarLink = { a: number; b: number };
 
-      const resize = () => {
-        el.width = el.offsetWidth;
-        el.height = el.offsetHeight;
-      };
+const Starfield = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-      resize();
+  useEffect(() => {
+    const el = canvasRef.current;
+    if (!el) return;
+    const ctx = el.getContext("2d");
+    if (!ctx) return;
 
-      type StarParticle = {
-        x: number;
-        y: number;
-        r: number;
-        o: number;
-        s: number;
-        d: 1 | -1;
-        cyan: boolean;
-      };
+    const resize = () => {
+      el.width = el.offsetWidth;
+      el.height = el.offsetHeight;
+    };
+    resize();
 
-      type StarLink = {
-        a: number;
-        b: number;
-      };
+    const stars: StarParticle[] = Array.from({ length: 180 }, () => ({
+      x: Math.random() * el.width,
+      y: Math.random() * el.height,
+      r: Math.random() * 1.15 + 0.1,
+      o: Math.random() * 0.5 + 0.1,
+      s: Math.random() * 0.4 + 0.1,
+      d: Math.random() > 0.5 ? 1 : -1,
+      cyan: Math.random() > 0.6,
+    }));
 
-      const stars: StarParticle[] = Array.from({ length: 180 }, () => ({
-        x: Math.random() * el.width,
-        y: Math.random() * el.height,
-        r: Math.random() * 1.15 + 0.1,
-        o: Math.random() * 0.5 + 0.1,
-        s: Math.random() * 0.4 + 0.1,
-        d: Math.random() > 0.5 ? 1 : -1,
-        cyan: Math.random() > 0.6,
-      }));
+    const links: StarLink[] = Array.from({ length: 38 }, () => ({
+      a: Math.floor(Math.random() * stars.length),
+      b: Math.floor(Math.random() * stars.length),
+    }));
 
-      const links: StarLink[] = Array.from({ length: 38 }, () => ({
-        a: Math.floor(Math.random() * stars.length),
-        b: Math.floor(Math.random() * stars.length),
-      }));
+    let frameId: number;
 
-      const draw = () => {
-        ctx.clearRect(0, 0, el.width, el.height);
+    const draw = () => {
+      ctx.clearRect(0, 0, el.width, el.height);
 
-        links.forEach((l) => {
-          const a = stars[l.a];
-          const b = stars[l.b];
-          if (!a || !b) return;
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 160) {
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = a.cyan || b.cyan ? "rgba(78,207,207,0.08)" : "rgba(232,184,75,0.06)";
-            ctx.lineWidth = 0.6;
-            ctx.stroke();
-          }
-        });
-
-        stars.forEach((s) => {
-          s.o += 0.003 * s.s * s.d;
-          if (s.o > 0.7 || s.o < 0.08) s.d *= -1;
+      links.forEach((l) => {
+        const a = stars[l.a];
+        const b = stars[l.b];
+        if (!a || !b) return;
+        const dx = a.x - b.x;
+        const dy = a.y - b.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 160) {
           ctx.beginPath();
-          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-          ctx.fillStyle = s.cyan
-            ? `rgba(78,207,207,${s.o})`
-            : `rgba(232,184,75,${s.o})`;
-          ctx.fill();
-        });
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = a.cyan || b.cyan ? "rgba(78,207,207,0.08)" : "rgba(232,184,75,0.06)";
+          ctx.lineWidth = 0.6;
+          ctx.stroke();
+        }
+      });
 
-        requestAnimationFrame(draw);
-      };
+      stars.forEach((s) => {
+        s.o += 0.003 * s.s * s.d;
+        if (s.o > 0.7 || s.o < 0.08) s.d *= -1;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = s.cyan ? `rgba(78,207,207,${s.o})` : `rgba(232,184,75,${s.o})`;
+        ctx.fill();
+      });
 
-      draw();
-      window.addEventListener("resize", resize);
-    }}
-  />
-);
+      frameId = requestAnimationFrame(draw);
+    };
+
+    frameId = requestAnimationFrame(draw);
+    window.addEventListener("resize", resize);
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        zIndex: 0,
+        pointerEvents: "none",
+      }}
+    />
+  );
+};
 
 const SystemMesh = ({ intensity = 1 }: { intensity?: number }) => (
   <div
@@ -2103,7 +2103,7 @@ export default function Derivative() {
       const discovery = withDiscoveredSystem(baseNext, discoveredType);
       next = discovery.nextStore;
       if (discovery.wasAdded && discovery.uncoveredSystem) {
-        console.log(`You uncovered: ${discovery.uncoveredSystem}`);
+        // system discovery logged for debugging only in dev
       }
 
       // Update streak only for today's puzzle
@@ -2736,7 +2736,9 @@ export default function Derivative() {
     const canGoNext = archiveMonth < today.slice(0, 7);
 
     const shiftMonth = (delta: number) => {
-      const [y, m] = archiveMonth.split("-").map(Number);
+      const parts = archiveMonth.split("-").map(Number);
+      const y = parts[0] ?? new Date().getUTCFullYear();
+      const m = parts[1] ?? 1;
       const d = new Date(y, m - 1 + delta, 1);
       const ny = d.getFullYear();
       const nm = String(d.getMonth() + 1).padStart(2, "0");
