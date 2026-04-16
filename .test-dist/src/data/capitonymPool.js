@@ -144,13 +144,13 @@ exports.CAPITONYM_POOL = [
             "mosaic",
             "titanic",
             "quaker",
-            "the Central European nation — its workers polished the Empire's floors",
+            "the Central European nation — phonetically identical to the unrelated verb 'to shine'",
             "the West African coast — its gold funded the British coin worth 21 shillings",
             "the North African kingdom — its leather named the finest bookbinding craft",
             "the French wine region — its sparkling wine became the Empire's celebration liquid",
             "the 40-day Christian fast before Easter — the season that owns the verb 'to lend'",
             "relating to Moses and the Law — the tiles took his name when artisans copied Byzantine church floors",
-            "the Greek Titans, and the famous shipwreck — both collapse the adjective into catastrophe",
+            "the Greek Titans, and the 1912 RMS Titanic disaster — both collapse the adjective into catastrophe",
             "the Religious Society of Friends — nicknamed for trembling before God, turned into a breakfast brand",
         ],
         tension: "The High Censor has stripped all capital letters. Eight words sit in front of you, lowercase, ordinary. Each one hides an empire, a nation, a church, a season, or a myth. Match the common word to the authority it once named — and ask why the authority needed to colonise the alphabet in the first place. Poland's nation-hood is buried inside a verb for polishing floors. Guinea's sovereignty is buried inside a coin whose minting financed the slave trade. The Ship of Dreams and the Children of the Titans share a single adjective: titanic.",
@@ -160,7 +160,7 @@ exports.CAPITONYM_POOL = [
         matchPairs: [
             {
                 source: "polish",
-                target: "the Central European nation — its workers polished the Empire's floors",
+                target: "the Central European nation — phonetically identical to the unrelated verb 'to shine'",
             },
             {
                 source: "guinea",
@@ -184,7 +184,7 @@ exports.CAPITONYM_POOL = [
             },
             {
                 source: "titanic",
-                target: "the Greek Titans, and the famous shipwreck — both collapse the adjective into catastrophe",
+                target: "the Greek Titans, and the 1912 RMS Titanic disaster — both collapse the adjective into catastrophe",
             },
             {
                 source: "quaker",

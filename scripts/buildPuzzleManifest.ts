@@ -5,6 +5,9 @@ import { LOANWORD_EXTRACTION_POOL } from "../src/data/loanwordExtraction";
 import { BORROWED_POOL } from "../src/data/borrowedPool";
 import { FALSE_FAMILY_POOL } from "../src/data/falseFamilyPool";
 import { SUPPLETIVE_POOL } from "../src/data/suppletivePool";
+import { GRIMM_POOL } from "../src/data/grimmPool";
+import { PIE_POOL } from "../src/data/piePool";
+import { POOL_FLAT_TABLE } from "../insightEngine";
 
 const EXPECTED_DAYS = 3650;
 const EXACT_REPEAT_GAP_DAYS = 45;
@@ -71,6 +74,7 @@ function validateSortLabels(): void {
     { name: "BORROWED_POOL", entries: BORROWED_POOL },
     { name: "FALSE_FAMILY_POOL", entries: FALSE_FAMILY_POOL },
     { name: "SUPPLETIVE_POOL", entries: SUPPLETIVE_POOL },
+    { name: "PIE_POOL", entries: PIE_POOL },
   ];
 
   for (const pool of pools) {
@@ -88,5 +92,29 @@ function validateSortLabels(): void {
   console.log("Sort label contract OK.");
 }
 
+function validateCoverage(): void {
+  // Every builder/entry/lens combo in POOL_FLAT_TABLE must appear in the manifest.
+  const usedCombos = new Set(
+    PUZZLE_MANIFEST.map((e) => `${e.builderIdx}:${e.entryIdx}:${e.lensIdx}`),
+  );
+  const missing: string[] = [];
+  for (const combo of POOL_FLAT_TABLE) {
+    const key = `${combo.builderIdx}:${combo.entryIdx}:${combo.lensIdx}`;
+    if (!usedCombos.has(key)) {
+      missing.push(key);
+    }
+  }
+  if (missing.length > 0) {
+    fail(
+      `${missing.length} puzzle combo(s) in POOL_FLAT_TABLE are never scheduled in the manifest. ` +
+        `Run scripts/runGenerateManifest.js to regenerate. First missing: ${missing[0]}`,
+    );
+  }
+  console.log(
+    `Coverage OK: all ${POOL_FLAT_TABLE.length} valid builder/entry/lens combos are scheduled.`,
+  );
+}
+
 validate();
 validateSortLabels();
+validateCoverage();

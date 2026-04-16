@@ -63,6 +63,7 @@ const DATASET_SOURCE_INDEX: Record<string, { sourceIds: string[]; confidence: En
   lgbtq: { sourceIds: ["oed", "etymonline", "wiktionary", "wikipedia"], confidence: "disputed", notes: "LGBTQ etymology and reclamation histories draw on activist and cultural scholarship; some first-use attributions (e.g. ballroom vocabulary, Stonewall accounts) are contested or incomplete in the written record. Cultural and political framing is editorial." },
   capitonym: { sourceIds: ["oed", "etymonline", "wiktionary", "wikipedia"], confidence: "probable", notes: "Capitonym pairings and their etymologies are well-attested in standard references; historical-colonial framing and Hero/Villain narrative are editorial." },
   contronym: { sourceIds: ["oed", "etymonline", "merriam_webster", "wiktionary"], confidence: "verified", notes: "Contronym (auto-antonym / Janus word) status for each entry is well-attested in standard references. The grouping of words by the nature of their internal opposition is editorial." },
+  imperial_extraction: { sourceIds: ["oed", "etymonline", "wiktionary", "wikipedia"], confidence: "disputed", notes: "Imperial and extractive etymology narratives draw on historical linguistics and colonial history scholarship; sociopolitical framing and Hero/Villain narrative are editorial and may be contested." },
 };
 
 export function applyDatasetProvenance<TEntry extends object>(entries: TEntry[], datasetKey: keyof typeof DATASET_SOURCE_INDEX): void {
