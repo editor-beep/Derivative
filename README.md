@@ -1,36 +1,74 @@
-# Derivative — Etymology English Game
+# Derivative
 
-## Overview
-Derivative is a daily etymology puzzle built with React + TypeScript + Vite. The app renders one scheduled puzzle per day from a static manifest and synthesizes the final puzzle/reveal at runtime.
+**The daily etymology puzzle game.**
 
-## Project Structure
-- `App.tsx` — thin wrapper that renders the main game shell.
-- `derivative.tsx` — main game shell (UI, archive navigation, local progress state, puzzle loading).
-- `generator.ts` — daily puzzle orchestrator.
-- `puzzleSynthesizer.ts` — converts an insight into a concrete puzzle payload.
-- `revealEngine.ts` — builds the post-solve reveal panel from insight data.
-- `src/data/puzzleManifest.ts` — static dated manifest used to select each day's puzzle indexes.
-- `src/data/*` — content pools/build inputs (for example: `roots.ts`, `suppletiveParadigms.ts`, `meaningDrift.ts`, `norseCollisions.ts`, `folkEtymology.ts`, `loanwordExtraction.ts`, `toponyms.ts`).
-- `src/main.tsx` — React entry point.
-- `index.html` — HTML shell.
+Where English words actually come from — roots, conquests, collisions, survivals, and erasures.
 
-## How daily puzzle is generated
-1. `getPuzzleManifestEntry(date)` (from `src/data/puzzleManifest.ts`) returns the scheduled manifest row for the date.
-2. `generateInsight(seed, indexes)` (inside `generator.ts`) uses a seed plus `builderIdx`/`entryIdx`/`lensIdx` from the manifest row to produce a `LinguisticInsight`.
-3. `synthesizePuzzle(insight, date)` turns the insight into the actual puzzle shape shown in-game.
-4. `generateReveal(insight)` creates the explanatory reveal content attached to that puzzle.
+<a href="https://derivative-nedplimpton.replit.app"><img src="https://img.shields.io/badge/Play_Now-8B0000?style=for-the-badge&amp;logo=playstation&amp;logoColor=white"></a>
 
-In code, this flow is wired by `generateDailyPuzzle(date)` in `generator.ts`.
+<img src="https://via.placeholder.com/800x450/1a1a1a/ffffff?text=Derivative+Gameplay+Screenshot">  
+*(Replace with actual screenshots/GIFs once you add them)*
 
-## Known constraints
-- **Static manifest range:** puzzle lookup is bounded by `src/data/puzzleManifest.ts`; dates outside the generated manifest return `null` and cannot be played.
-- **Local progress storage:** player progress is stored in browser `localStorage` (`STORAGE_KEY`), so progress is device/browser-local and can be cleared by the user.
+## What is Derivative?
 
-## Commands
-```bash
-npm run dev
-npm run build
-npm run preview
-```
+Every day a new puzzle. One hidden linguistic system to discover.
 
-These scripts are defined in `package.json`.
+Trace PIE roots, Norse sound shifts, semantic drifts, African diaspora survivals, imperial loanwords, plantation-era Southern vocabulary, and the extractive history baked into everyday English.
+
+Think **Wordle** meets real linguistics — thoughtful, challenging, and quietly subversive.
+
+## How to Play
+
+1. A new puzzle drops every day (UTC).
+2. Read the poetic prompt and linguistic insight.
+3. Sort or connect words into hidden groups based on their true origins or patterns.
+4. Unlock the full story once you solve it.
+5. Build your streak. Earn stars. Deepen your understanding of how power shapes language.
+
+**Pro tip:** Every puzzle has multiple layers — the more you know, the more you'll see.
+
+## Features
+
+- **Daily deterministic puzzles** — same puzzle for everyone, every day
+- **Rich linguistic content**:
+  - PIE roots &amp; sound laws
+  - Meaning drift &amp; folk etymology
+  - African diaspora &amp; plantation-era survivals (Gullah, AAVE, Creole influences)
+  - Imperial &amp; extractive history (spice monopolies, colonial crops, settler appropriations)
+  - Toponyms, suppletives, false cognates, and more
+- **Streak &amp; progress tracking** (local)
+- **Archive** — replay any past puzzle
+- **Radial etymology graph** for visual learners
+- **Shareable results** with tasteful spoilers
+
+## Tech Stack
+
+- React + TypeScript
+- Vite
+- Tailwind CSS
+- Procedural puzzle synthesis with deterministic seeding
+- Fully client-side (no accounts, no tracking)
+
+## Play Now
+
+→ **<a href="https://derivative-nedplimpton.replit.app">https://derivative-nedplimpton.replit.app</a>**
+
+## Roadmap
+
+- [ ] Interactive onboarding tutorial
+- [ ] Enhanced mobile experience
+- [ ] Full streak system polish + milestones
+- [ ] Themed weeks (Norse, Imperial, African Diaspora, etc.)
+- [ ] Educational export (PDF handouts)
+- [ ] Hard mode
+- [ ] Contributor-friendly data pools
+
+## Contributing
+
+Linguistics students, etymology enthusiasts, and programmers are all welcome.
+
+Info and contributions at info@themeansofproduction.press
+
+---
+
+**Made with linguistic curiosity and a healthy distrust of official stories.**
