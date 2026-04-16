@@ -10,7 +10,7 @@ import { PIE_POOL } from "../src/data/piePool";
 import { POOL_FLAT_TABLE } from "../insightEngine";
 
 const EXPECTED_DAYS = 3650;
-const EXACT_REPEAT_GAP_DAYS = 45;
+const EXACT_REPEAT_GAP_DAYS = 670;
 const ROOT_WINDOW_DAYS = 90;
 const ROOT_MAX_REUSE = 3;
 const FAMILY_WINDOW_DAYS = 30;

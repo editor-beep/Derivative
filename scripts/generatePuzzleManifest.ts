@@ -37,7 +37,7 @@ import type { PuzzleType, LensId } from "../types";
 
 const MANIFEST_DAYS = 3650;
 const MANIFEST_START_DATE = "2026-01-01";
-const EXACT_REPEAT_GAP_DAYS = 45;
+const EXACT_REPEAT_GAP_DAYS = 670;
 const ROOT_WINDOW_DAYS = 90;
 const ROOT_MAX_REUSE = 3;
 const FAMILY_WINDOW_DAYS = 30;
