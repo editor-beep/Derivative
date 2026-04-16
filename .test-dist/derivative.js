@@ -1315,13 +1315,9 @@ function Derivative() {
         const plain = [
             "◈ DERIVATIVE ◈",
             "The Game of the Lingua Imperii",
-            "",
             dateRoman,
-            "",
             iconRow,
-            "",
             tracker,
-            "",
             url,
         ].join("\n");
         setShareMsg({ plain, sections });
@@ -1374,7 +1370,7 @@ function Derivative() {
                         backgroundImage: `url(${constants_1.SPLASH_IMAGE})`,
                         backgroundSize: "cover",
                         backgroundPosition: "center",
-                        opacity: 0.35,
+                        opacity: 0.8,
                         zIndex: 0,
                     } }), (0, jsx_runtime_1.jsx)("div", { style: {
                         position: "absolute",
@@ -1382,9 +1378,21 @@ function Derivative() {
                         left: 0,
                         width: "100%",
                         height: "100%",
-                        background: "linear-gradient(to bottom, rgba(7,6,5,0.55) 0%, rgba(7,6,5,0.88) 60%, rgba(7,6,5,0.98) 100%)",
+                        background: "linear-gradient(to bottom, rgba(7,6,5,0.2) 0%, rgba(7,6,5,0.45) 60%, rgba(7,6,5,0.6) 100%)",
                         zIndex: 0,
-                    } }), (0, jsx_runtime_1.jsx)(Starfield, {}), (0, jsx_runtime_1.jsx)(AmbientOverlays, {}), (0, jsx_runtime_1.jsxs)("div", { style: { position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", maxWidth: "500px", width: "100%" }, children: [(0, jsx_runtime_1.jsxs)("div", { className: "deriv-title", "data-text": "DERIVATIVE", style: {
+                    } }), (0, jsx_runtime_1.jsx)(Starfield, {}), (0, jsx_runtime_1.jsx)(AmbientOverlays, {}), (0, jsx_runtime_1.jsxs)("div", { style: {
+                        position: "relative",
+                        zIndex: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        maxWidth: "500px",
+                        width: "100%",
+                        background: "rgba(7, 6, 5, 0.42)",
+                        border: "1px solid rgba(197, 158, 79, 0.28)",
+                        borderRadius: "14px",
+                        padding: "2rem 1.4rem",
+                    }, children: [(0, jsx_runtime_1.jsxs)("div", { className: "deriv-title", "data-text": "DERIVATIVE", style: {
                                 ...S.mono,
                                 fontSize: "2.2rem",
                                 fontWeight: 400,

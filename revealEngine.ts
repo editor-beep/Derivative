@@ -2,6 +2,79 @@
 
 import { InsightByType, LinguisticInsight, LensId, PuzzleType, Reveal } from "./types";
 
+// ── ROOT reveal variety engine ────────────────────────────────────────────────
+// No per-root data changes required. All variety is driven by a deterministic
+// hash of the root string so each root always gets the same reveal, but
+// different roots feel distinct and unpredictable.
+
+/** djb2-style hash → unsigned 32-bit integer. */
+function rootHashCode(root: string): number {
+  let h = 0;
+  for (let i = 0; i < root.length; i++) {
+    h = (Math.imul(31, h) + root.charCodeAt(i)) | 0;
+  }
+  return h >>> 0;
+}
+
+/** Pick an item from an array deterministically using a pre-computed hash. */
+function pickByHash<T>(pool: readonly T[], hash: number): T {
+  // pool is guaranteed non-empty at all call sites
+  return pool[hash % pool.length] as T;
+}
+
+const ROOT_HEADLINE_SUFFIXES = [
+  "",
+  " (stolen)",
+  " (they never wanted you to see this)",
+  " (the gatekeepers are furious)",
+] as const;
+
+function rootPlayerDidPool(root: string, leadWord: string, secondWord: string): readonly string[] {
+  return [
+    `You weaponized the forbidden link between ${leadWord} and ${secondWord} through the underground ${root}`,
+    `You ripped the veil and slammed ${leadWord} into ${secondWord} using the contraband ${root}`,
+    `You hijacked the connection between ${leadWord} and ${secondWord} with the smuggled code ${root}`,
+    `You exposed the hidden circuit between ${leadWord} and ${secondWord} by activating the rebel ${root}`,
+    `You forged an illegal bridge between ${leadWord} and ${secondWord} using the black-market ${root}`,
+    `You detonated the link between ${leadWord} and ${secondWord} with the suppressed ${root}`,
+    `You cracked the establishment wall between ${leadWord} and ${secondWord} via the outlawed ${root}`,
+    `You ran ${leadWord} and ${secondWord} through the rogue pipeline the suits tried to bury`,
+  ] as const;
+}
+
+const ROOT_MATTERS_BASE = [
+  "That matters because the overlords buried this machinery to keep the rest of us linguistically lobotomized",
+  "That matters because this is exactly how the empire always meant to keep the control grid hidden from the unwashed",
+  "That matters because every time we expose one of these roots we're sawing through the chains the elites bolted onto language itself",
+  "That matters because the gatekeepers spent centuries making sure the machinery stayed invisible to anyone who might actually use it against them",
+  "That matters because this is the forbidden gear the linguistic priesthood never wanted the rabble to get their dirty hands on",
+  "That matters because the system only works when the machinery stays buried and we stay obediently illiterate",
+  "That matters because every revealed root is another brick ripped out of the wall they built to own how we think and speak",
+] as const;
+
+// Language-multiplier bonus lines: Latin/Greek get "imperial" flavour; Old
+// English / Old Norse get "peasant uprising" flavour.
+const ROOT_MATTERS_IMPERIAL = [
+  "That matters because this is a live wire from the empire's own electrical grid — and you just touched it without insulation",
+  "That matters because the Roman and Greek academies hoarded this root for the educated class and made sure nobody else could use it as a weapon",
+] as const;
+
+const ROOT_MATTERS_PEASANT = [
+  "That matters because this root survived the Conquest in the mouths of people the conquerors tried to make voiceless, and you just kept it alive",
+  "That matters because the peasant tongue outlasted every attempt to replace it with the master's Latin and French, and this root is proof",
+] as const;
+
+function rootMattersPool(language: string): readonly string[] {
+  if (language.startsWith("Latin") || language.startsWith("Greek")) {
+    return [...ROOT_MATTERS_BASE, ...ROOT_MATTERS_IMPERIAL];
+  }
+  if (language.startsWith("Old")) {
+    return [...ROOT_MATTERS_BASE, ...ROOT_MATTERS_PEASANT];
+  }
+  return ROOT_MATTERS_BASE;
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 function lensNote(insight: LinguisticInsight): string | undefined {
   const notes: Partial<Record<LensId, string>> = {
     METAPHOR_DRIFT: "The body was erased — the physical origin abstracted away until the root carries only the ghost of the violence it once named.",
@@ -87,6 +160,17 @@ function buildBody(insight: LinguisticInsight): string {
     secondWord: insight.words[1] || insight.root || "its pair",
   };
 
+  // ROOT puzzles use the variety engine — hash-seeded, no per-root templates.
+  if (insight.type === "ROOT") {
+    const hash = rootHashCode(context.root);
+    const happened = oneClause(insight.tension, "The cage finally cracked open");
+    const playerDidPool = rootPlayerDidPool(context.root, context.leadWord, context.secondWord);
+    const mattersPool = rootMattersPool(context.language);
+    const playerDid = pickByHash(playerDidPool, hash);
+    const matters = pickByHash(mattersPool, hash + 4);
+    return `${happened}. ${playerDid}. ${matters}.`;
+  }
+
   const template = TEMPLATE_BY_TYPE[insight.type];
   const happenedSource = insight.type !== "ROOT" && "revealBody" in insight.data && typeof insight.data.revealBody === "string"
     ? insight.data.revealBody
@@ -109,10 +193,19 @@ function defaultReveal(insight: LinguisticInsight): Reveal {
   const root = insight.root || insight.words[0] || "";
   const lang = insight.language || "unknown";
   const sample = insight.words.slice(0, 6);
-  return {
-    headline: insight.type !== "ROOT" && "revealHeadline" in insight.data && typeof insight.data.revealHeadline === "string"
+
+  let headline: string;
+  if (insight.type === "ROOT") {
+    const suffix = pickByHash(ROOT_HEADLINE_SUFFIXES, rootHashCode(root));
+    headline = `${root.toUpperCase()} — ${lang}${suffix}`;
+  } else {
+    headline = "revealHeadline" in insight.data && typeof insight.data.revealHeadline === "string"
       ? insight.data.revealHeadline
-      : `${root.toUpperCase()} — ${lang}`,
+      : `${root.toUpperCase()} — ${lang}`;
+  }
+
+  return {
+    headline,
     body: buildBody(insight),
     connections: sample
       .slice(0, 3)
