@@ -385,99 +385,110 @@ const AmbientOverlays = () => (
   </>
 );
 
-const Starfield = () => (
-  <canvas
-    style={{
-      position: "absolute",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      zIndex: 0,
-      pointerEvents: "none",
-    }}
-    ref={(el: (HTMLCanvasElement & { _init?: boolean }) | null) => {
-      if (!el || el._init) return;
-      el._init = true;
-      const ctx = el.getContext("2d");
-      if (!ctx) return;
+const Starfield = () => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-      const resize = () => {
-        el.width = el.offsetWidth;
-        el.height = el.offsetHeight;
-      };
+  useEffect(() => {
+    const el = canvasRef.current;
+    if (!el) return;
+    const ctx = el.getContext("2d");
+    if (!ctx) return;
 
-      resize();
+    const resize = () => {
+      el.width = el.offsetWidth;
+      el.height = el.offsetHeight;
+    };
 
-      type StarParticle = {
-        x: number;
-        y: number;
-        r: number;
-        o: number;
-        s: number;
-        d: 1 | -1;
-        cyan: boolean;
-      };
+    resize();
 
-      type StarLink = {
-        a: number;
-        b: number;
-      };
+    type StarParticle = {
+      x: number;
+      y: number;
+      r: number;
+      o: number;
+      s: number;
+      d: 1 | -1;
+      cyan: boolean;
+    };
 
-      const stars: StarParticle[] = Array.from({ length: 180 }, () => ({
-        x: Math.random() * el.width,
-        y: Math.random() * el.height,
-        r: Math.random() * 1.15 + 0.1,
-        o: Math.random() * 0.5 + 0.1,
-        s: Math.random() * 0.4 + 0.1,
-        d: Math.random() > 0.5 ? 1 : -1,
-        cyan: Math.random() > 0.6,
-      }));
+    type StarLink = {
+      a: number;
+      b: number;
+    };
 
-      const links: StarLink[] = Array.from({ length: 38 }, () => ({
-        a: Math.floor(Math.random() * stars.length),
-        b: Math.floor(Math.random() * stars.length),
-      }));
+    const stars: StarParticle[] = Array.from({ length: 180 }, () => ({
+      x: Math.random() * el.width,
+      y: Math.random() * el.height,
+      r: Math.random() * 1.15 + 0.1,
+      o: Math.random() * 0.5 + 0.1,
+      s: Math.random() * 0.4 + 0.1,
+      d: Math.random() > 0.5 ? 1 : -1,
+      cyan: Math.random() > 0.6,
+    }));
 
-      const draw = () => {
-        ctx.clearRect(0, 0, el.width, el.height);
+    const links: StarLink[] = Array.from({ length: 38 }, () => ({
+      a: Math.floor(Math.random() * stars.length),
+      b: Math.floor(Math.random() * stars.length),
+    }));
 
-        links.forEach((l) => {
-          const a = stars[l.a];
-          const b = stars[l.b];
-          if (!a || !b) return;
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 160) {
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = a.cyan || b.cyan ? "rgba(78,207,207,0.08)" : "rgba(232,184,75,0.06)";
-            ctx.lineWidth = 0.6;
-            ctx.stroke();
-          }
-        });
+    let rafId = 0;
+    const draw = () => {
+      ctx.clearRect(0, 0, el.width, el.height);
 
-        stars.forEach((s) => {
-          s.o += 0.003 * s.s * s.d;
-          if (s.o > 0.7 || s.o < 0.08) s.d *= -1;
+      links.forEach((l) => {
+        const a = stars[l.a];
+        const b = stars[l.b];
+        if (!a || !b) return;
+        const dx = a.x - b.x;
+        const dy = a.y - b.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 160) {
           ctx.beginPath();
-          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-          ctx.fillStyle = s.cyan
-            ? `rgba(78,207,207,${s.o})`
-            : `rgba(232,184,75,${s.o})`;
-          ctx.fill();
-        });
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = a.cyan || b.cyan ? "rgba(78,207,207,0.08)" : "rgba(232,184,75,0.06)";
+          ctx.lineWidth = 0.6;
+          ctx.stroke();
+        }
+      });
 
-        requestAnimationFrame(draw);
-      };
+      stars.forEach((s) => {
+        s.o += 0.003 * s.s * s.d;
+        if (s.o > 0.7 || s.o < 0.08) s.d *= -1;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = s.cyan
+          ? `rgba(78,207,207,${s.o})`
+          : `rgba(232,184,75,${s.o})`;
+        ctx.fill();
+      });
 
-      draw();
-      window.addEventListener("resize", resize);
-    }}
-  />
-);
+      rafId = requestAnimationFrame(draw);
+    };
+
+    draw();
+    window.addEventListener("resize", resize);
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return (
+    <canvas
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        zIndex: 0,
+        pointerEvents: "none",
+      }}
+      ref={canvasRef}
+    />
+  );
+};
 
 const SystemMesh = ({ intensity = 1 }: { intensity?: number }) => (
   <div
@@ -2736,7 +2747,10 @@ export default function Derivative() {
     const canGoNext = archiveMonth < today.slice(0, 7);
 
     const shiftMonth = (delta: number) => {
-      const [y, m] = archiveMonth.split("-").map(Number);
+      const [yearPart, monthPart] = archiveMonth.split("-");
+      const y = Number(yearPart);
+      const m = Number(monthPart);
+      if (!Number.isFinite(y) || !Number.isFinite(m)) return;
       const d = new Date(y, m - 1 + delta, 1);
       const ny = d.getFullYear();
       const nm = String(d.getMonth() + 1).padStart(2, "0");
