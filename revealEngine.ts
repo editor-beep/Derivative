@@ -172,7 +172,7 @@ function buildBody(insight: LinguisticInsight): string {
   }
 
   const template = TEMPLATE_BY_TYPE[insight.type];
-  const happenedSource = insight.type !== "ROOT" && "revealBody" in insight.data && typeof insight.data.revealBody === "string"
+  const happenedSource = "revealBody" in insight.data && typeof insight.data.revealBody === "string"
     ? insight.data.revealBody
     : insight.tension;
 
