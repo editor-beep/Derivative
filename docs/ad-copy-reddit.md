@@ -63,3 +63,35 @@ Compare to amelioration: *nice* (ignorant → pleasant), *silly* (blessed → fo
 I've been cataloguing these for a daily etymology puzzle game I built (it has a whole semantic drift pool, including pejoration/amelioration tracking). If you find this pattern interesting, the game gives you a playable version of detecting it. Free, no accounts: [link]
 
 But more interested in the linguistic conversation — are there good counterexamples to the gendered pejoration thesis? Words for men that degraded the same way?
+
+---
+
+## SUBSTACK POST — The Means of Production
+
+**Title:** We built a daily etymology puzzle game. Here's why.
+
+We've been thinking for a long time about how ideology hides in plain sight — in institutions, in prices, in the stories we tell about how things got to be the way they are. Language seemed like the most overlooked place to start.
+
+Not because words are more important than material conditions. But because the words we use every day carry centuries of material conditions inside them, compressed and forgotten. And when you forget where a word came from, you often forget the violence or the resistance that produced it.
+
+*Gossip* used to mean a sacred bond — a godparent, a person you trusted with your soul. Now it means something a woman does when she talks too much. That is not a linguistic accident. That is ideology doing its work quietly, over centuries, through the accumulated contempt of people who had the power to set the terms.
+
+*Banjo. Jazz. Mojo. Gumbo. Okra.* Five words enslaved Africans carried across the Atlantic when they were legally prohibited from carrying anything else. The plantation pantry hid its origins. American culture built an entire identity on top of them. The words are still here. The attribution mostly isn't.
+
+*Algebra. Algorithm. Zero. Zenith.* The mathematics and astronomy of 9th-century Baghdad, three centuries before Oxford existed. Now they read as neutral technical vocabulary — the origin laundered out, the contribution erased, the culture that produced them remembered mainly for what was later done to it.
+
+We built **Derivative** because we wanted a way to make these things *felt*, not just known.
+
+It's a daily etymology puzzle game. Every day, a new puzzle. You sort words, detect patterns, infer the hidden linguistic system — Norse invaders vs. Saxon peasants, African survival vocabulary vs. colonial appropriation, words that meant one thing and were slowly bent into meaning something worse. After a few moves, the game asks you to name what you're detecting. Then it tells you the story.
+
+The mechanic matters. This isn't a trivia quiz. You're not recalling facts — you're feeling the shape of a contact stratum, the direction of a sound shift, the pattern of who degrades and who gets degraded. We designed it so that the moment of recognition comes from you, not from us. We just arranged the evidence.
+
+It's free. No accounts. No tracking. No ads. It runs entirely in your browser. We made it this way on purpose — we don't want your data and we don't want to sell you anything beyond the forty seconds it takes to do the puzzle.
+
+We're building out the content pools now: Norse collisions, African diaspora survivals, imperial extraction (the spice monopolies, the colonial cash crops, the Banda Massacre hiding inside your nutmeg), Arabic science, semantic pejoration, LGBTQ reclamation, folk etymology, suppletive paradigms. There's enough material to run for years. Every word has a history. Most of those histories were written by people who didn't want them remembered.
+
+We'd like to remember them anyway, one puzzle at a time.
+
+**[Play today's puzzle →](https://derivative-nedplimpton.replit.app)**
+
+*Derivative is made with linguistic curiosity and a healthy distrust of official stories. Contributions welcome — linguistics students, etymology enthusiasts, and programmers. Get in touch: info@themeansofproduction.press*
