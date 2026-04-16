@@ -200,10 +200,18 @@ export interface PuzzleProgressEntry {
   revealed?: boolean;
 }
 
+export interface StreakData {
+  current: number;
+  longest: number;
+  lastDate: string | null;
+}
+
 export interface ProgressStore {
   _hasPlayed?: boolean;
+  _hasSeenTutorial?: boolean;
   discoveredSystems?: string[];
-  [dateOrFlag: string]: PuzzleProgressEntry | boolean | string[] | undefined;
+  _streak?: StreakData;
+  [dateOrFlag: string]: PuzzleProgressEntry | boolean | string[] | StreakData | undefined;
 }
 
 export interface RootInsightFragment {

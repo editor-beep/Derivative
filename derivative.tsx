@@ -12,6 +12,9 @@ import { getDifficulty, DIFFICULTY_META, getDayOfWeekDifficulty, type Difficulty
 import { TYPE_LABELS, TYPE_SUBLABELS, COLORS, TYPE_COLORS, TYPE_SHARE_ICONS, DIFFICULTY_SHARE_ICONS, STORAGE_KEY, SPLASH_IMAGE } from "./constants";
 import { getUtcDateKey } from "./src/dateUtils";
 import { hydrateProgressStore, withDiscoveredSystem } from "./progressSystems";
+import { updateStreak, isMilestone, getEncouragementMessage, STREAK_MILESTONE_MESSAGES } from "./streakSystem";
+import { useStreak } from "./useStreak";
+import StreakToast from "./components/StreakToast";
 
 const load = (): ProgressStore => {
   try {
@@ -290,6 +293,35 @@ const GlobalFX = () => (
       );
       background-size: 200% 100%;
       animation: shimmer 7s linear infinite;
+    }
+
+    @keyframes toastSlideIn {
+      0%   { opacity: 0; transform: translateX(-50%) translateY(18px) scale(0.96); }
+      100% { opacity: 1; transform: translateX(-50%) translateY(0)     scale(1);    }
+    }
+
+    @keyframes streakPop {
+      0%   { transform: scale(1);    }
+      40%  { transform: scale(1.55); }
+      65%  { transform: scale(0.88); }
+      100% { transform: scale(1);    }
+    }
+
+    @keyframes streakBurst {
+      0%   { transform: scale(1);    filter: brightness(1);    text-shadow: 0 0 0 transparent; }
+      30%  { transform: scale(1.7);  filter: brightness(1.6);  text-shadow: 0 0 18px rgba(232,184,75,0.7); }
+      60%  { transform: scale(0.9);  filter: brightness(1.2);  text-shadow: 0 0 8px rgba(232,184,75,0.4); }
+      100% { transform: scale(1);    filter: brightness(1);    text-shadow: 0 0 0 transparent; }
+    }
+
+    .streak-pop {
+      display: inline-block;
+      animation: streakPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .streak-milestone-burst {
+      display: inline-block;
+      animation: streakBurst 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     }
   `}</style>
 );
@@ -2026,6 +2058,12 @@ export default function Derivative() {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
 
+  // Streak state
+  const [streakToastMsg, setStreakToastMsg] = useState<string | null>(null);
+  const [streakToastIsMilestone, setStreakToastIsMilestone] = useState(false);
+  const [streakAnimKey, setStreakAnimKey] = useState(0);
+  const { currentStreak } = useStreak(progress);
+
   const today = getTodayStr();
   const [archiveMonth, setArchiveMonth] = useState<string>(() => today.slice(0, 7));
 
@@ -2066,6 +2104,25 @@ export default function Derivative() {
       next = discovery.nextStore;
       if (discovery.wasAdded && discovery.uncoveredSystem) {
         console.log(`You uncovered: ${discovery.uncoveredSystem}`);
+      }
+
+      // Update streak only for today's puzzle
+      if (dateStr === today) {
+        const streakResult = updateStreak(next, today);
+        if (streakResult.changed) {
+          next = streakResult.nextStore;
+          setStreakAnimKey((k) => k + 1);
+          if (streakResult.milestoneReached !== null) {
+            setStreakToastMsg(
+              STREAK_MILESTONE_MESSAGES[streakResult.milestoneReached] ??
+                `${streakResult.newCurrent}-day streak 🔥 Keep going!`
+            );
+            setStreakToastIsMilestone(true);
+          } else {
+            setStreakToastMsg(getEncouragementMessage(streakResult.newCurrent));
+            setStreakToastIsMilestone(false);
+          }
+        }
       }
     }
     setProgress(next);
@@ -2520,7 +2577,7 @@ export default function Derivative() {
               display: "flex",
               alignItems: "center",
               gap: "0.7rem",
-              marginBottom: "1.2rem",
+              marginBottom: currentStreak > 0 ? "0.6rem" : "1.2rem",
             }}
           >
             <span
@@ -2544,6 +2601,42 @@ export default function Derivative() {
               {statusDot.label}
             </span>
           </div>
+
+          {/* Streak display */}
+          {currentStreak > 0 && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.4rem",
+                marginBottom: "1.2rem",
+              }}
+            >
+              <span
+                key={streakAnimKey}
+                className={isMilestone(currentStreak) ? "streak-milestone-burst" : undefined}
+                style={{
+                  ...S.mono,
+                  fontSize: "0.72rem",
+                  color: isMilestone(currentStreak) ? COLORS.gold : "#EA580C",
+                  letterSpacing: "0.06em",
+                }}
+              >
+                🔥 {currentStreak}
+              </span>
+              <span
+                style={{
+                  ...S.mono,
+                  fontSize: "0.58rem",
+                  color: COLORS.textMuted,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                }}
+              >
+                {currentStreak === 1 ? "day streak" : "day streak"}
+              </span>
+            </div>
+          )}
 
           {/* Day-of-week difficulty schedule hint */}
           {(() => {
@@ -2621,6 +2714,11 @@ export default function Derivative() {
             themeansofproduction.press
           </a>
         </div>
+        <StreakToast
+          message={streakToastMsg}
+          isMilestone={streakToastIsMilestone}
+          onDismiss={() => setStreakToastMsg(null)}
+        />
       </div>
     );
   }
@@ -2888,17 +2986,33 @@ export default function Derivative() {
             <button className="deriv-btn" style={S.btnSm} onClick={() => setView("ready")}>
               ← back
             </button>
-            <span
-              style={{
-                ...S.mono,
-                fontSize: "0.6rem",
-                color: COLORS.textMuted,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-              }}
-            >
-              derivative system
-            </span>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.22rem" }}>
+              <span
+                style={{
+                  ...S.mono,
+                  fontSize: "0.6rem",
+                  color: COLORS.textMuted,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                }}
+              >
+                derivative system
+              </span>
+              {currentStreak > 0 && (
+                <span
+                  key={streakAnimKey}
+                  className={isMilestone(currentStreak) ? "streak-milestone-burst" : "streak-pop"}
+                  style={{
+                    ...S.mono,
+                    fontSize: "0.65rem",
+                    color: isMilestone(currentStreak) ? COLORS.gold : "#EA580C",
+                    letterSpacing: "0.06em",
+                  }}
+                >
+                  🔥 {currentStreak}
+                </span>
+              )}
+            </div>
             <button className="deriv-btn" style={S.btnSm} onClick={() => setView("archive")}>
               archive
             </button>
@@ -2975,6 +3089,11 @@ export default function Derivative() {
           {shareMsg && <ShareCard data={shareMsg} />}
           <TutorialModal visible={showTutorial} onClose={() => setShowTutorial(false)} />
         </div>
+        <StreakToast
+          message={streakToastMsg}
+          isMilestone={streakToastIsMilestone}
+          onDismiss={() => setStreakToastMsg(null)}
+        />
       </div>
     );
   }
