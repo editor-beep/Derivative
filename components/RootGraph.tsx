@@ -15,6 +15,22 @@ function getSuffix(word: string, root: string): string | null {
   return after || null;
 }
 
+function findRootSegment(word: string, root: string, forms?: string[]): { segment: string; index: number } | null {
+  const candidates = [root, ...(forms ?? [])]
+    .map((segment) => segment.trim().toLowerCase())
+    .filter(Boolean);
+
+  let best: { segment: string; index: number } | null = null;
+  for (const segment of candidates) {
+    const idx = word.indexOf(segment);
+    if (idx < 0) continue;
+    if (!best || segment.length > best.segment.length || (segment.length === best.segment.length && idx < best.index)) {
+      best = { segment, index: idx };
+    }
+  }
+  return best;
+}
+
 /** Returns a hint label showing the morphological wrapper around the root,
  *  with the root itself masked as dots. Examples:
  *    "react"    (root "act") → "re-···"
@@ -25,13 +41,11 @@ function getSuffix(word: string, root: string): string | null {
  *  appear literally (e.g. "decide" with root "caed" → found via form "cid").
  */
 function buildHintLabel(word: string, root: string, forms?: string[]): string {
-  // Try the primary root first
-  const candidates = [root, ...(forms ?? [])];
-  for (const candidate of candidates) {
-    if (word.indexOf(candidate) < 0) continue;
-    const prefix = getPrefix(word, candidate) ?? "";
-    const suffix = getSuffix(word, candidate) ?? "";
-    const rootMask = "·".repeat(candidate.length);
+  const match = findRootSegment(word, root, forms);
+  if (match) {
+    const prefix = word.slice(0, match.index);
+    const suffix = word.slice(match.index + match.segment.length);
+    const rootMask = "·".repeat(match.segment.length);
     if (prefix && suffix) return `${prefix}-${rootMask}-${suffix}`;
     if (prefix) return `${prefix}-${rootMask}`;
     if (suffix) return `${rootMask}-${suffix}`;
@@ -204,11 +218,13 @@ export default function RootGraph({
           const y = CY + Math.sin(angle) * radius;
 
           const isFound = found.includes(word);
-          const prefix = getPrefix(word, root);
+          const match = findRootSegment(word, root, forms);
+          const prefix = match ? word.slice(0, match.index) || null : null;
           const meaning =
             prefix
               ? (PREFIX_DATA as Record<string, { meaning: string }>)[prefix]?.meaning ?? null
               : null;
+          const hintLabel = buildHintLabel(word, root, forms);
 
           return (
             <g key={word}>
@@ -234,6 +250,20 @@ export default function RootGraph({
                   fontFamily="monospace"
                 >
                   {prefix}
+                </text>
+              )}
+
+              {/* MORPHOLOGY WRAPPER — only when hints visible */}
+              {hintsVisible && (
+                <text
+                  x={x}
+                  y={y - (NODE_RADIUS + 9)}
+                  fontSize="8"
+                  fill="#8a7868"
+                  textAnchor="middle"
+                  fontFamily="monospace"
+                >
+                  {hintLabel}
                 </text>
               )}
 

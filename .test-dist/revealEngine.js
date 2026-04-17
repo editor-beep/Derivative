@@ -225,12 +225,25 @@ function defaultReveal(insight) {
             ? insight.data.revealHeadline
             : `${root.toUpperCase()} — ${lang}`;
     }
+    let connections;
+    if (insight.type === "ROOT") {
+        const required = insight.data.required ?? [];
+        const targets = insight.data.targets ?? insight.words;
+        const ordered = [...required, ...targets.filter((word) => !required.includes(word))];
+        const uniqueOrdered = Array.from(new Set(ordered));
+        connections = uniqueOrdered
+            .slice(0, 8)
+            .map((word) => [word, required.includes(word) ? "required" : "related"]);
+    }
+    else {
+        connections = sample
+            .slice(0, 3)
+            .map((w, i) => [w, sample[i + 1] ?? root]);
+    }
     return {
         headline,
         body: buildBody(insight),
-        connections: sample
-            .slice(0, 3)
-            .map((w, i) => [w, sample[i + 1] ?? root]),
+        connections,
         lensNote: lensNote(insight),
     };
 }

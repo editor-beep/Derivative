@@ -267,12 +267,25 @@ function defaultReveal(insight: LinguisticInsight): Reveal {
       : `${root.toUpperCase()} — ${lang}`;
   }
 
+  let connections: [string, string][];
+  if (insight.type === "ROOT") {
+    const required = insight.data.required ?? [];
+    const targets = insight.data.targets ?? insight.words;
+    const ordered = [...required, ...targets.filter((word) => !required.includes(word))];
+    const uniqueOrdered = Array.from(new Set(ordered));
+    connections = uniqueOrdered
+      .slice(0, 8)
+      .map((word) => [word, required.includes(word) ? "required" : "related"] as [string, string]);
+  } else {
+    connections = sample
+      .slice(0, 3)
+      .map((w, i) => [w, sample[i + 1] ?? root] as [string, string]);
+  }
+
   return {
     headline,
     body: buildBody(insight),
-    connections: sample
-      .slice(0, 3)
-      .map((w, i) => [w, sample[i + 1] ?? root] as [string, string]),
+    connections,
     lensNote: lensNote(insight),
   };
 }
