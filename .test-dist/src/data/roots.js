@@ -331,6 +331,7 @@ const _ROOT_POOL_RAW = [
         meaning: "join",
         targets: ["junction", "conjunction", "injunction", "adjunct", "juncture", "subjugate", "conjugate", "disjunction", "enjoin", "conjunctive"],
         required: ["junction", "conjunction", "injunction", "adjunct", "subjugate"],
+        forms: ["junct", "junc", "jug", "join"],
         tension: "Latin 'jungere' (to join) spans the physical and the coercive — 'junction' joins roads, 'conjunction' joins words, but 'injunction' is the law's power to join a command to a person, and 'subjugate' (bring under the yoke) reveals the joining of labor to dominion. The structural vocabulary of 14th-century English law used this root to build the architecture of obligation",
     },
     {

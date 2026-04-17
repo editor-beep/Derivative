@@ -18,6 +18,21 @@ function getSuffix(word, root) {
     const after = word.slice(idx + root.length);
     return after || null;
 }
+function findRootSegment(word, root, forms) {
+    const candidates = [root, ...(forms ?? [])]
+        .map((segment) => segment.trim().toLowerCase())
+        .filter(Boolean);
+    let best = null;
+    for (const segment of candidates) {
+        const idx = word.indexOf(segment);
+        if (idx < 0)
+            continue;
+        if (!best || segment.length > best.segment.length || (segment.length === best.segment.length && idx < best.index)) {
+            best = { segment, index: idx };
+        }
+    }
+    return best;
+}
 /** Returns a hint label showing the morphological wrapper around the root,
  *  with the root itself masked as dots. Examples:
  *    "react"    (root "act") → "re-···"
@@ -28,14 +43,11 @@ function getSuffix(word, root) {
  *  appear literally (e.g. "decide" with root "caed" → found via form "cid").
  */
 function buildHintLabel(word, root, forms) {
-    // Try the primary root first
-    const candidates = [root, ...(forms ?? [])];
-    for (const candidate of candidates) {
-        if (word.indexOf(candidate) < 0)
-            continue;
-        const prefix = getPrefix(word, candidate) ?? "";
-        const suffix = getSuffix(word, candidate) ?? "";
-        const rootMask = "·".repeat(candidate.length);
+    const match = findRootSegment(word, root, forms);
+    if (match) {
+        const prefix = word.slice(0, match.index);
+        const suffix = word.slice(match.index + match.segment.length);
+        const rootMask = "·".repeat(match.segment.length);
         if (prefix && suffix)
             return `${prefix}-${rootMask}-${suffix}`;
         if (prefix)
@@ -127,11 +139,13 @@ function RootGraph({ root, required, found, bonus, forms, }) {
                         const x = CX + Math.cos(angle) * radius;
                         const y = CY + Math.sin(angle) * radius;
                         const isFound = found.includes(word);
-                        const prefix = getPrefix(word, root);
+                        const match = findRootSegment(word, root, forms);
+                        const prefix = match ? word.slice(0, match.index) || null : null;
                         const meaning = prefix
                             ? prefixMap_1.PREFIX_DATA[prefix]?.meaning ?? null
                             : null;
-                        return ((0, jsx_runtime_1.jsxs)("g", { children: [(0, jsx_runtime_1.jsx)("line", { x1: CX, y1: CY, x2: x, y2: y, stroke: isFound ? "#e8b84b" : "#2a2010", strokeWidth: "1", strokeDasharray: "4 6", className: isFound ? "flow-active" : "flow-idle" }), prefix && hintsVisible && ((0, jsx_runtime_1.jsx)("text", { x: (CX + x) / 2, y: (CY + y) / 2 - 6, fontSize: "8", fill: "#8a7868", textAnchor: "middle", fontFamily: "monospace", children: prefix })), meaning && hintsVisible && ((0, jsx_runtime_1.jsx)("text", { x: (CX + x) / 2, y: (CY + y) / 2 + 6, fontSize: "8", fill: "#4ecfcf", textAnchor: "middle", fontFamily: "monospace", children: meaning })), (0, jsx_runtime_1.jsx)("circle", { cx: x, cy: y, r: NODE_RADIUS, fill: isFound ? "rgba(200,146,42,0.2)" : "#0d0b08", stroke: isFound ? "#c8922a" : "#2a2010" }), (0, jsx_runtime_1.jsx)("text", { x: x, y: y + 3, textAnchor: "middle", fontSize: "8", fill: isFound ? "#e8b84b" : hintsVisible ? "#9a8870" : "#1e1808", fontFamily: "monospace", children: isFound
+                        const hintLabel = buildHintLabel(word, root, forms);
+                        return ((0, jsx_runtime_1.jsxs)("g", { children: [(0, jsx_runtime_1.jsx)("line", { x1: CX, y1: CY, x2: x, y2: y, stroke: isFound ? "#e8b84b" : "#2a2010", strokeWidth: "1", strokeDasharray: "4 6", className: isFound ? "flow-active" : "flow-idle" }), prefix && hintsVisible && ((0, jsx_runtime_1.jsx)("text", { x: (CX + x) / 2, y: (CY + y) / 2 - 6, fontSize: "8", fill: "#8a7868", textAnchor: "middle", fontFamily: "monospace", children: prefix })), hintsVisible && ((0, jsx_runtime_1.jsx)("text", { x: x, y: y - (NODE_RADIUS + 9), fontSize: "8", fill: "#8a7868", textAnchor: "middle", fontFamily: "monospace", children: hintLabel })), meaning && hintsVisible && ((0, jsx_runtime_1.jsx)("text", { x: (CX + x) / 2, y: (CY + y) / 2 + 6, fontSize: "8", fill: "#4ecfcf", textAnchor: "middle", fontFamily: "monospace", children: meaning })), (0, jsx_runtime_1.jsx)("circle", { cx: x, cy: y, r: NODE_RADIUS, fill: isFound ? "rgba(200,146,42,0.2)" : "#0d0b08", stroke: isFound ? "#c8922a" : "#2a2010" }), (0, jsx_runtime_1.jsx)("text", { x: x, y: y + 3, textAnchor: "middle", fontSize: "8", fill: isFound ? "#e8b84b" : hintsVisible ? "#9a8870" : "#1e1808", fontFamily: "monospace", children: isFound
                                         ? word
                                         : hintsVisible
                                             ? buildHintLabel(word, root, forms)

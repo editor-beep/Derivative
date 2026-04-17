@@ -108,6 +108,26 @@ test("ROOT reveal body first sentence comes from tension", () => {
   assert.match(reveal.body, /The hidden machinery of power/);
 });
 
+test("ROOT reveal connections show deduplicated answer keys with required/related labels", () => {
+  const insight = {
+    ...makeRootInsight("junct", "Latin"),
+    words: ["junction", "conjunction", "injunction", "adjunct", "subjugate", "conjugate"],
+    data: {
+      targets: ["junction", "conjunction", "injunction", "adjunct", "subjugate", "conjugate", "conjunction"],
+      required: ["junction", "conjunction", "injunction", "adjunct", "subjugate"],
+    },
+  };
+  const reveal = generateReveal(insight);
+  assert.deepEqual(reveal.connections.slice(0, 6), [
+    ["junction", "required"],
+    ["conjunction", "required"],
+    ["injunction", "required"],
+    ["adjunct", "required"],
+    ["subjugate", "required"],
+    ["conjugate", "related"],
+  ]);
+});
+
 test("ROOT reveal playerDid sentence uses spicy variety language", () => {
   const insight = makeRootInsight("act", "Latin");
   const reveal = generateReveal(insight);
