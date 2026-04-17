@@ -4,7 +4,7 @@ import type { PuzzleType } from "./types";
 import type { DifficultyLevel } from "./difficulty";
 
 export const STORAGE_KEY = "derivative_v4";
-export const SPLASH_IMAGE = "/splash.jpg";
+export const SPLASH_IMAGE = "https://github.com/user-attachments/assets/67ac85ac-c7f5-479c-b4f9-102c309c23fb";
 
 export const TYPE_LABELS: Record<PuzzleType, string> = {
   ROOT: "ROOT",
