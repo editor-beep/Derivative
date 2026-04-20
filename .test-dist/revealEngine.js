@@ -65,6 +65,51 @@ function rootMattersPool(language) {
     }
     return ROOT_MATTERS_BASE;
 }
+// ── Default reveal variety pools (used by all non-templated puzzle types) ─────
+const HEADLINE_VARIANTS = [
+    "{ROOT} — {LANGUAGE}",
+    "{ROOT} — {LANGUAGE} (stolen)",
+    "{ROOT} — {LANGUAGE} (they never wanted you to see this)",
+    "{ROOT} — {LANGUAGE} (the gatekeepers are furious)",
+    "{ROOT} — {LANGUAGE} (blacklisted entry)",
+    "{ROOT} — {LANGUAGE} (the empire tried to bury this)",
+    "{ROOT} — {LANGUAGE} (forbidden glyph)",
+    "{ROOT} — {LANGUAGE} (linguistic contraband)",
+    "{ROOT} — {LANGUAGE} (the priests redacted this one)",
+    "{ROOT} — {LANGUAGE} (unapproved transmission)",
+    "{ROOT} — {LANGUAGE} (the regime's dirty secret)",
+    "{ROOT} — {LANGUAGE} (now in the hands of the rabble)",
+];
+const PLAYER_DID_VARIANTS = [
+    "You weaponized the forbidden link between {word0} and {word1} through the underground {root}",
+    "You ripped the veil and slammed {word0} into {word1} using the contraband {root}",
+    "You hijacked the connection between {word0} and {word1} with the smuggled {root} code",
+    "You exposed the hidden circuit between {word0} and {word1} by activating the rebel {root}",
+    "You forged an illegal bridge between {word0} and {word1} using the black-market {root}",
+    "You detonated the link between {word0} and {word1} with the suppressed {root}",
+    "You cracked the establishment wall between {word0} and {word1} via the outlawed {root}",
+    "You ran {word0} and {word1} through the rogue {root} pipeline the suits tried to bury",
+    "You stole the master key and wired {word0} straight into {word1} with the dissident {root}",
+    "You broadcast the censored signal between {word0} and {word1} over the pirate {root} frequency",
+    "You broke the linguistic lockdown and fused {word0} with {word1} using the subversive {root}",
+    "You liberated the suppressed pathway and connected {word0} to {word1} through the insurgent {root}",
+];
+const MATTERS_VARIANTS = [
+    "That matters because the {LANGUAGE} overlords buried this machinery to keep the rest of us linguistically lobotomized",
+    "That matters because every time we expose one of these we're sawing through the chains the elites bolted onto language itself",
+    "That matters because the gatekeepers spent centuries making sure the {LANGUAGE} machinery stayed invisible to anyone who might actually use it against them",
+    "That matters because this is the forbidden gear the linguistic priesthood never wanted the rabble to get their dirty hands on",
+    "That matters because the system only works when the {LANGUAGE} machinery stays buried and we stay obediently illiterate",
+    "That matters because every revealed root is another brick ripped out of the wall they built to own how we think and speak",
+    "That matters because the empire designed {LANGUAGE} as a control grid — and you just short-circuited it",
+    "That matters because the philology cartel counted on us never noticing how they rigged the dictionary",
+    "That matters because language was never neutral — and you just proved it with the contraband {root}",
+    "That matters because the ruling class kept these mechanisms secret so we'd never rewrite the script",
+];
+/** Safe string interpolation — replaces {KEY} tokens with values from vars. */
+function interpolate(template, vars) {
+    return template.replace(/\{(\w+)\}/g, (_match, key) => vars[key] ?? _match);
+}
 // ─────────────────────────────────────────────────────────────────────────────
 function lensNote(insight) {
     const notes = {
@@ -143,12 +188,28 @@ function buildBody(insight) {
         return `${happened}. ${playerDid}. ${matters}.`;
     }
     const template = TEMPLATE_BY_TYPE[insight.type];
-    const happenedSource = insight.type !== "ROOT" && "revealBody" in insight.data && typeof insight.data.revealBody === "string"
+    const happenedSource = "revealBody" in insight.data && typeof insight.data.revealBody === "string"
         ? insight.data.revealBody
         : insight.tension;
     const happened = oneClause(template?.happened(insight, context) ?? happenedSource, "The cage finally cracked open");
-    const playerDid = oneClause(template?.playerDid(insight, context) ?? `You connected ${context.leadWord} with ${context.secondWord} through ${context.root}`, "You traced the extraction back to its source");
-    const matters = oneClause(template?.matters(insight, context) ?? `That matters because this is how the ${context.language} machinery was always meant to stay hidden`, "That matters because the mechanism is no longer invisible");
+    let playerDid;
+    let matters;
+    if (template) {
+        playerDid = oneClause(template.playerDid(insight, context), "You traced the extraction back to its source");
+        matters = oneClause(template.matters(insight, context), "That matters because the mechanism is no longer invisible");
+    }
+    else {
+        const hash = rootHashCode(`${context.root}-${insight.type}`);
+        playerDid = interpolate(pickByHash(PLAYER_DID_VARIANTS, hash), {
+            word0: context.leadWord,
+            word1: context.secondWord,
+            root: context.root,
+        });
+        matters = interpolate(pickByHash(MATTERS_VARIANTS, hash + 4), {
+            LANGUAGE: context.language,
+            root: context.root,
+        });
+    }
     return `${happened}. ${playerDid}. ${matters}.`;
 }
 function defaultReveal(insight) {
@@ -160,10 +221,12 @@ function defaultReveal(insight) {
         const suffix = pickByHash(ROOT_HEADLINE_SUFFIXES, rootHashCode(root));
         headline = `${root.toUpperCase()} — ${lang}${suffix}`;
     }
+    else if ("revealHeadline" in insight.data && typeof insight.data.revealHeadline === "string") {
+        headline = insight.data.revealHeadline;
+    }
     else {
-        headline = "revealHeadline" in insight.data && typeof insight.data.revealHeadline === "string"
-            ? insight.data.revealHeadline
-            : `${root.toUpperCase()} — ${lang}`;
+        const hash = rootHashCode(`${root}-${insight.type}`);
+        headline = interpolate(pickByHash(HEADLINE_VARIANTS, hash), { ROOT: root.toUpperCase(), LANGUAGE: lang });
     }
     return {
         headline,
