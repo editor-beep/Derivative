@@ -12,7 +12,6 @@ const SORT_TYPES: PuzzleType[] = [
   "SUPPLETIVE",
   "COLLISION",
   "PIE",
-  "GRIMM",
   "BORROWED",
   "FALSE_FAMILY",
   "DECEPTION",
