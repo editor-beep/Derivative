@@ -7,7 +7,7 @@ function sentenceCount(text) {
   return matches.length;
 }
 
-test("idiom reveal keeps existing connections and emits 4 structural roles", () => {
+test("idiom reveal keeps existing connections and emits 3 rhetorical roles", () => {
   const insight = {
     id: "idiom-1",
     type: "IDIOM",
@@ -32,11 +32,11 @@ test("idiom reveal keeps existing connections and emits 4 structural roles", () 
     ["nothing", "Ecclesiastical Latin"],
     ["A long-standing frame about repeating hi…", "fossilized ideology"],
   ]);
-  assert.equal(sentenceCount(reveal.body), 4);
-  assert.match(reveal.body, /^.+\. You .+\. .+\. .+\.$/);
+  assert.equal(sentenceCount(reveal.body), 3);
+  assert.match(reveal.body, /^.+\. You .+\. .+\.$/);
 });
 
-test("borrowed reveal body uses four-sentence explicit structure", () => {
+test("borrowed reveal body uses three-sentence explicit structure", () => {
   const insight = {
     id: "borrowed-1",
     type: "BORROWED",
@@ -58,8 +58,8 @@ test("borrowed reveal body uses four-sentence explicit structure", () => {
   };
 
   const reveal = generateReveal(insight);
-  assert.equal(sentenceCount(reveal.body), 4);
-  assert.match(reveal.body, /^.+\. You .+\. .+\. .+\.$/);
+  assert.equal(sentenceCount(reveal.body), 3);
+  assert.match(reveal.body, /^.+\. You .+\. .+\.$/);
   assert.match(reveal.body, /Latin transit system/);
 });
 
@@ -90,16 +90,16 @@ test("ROOT reveal headline uses one of the 4 flavor suffixes", () => {
   assert.ok(validHeadlines.includes(reveal.headline), `Unexpected headline: ${reveal.headline}`);
 });
 
-test("ROOT reveal body emits exactly 4 sentences", () => {
+test("ROOT reveal body emits exactly 3 sentences", () => {
   const insight = makeRootInsight("act", "Latin");
   const reveal = generateReveal(insight);
-  assert.equal(sentenceCount(reveal.body), 4);
+  assert.equal(sentenceCount(reveal.body), 3);
 });
 
 test("ROOT reveal body matches the rhetorical structure", () => {
   const insight = makeRootInsight("act", "Latin");
   const reveal = generateReveal(insight);
-  assert.match(reveal.body, /^.+\. You .+\. .+\. .+\.$/);
+  assert.match(reveal.body, /^.+\. You .+\. .+\.$/);
 });
 
 test("ROOT reveal body first sentence comes from tension", () => {
@@ -139,9 +139,9 @@ test("ROOT reveal playerDid sentence uses spicy variety language", () => {
 test("ROOT reveal final sentence states a power claim", () => {
   const insight = makeRootInsight("act", "Latin");
   const reveal = generateReveal(insight);
-  const politicalKeywords = ["Power", "Prestige", "governance system", "class filter", "control"];
-  const hasClaim = politicalKeywords.some(k => reveal.body.includes(k));
-  assert.ok(hasClaim, `Expected an explicit political claim in: ${reveal.body}`);
+  const matterKeywords = ["That matters because", "buried", "machinery", "gatekeepers", "empire", "priesthood", "control grid", "obediently", "wall they built", "Conquest"];
+  const hasClaim = matterKeywords.some(k => reveal.body.includes(k));
+  assert.ok(hasClaim, `Expected a matters-power line in: ${reveal.body}`);
 });
 
 test("ROOT reveal is deterministic — same root always gives same result", () => {

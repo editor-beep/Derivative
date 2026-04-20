@@ -73,6 +73,57 @@ function rootMattersPool(language: string): readonly string[] {
   }
   return ROOT_MATTERS_BASE;
 }
+
+// ── Default reveal variety pools (used by all non-templated puzzle types) ─────
+
+const HEADLINE_VARIANTS = [
+  "{ROOT} — {LANGUAGE}",
+  "{ROOT} — {LANGUAGE} (stolen)",
+  "{ROOT} — {LANGUAGE} (they never wanted you to see this)",
+  "{ROOT} — {LANGUAGE} (the gatekeepers are furious)",
+  "{ROOT} — {LANGUAGE} (blacklisted entry)",
+  "{ROOT} — {LANGUAGE} (the empire tried to bury this)",
+  "{ROOT} — {LANGUAGE} (forbidden glyph)",
+  "{ROOT} — {LANGUAGE} (linguistic contraband)",
+  "{ROOT} — {LANGUAGE} (the priests redacted this one)",
+  "{ROOT} — {LANGUAGE} (unapproved transmission)",
+  "{ROOT} — {LANGUAGE} (the regime's dirty secret)",
+  "{ROOT} — {LANGUAGE} (now in the hands of the rabble)",
+] as const;
+
+const PLAYER_DID_VARIANTS = [
+  "You weaponized the forbidden link between {word0} and {word1} through the underground {root}",
+  "You ripped the veil and slammed {word0} into {word1} using the contraband {root}",
+  "You hijacked the connection between {word0} and {word1} with the smuggled {root} code",
+  "You exposed the hidden circuit between {word0} and {word1} by activating the rebel {root}",
+  "You forged an illegal bridge between {word0} and {word1} using the black-market {root}",
+  "You detonated the link between {word0} and {word1} with the suppressed {root}",
+  "You cracked the establishment wall between {word0} and {word1} via the outlawed {root}",
+  "You ran {word0} and {word1} through the rogue {root} pipeline the suits tried to bury",
+  "You stole the master key and wired {word0} straight into {word1} with the dissident {root}",
+  "You broadcast the censored signal between {word0} and {word1} over the pirate {root} frequency",
+  "You broke the linguistic lockdown and fused {word0} with {word1} using the subversive {root}",
+  "You liberated the suppressed pathway and connected {word0} to {word1} through the insurgent {root}",
+] as const;
+
+const MATTERS_VARIANTS = [
+  "That matters because the {LANGUAGE} overlords buried this machinery to keep the rest of us linguistically lobotomized",
+  "That matters because every time we expose one of these we're sawing through the chains the elites bolted onto language itself",
+  "That matters because the gatekeepers spent centuries making sure the {LANGUAGE} machinery stayed invisible to anyone who might actually use it against them",
+  "That matters because this is the forbidden gear the linguistic priesthood never wanted the rabble to get their dirty hands on",
+  "That matters because the system only works when the {LANGUAGE} machinery stays buried and we stay obediently illiterate",
+  "That matters because every revealed root is another brick ripped out of the wall they built to own how we think and speak",
+  "That matters because the empire designed {LANGUAGE} as a control grid — and you just short-circuited it",
+  "That matters because the philology cartel counted on us never noticing how they rigged the dictionary",
+  "That matters because language was never neutral — and you just proved it with the contraband {root}",
+  "That matters because the ruling class kept these mechanisms secret so we'd never rewrite the script",
+] as const;
+
+/** Safe string interpolation — replaces {KEY} tokens with values from vars. */
+function interpolate(template: string, vars: Record<string, string>): string {
+  return template.replace(/\{(\w+)\}/g, (_match, key) => vars[key] ?? _match);
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 
 function lensNote(insight: LinguisticInsight): string | undefined {
@@ -97,96 +148,42 @@ type RevealContext = {
 };
 
 type BodyTemplate = {
-  event: (insight: LinguisticInsight, context: RevealContext) => string;
-  playerAction: (insight: LinguisticInsight, context: RevealContext) => string;
-  systemExplanation: (insight: LinguisticInsight, context: RevealContext) => string;
-  politicalClaim: (insight: LinguisticInsight, context: RevealContext) => string;
+  happened: (insight: LinguisticInsight, context: RevealContext) => string;
+  playerDid: (insight: LinguisticInsight, context: RevealContext) => string;
+  matters: (insight: LinguisticInsight, context: RevealContext) => string;
 };
 
-const TEMPLATE_BY_TYPE: Record<PuzzleType, BodyTemplate> = {
-  ROOT: {
-    event: (insight) => oneClause(insight.tension, "The root mechanism finally surfaced"),
-    playerAction: (_insight, context) => `You connected ${context.leadWord} to ${context.secondWord} through ${context.root}`,
-    systemExplanation: (_insight, context) => `Root systems stay productive because one core form keeps generating new words across domains`,
-    politicalClaim: (_insight, context) => `Control over standard vocabulary is control over power, and root literacy interrupts that gatekeeping`,
-  },
-  SEMANTIC: {
-    event: (_insight, context) => `Meaning shifted over time and the word no longer matches its earliest use`,
-    playerAction: (_insight, context) => `You followed the path from older senses to the current one`,
-    systemExplanation: (_insight, context) => `Semantic drift is structured adaptation: words are reassigned as social needs and institutions change`,
-    politicalClaim: (_insight, context) => `Under capitalism, meaning is repeatedly repurposed for new functions, so dominant institutions decide which sense becomes normal`,
-  },
-  SUPPLETIVE: {
-    event: (_insight, context) => `The paradigm combines forms that do not come from one root lineage`,
-    playerAction: (_insight, context) => `You treated the mixed forms as one operating system and mapped the breaks`,
-    systemExplanation: (_insight, context) => `Suppletion appears when high-frequency grammar preserves older fragments instead of regularizing them`,
-    politicalClaim: (_insight, context) => `That patchwork reflects uneven development: continuity is enforced after disruption by institutions that need a stable standard`,
-  },
-  GRIMM: {
-    event: (_insight, context) => `The consonants shifted in a regular pattern across related words`,
-    playerAction: (_insight, context) => `You tracked the sound correspondences instead of guessing by spelling`,
-    systemExplanation: (_insight, context) => `Sound change is systematic, so each pair records the same mechanism at work in different vocabulary`,
-    politicalClaim: (_insight, context) => `Structure drives outcomes here too: language change follows patterned constraints regardless of individual intention or prestige claims`,
-  },
-  COLLISION: {
-    event: (_insight, context) => `Two language systems collided and stayed side by side instead of merging cleanly`,
-    playerAction: (_insight, context) => `You separated which forms came from each source layer`,
-    systemExplanation: (_insight, context) => `Contact systems retain duplicates because conquest and coexistence distribute words by domain and status`,
-    politicalClaim: (_insight, context) => `This is how conquest persists: dominant forms become standard while other forms are kept as marginal residue`,
-  },
-  PIE: {
-    event: (_insight, context) => `The forms point back to a reconstructed ancestor rather than a directly recorded word`,
-    playerAction: (_insight, context) => `You matched descendants by inherited pattern instead of surface similarity`,
-    systemExplanation: (_insight, context) => `Comparative reconstruction works because regular correspondences preserve system history across branches`,
-    politicalClaim: (_insight, context) => `Who gets treated as the linguistic center is a power question: prestige traditions decide which ancestry is taught as foundational`,
-  },
-  PHANTOM_ROOT: {
-    event: (_insight, context) => `A convincing root was projected onto words that do not share one origin`,
-    playerAction: (_insight, context) => `You stripped away the projection and kept only defensible relationships`,
-    systemExplanation: (_insight, context) => `Phantom roots spread when repeated teaching turns a mnemonic shortcut into supposed history`,
-    politicalClaim: (_insight, context) => `Authority can manufacture etymology: once institutions repeat a story, it gains prestige even when evidence is weak`,
-  },
-  MATCH: {
-    event: (_insight, context) => `Pairs aligned through mechanism, not through coincidence`,
-    playerAction: (_insight, context) => `You matched each item by the underlying relation it encoded`,
-    systemExplanation: (_insight, context) => `Matching reveals structure by forcing each form to justify itself against an explicit counterpart`,
-    politicalClaim: (_insight, context) => `Making relations explicit redistributes power: standards stop looking natural once their construction is visible`,
-  },
+const TEMPLATE_BY_TYPE: Partial<Record<PuzzleType, BodyTemplate>> = {
   IDIOM: {
-    event: (insight) =>
+    happened: (insight) =>
       insight.type === "IDIOM"
-        ? `The phrase was sealed inside ${insight.language || "the imperial tongue"} while the ${insight.data.origin} source was treated as disposable`
-        : "The phrase kept circulating after its source context was stripped out",
-    playerAction: (insight) =>
+        ? `The phrase was sealed inside ${insight.language || "the imperial tongue"} — the original ${insight.data.origin} speaker erased and its ideology smuggled in as harmless common speech`
+        : "This phrase buried a much older wound than its surface lets on",
+    playerDid: (insight) =>
       insight.type === "IDIOM"
-        ? `You broke open "${insight.data.phrase}" and named the source culture directly`
-        : "You named the source culture the phrase depends on",
-    systemExplanation: (_insight, context) => `${context.language} idioms survive by repeating compressed social history until it feels natural`,
-    politicalClaim: (_insight, context) => `That repetition protects power: prestige speakers keep the phrase, while the people who produced it get erased from standard memory`,
+        ? `You broke the seal on "${insight.data.phrase}" and named the culture it was seized from`
+        : "You named the source the phrase was seized from",
+    matters: (_insight, context) => `That matters because every ${context.language} idiom is a site of extraction — and now the ideology fossilized inside it is exposed`,
   },
   DECEPTION: {
-    event: (_insight, context) => `A false ${context.system || "pattern"} was engineered so surface form could pass for lineage`,
-    playerAction: (_insight, context) => `You rejected the counterfeit grouping and separated real kin from planted impostors around ${context.root}`,
-    systemExplanation: (_insight, context) => `This mechanism works by rewarding visual familiarity over historical relation`,
-    politicalClaim: (_insight, context) => `That bias serves power: institutions that control spelling conventions also control which families look legitimate`,
+    happened: (_insight, context) => `A false ${context.system || "pattern"} was engineered — a visual trap so the eye would obey the spelling and never question the ancestry`,
+    playerDid: (_insight, context) => `You refused the counterfeit system and separated the real etymological kin from the impostors planted around ${context.root}`,
+    matters: (_insight, context) => `That matters because the ${context.language} cage is built from lookalikes — one cracked bar breaks the whole structure of the deception`,
   },
   FALSE_FAMILY: {
-    event: (_insight, context) => `A false lineage was forged around ${context.root} and sold as common sense`,
-    playerAction: (_insight, context) => `You severed the fake bond and reconstructed the actual genealogy`,
-    systemExplanation: (_insight, context) => `False families persist when shared spelling is treated as stronger evidence than historical descent`,
-    politicalClaim: (_insight, context) => `That rule protects prestige narratives: dominant groups keep their preferred origin story while other histories are pushed out`,
+    happened: (_insight, context) => `A false lineage was forged around ${context.root} — the words were dressed as kin but the bloodline was fabricated`,
+    playerDid: (_insight, context) => `You severed the false bond and recovered the actual genealogy from within the ${context.system || "corrupted set"}`,
+    matters: (_insight, context) => `That matters because fabricated families are how ${context.language} absorbs and erases — surface spelling is not ancestry`,
   },
   BORROWED: {
-    event: (_insight, context) => `These words entered ${context.language} through borrowing from a higher-status source`,
-    playerAction: (_insight, context) => `You tracked how ${context.leadWord} and ${context.secondWord} traveled through the same import channel`,
-    systemExplanation: (_insight, context) => `Borrowing does not land evenly: ${context.system || "the import channel"} ranks forms by register, schooling, and who is allowed to sound authoritative`,
-    politicalClaim: (_insight, context) => `This is how prestige operates under class society: ruling-class language becomes correctness and everyone else is marked as informal`,
+    happened: (_insight, context) => `${context.language} seized this root from another tongue and reprocessed it through the imperial machine`,
+    playerDid: (_insight, context) => `You traced how ${context.leadWord} and ${context.secondWord} share the same colonial import route`,
+    matters: (_insight, context) => `That matters because the ${context.system || "transit route"} exposes the extraction tax levied when meaning crossed the border`,
   },
   TOPONYM: {
-    event: (_insight, context) => `A place-name was overwritten when one naming system displaced another`,
-    playerAction: (_insight, context) => `You recovered the older layer hidden inside ${context.leadWord}`,
-    systemExplanation: (_insight, context) => `Toponyms preserve contact history because conquest renames territory before it can fully rename memory`,
-    politicalClaim: (_insight, context) => `Mapping is power: the group that standardizes names controls which claims to land sound official`,
+    happened: (_insight, context) => `A place was absorbed and renamed — the original geography overwritten by the language of the conqueror's map`,
+    playerDid: (_insight, context) => `You recovered the location buried inside ${context.leadWord} and refused to let the map erase it`,
+    matters: (_insight, context) => `That matters because when ${context.language} swallowed the place name, it tried to swallow the history encoded inside it`,
   },
 };
 
@@ -214,42 +211,43 @@ function buildBody(insight: LinguisticInsight): string {
     secondWord: insight.words[1] || insight.root || "its pair",
   };
 
+  // ROOT puzzles use the variety engine — hash-seeded, no per-root templates.
   if (insight.type === "ROOT") {
     const hash = rootHashCode(context.root);
-    const event = oneClause(insight.tension, "The root mechanism finally surfaced");
+    const happened = oneClause(insight.tension, "The cage finally cracked open");
     const playerDidPool = rootPlayerDidPool(context.root, context.leadWord, context.secondWord);
-    const systemPool = [
-      `Root systems reproduce across domains through predictable morphological extension`,
-      `A root is infrastructure: many later words keep routing through the same base form`,
-      `This pattern is structural, not decorative, because the root constrains how new words are built`,
-    ] as const;
-    const politicalPool = [
-      `Power depends on controlling which root forms become standard, and you just made that control visible`,
-      `Prestige institutions treat root knowledge as a class filter, and your solve breaks that filter open`,
-      `Standard language is a governance system: whoever sets the root norms sets the terms of legitimacy`,
-    ] as const;
+    const mattersPool = rootMattersPool(context.language);
     const playerDid = pickByHash(playerDidPool, hash);
-    const systemExplanation = pickByHash(systemPool, hash + 2);
-    const politicalClaim = pickByHash(politicalPool, hash + 4);
-    return `${event}. ${playerDid}. ${systemExplanation}. ${politicalClaim}.`;
+    const matters = pickByHash(mattersPool, hash + 4);
+    return `${happened}. ${playerDid}. ${matters}.`;
   }
 
   const template = TEMPLATE_BY_TYPE[insight.type];
-  const event = oneClause(template.event(insight, context), oneClause(insight.tension, "The reveal landed"));
-  const playerAction = oneClause(
-    template.playerAction(insight, context),
-    `You connected ${context.leadWord} with ${context.secondWord} through ${context.root}`,
-  );
-  const systemExplanation = oneClause(
-    template.systemExplanation(insight, context),
-    `The mechanism connecting ${context.leadWord} and ${context.secondWord} is now explicit`,
-  );
-  const politicalClaim = oneClause(
-    template.politicalClaim(insight, context),
-    `The power structure behind ${context.language} standardization is now visible`,
-  );
+  const happenedSource = "revealBody" in insight.data && typeof insight.data.revealBody === "string"
+    ? insight.data.revealBody
+    : insight.tension;
 
-  return `${event}. ${playerAction}. ${systemExplanation}. ${politicalClaim}.`;
+  const happened = oneClause(template?.happened(insight, context) ?? happenedSource, "The cage finally cracked open");
+
+  let playerDid: string;
+  let matters: string;
+  if (template) {
+    playerDid = oneClause(template.playerDid(insight, context), "You traced the extraction back to its source");
+    matters = oneClause(template.matters(insight, context), "That matters because the mechanism is no longer invisible");
+  } else {
+    const hash = rootHashCode(`${context.root}-${insight.type}`);
+    playerDid = interpolate(pickByHash(PLAYER_DID_VARIANTS, hash), {
+      word0: context.leadWord,
+      word1: context.secondWord,
+      root: context.root,
+    });
+    matters = interpolate(pickByHash(MATTERS_VARIANTS, hash + 4), {
+      LANGUAGE: context.language,
+      root: context.root,
+    });
+  }
+
+  return `${happened}. ${playerDid}. ${matters}.`;
 }
 
 function defaultReveal(insight: LinguisticInsight): Reveal {
@@ -261,10 +259,11 @@ function defaultReveal(insight: LinguisticInsight): Reveal {
   if (insight.type === "ROOT") {
     const suffix = pickByHash(ROOT_HEADLINE_SUFFIXES, rootHashCode(root));
     headline = `${root.toUpperCase()} — ${lang}${suffix}`;
+  } else if ("revealHeadline" in insight.data && typeof insight.data.revealHeadline === "string") {
+    headline = insight.data.revealHeadline;
   } else {
-    headline = "revealHeadline" in insight.data && typeof insight.data.revealHeadline === "string"
-      ? insight.data.revealHeadline
-      : `${root.toUpperCase()} — ${lang}`;
+    const hash = rootHashCode(`${root}-${insight.type}`);
+    headline = interpolate(pickByHash(HEADLINE_VARIANTS, hash), { ROOT: root.toUpperCase(), LANGUAGE: lang });
   }
 
   let connections: [string, string][];
