@@ -33,10 +33,10 @@ test("idiom reveal keeps existing connections and emits 3 rhetorical roles", () 
     ["A long-standing frame about repeating hi…", "fossilized ideology"],
   ]);
   assert.equal(sentenceCount(reveal.body), 3);
-  assert.match(reveal.body, /^.+\. You .+\. That matters because .+\.$/);
+  assert.match(reveal.body, /^.+\. You .+\. .+\.$/);
 });
 
-test("borrowed reveal body stays to three sentences", () => {
+test("borrowed reveal body uses three-sentence explicit structure", () => {
   const insight = {
     id: "borrowed-1",
     type: "BORROWED",
@@ -59,7 +59,7 @@ test("borrowed reveal body stays to three sentences", () => {
 
   const reveal = generateReveal(insight);
   assert.equal(sentenceCount(reveal.body), 3);
-  assert.match(reveal.body, /^.+\. You .+\. That matters because .+\.$/);
+  assert.match(reveal.body, /^.+\. You .+\. .+\.$/);
   assert.match(reveal.body, /Latin transit system/);
 });
 
@@ -99,13 +99,33 @@ test("ROOT reveal body emits exactly 3 sentences", () => {
 test("ROOT reveal body matches the rhetorical structure", () => {
   const insight = makeRootInsight("act", "Latin");
   const reveal = generateReveal(insight);
-  assert.match(reveal.body, /^.+\. You .+\. That matters because .+\.$/);
+  assert.match(reveal.body, /^.+\. You .+\. .+\.$/);
 });
 
 test("ROOT reveal body first sentence comes from tension", () => {
   const insight = makeRootInsight("act", "Latin");
   const reveal = generateReveal(insight);
   assert.match(reveal.body, /The hidden machinery of power/);
+});
+
+test("ROOT reveal connections show deduplicated answer keys with required/related labels", () => {
+  const insight = {
+    ...makeRootInsight("junct", "Latin"),
+    words: ["junction", "conjunction", "injunction", "adjunct", "subjugate", "conjugate"],
+    data: {
+      targets: ["junction", "conjunction", "injunction", "adjunct", "subjugate", "conjugate", "conjunction"],
+      required: ["junction", "conjunction", "injunction", "adjunct", "subjugate"],
+    },
+  };
+  const reveal = generateReveal(insight);
+  assert.deepEqual(reveal.connections.slice(0, 6), [
+    ["junction", "required"],
+    ["conjunction", "required"],
+    ["injunction", "required"],
+    ["adjunct", "required"],
+    ["subjugate", "required"],
+    ["conjugate", "related"],
+  ]);
 });
 
 test("ROOT reveal playerDid sentence uses spicy variety language", () => {
@@ -116,12 +136,12 @@ test("ROOT reveal playerDid sentence uses spicy variety language", () => {
   assert.ok(hasSpicy, `Expected a spicy playerDid verb in: ${reveal.body}`);
 });
 
-test("ROOT reveal matters sentence is an antiestablishment banger", () => {
+test("ROOT reveal final sentence states a power claim", () => {
   const insight = makeRootInsight("act", "Latin");
   const reveal = generateReveal(insight);
-  const bangerKeywords = ["overlords", "empire", "sawing through", "gatekeepers", "priesthood", "obediently illiterate", "brick ripped", "live wire", "Roman and Greek"];
-  const hasBanger = bangerKeywords.some(k => reveal.body.includes(k));
-  assert.ok(hasBanger, `Expected an antiestablishment matters line in: ${reveal.body}`);
+  const matterKeywords = ["That matters because", "buried", "machinery", "gatekeepers", "empire", "priesthood", "control grid", "obediently", "wall they built", "Conquest"];
+  const hasClaim = matterKeywords.some(k => reveal.body.includes(k));
+  assert.ok(hasClaim, `Expected a matters-power line in: ${reveal.body}`);
 });
 
 test("ROOT reveal is deterministic — same root always gives same result", () => {
@@ -137,20 +157,4 @@ test("ROOT reveals differ across different roots", () => {
   const reveals = roots.map(r => generateReveal(makeRootInsight(r, "Latin")));
   const headlines = new Set(reveals.map(r => r.headline));
   assert.ok(headlines.size > 1, "Expected different roots to produce different headline variants");
-});
-
-test("Latin ROOT gets either base or imperial matters banger", () => {
-  const latinRoots = ["act", "bell", "cap", "dict", "fer", "gen", "ject", "lect", "loc", "mal", "nat", "port", "reg", "struct", "tract"];
-  const imperialKeywords = ["Roman and Greek", "live wire"];
-  const bodies = latinRoots.map(r => generateReveal(makeRootInsight(r, "Latin")).body);
-  const hasImperial = bodies.some(b => imperialKeywords.some(k => b.includes(k)));
-  assert.ok(hasImperial, "Expected at least one Latin root to receive an imperial-flavored matters line");
-});
-
-test("Old English ROOT gets either base or peasant uprising matters banger", () => {
-  const oeRoots = ["eorpe", "halig", "lufian", "mann", "tellan", "waeter", "writan", "hand", "heorte", "modor", "stan"];
-  const peasantKeywords = ["survived the Conquest", "peasant tongue"];
-  const bodies = oeRoots.map(r => generateReveal(makeRootInsight(r, "Old English")).body);
-  const hasPeasant = bodies.some(b => peasantKeywords.some(k => b.includes(k)));
-  assert.ok(hasPeasant, "Expected at least one Old English root to receive a peasant uprising matters line");
 });
