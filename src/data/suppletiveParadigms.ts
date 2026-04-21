@@ -211,6 +211,7 @@ export const SUPPLETIVE_EXTENDED_POOL = [
       {
         id: "possessive",
         label: "possessive (my/mine)",
+        solutionLabel: "possessive (my/mine) — *me- stem, genitive slot",
         accepts: ["my", "mine"],
         related: ["mein", "mon"],
       },
@@ -218,6 +219,8 @@ export const SUPPLETIVE_EXTENDED_POOL = [
     pool: ["I", "me", "my", "mine", "myself"],
     tension:
       "I and me come from entirely different Proto-Indo-European roots. 'I' pointed to 'here (where I am)'; 'me' pointed to 'this self.' Every first-person pronoun in English is a philosophical composite.",
+    revealBody:
+      `"I" descends from PIE *eǵ — a deictic, a pointing: not "self" but "here." The oblique forms me and myself come from PIE *me-, a different root meaning the body, the object. My and mine pull from the same *me- stem but occupy the possessive slot — the same oblique root reassigned to genitive function. Suppletion froze these incompatible fragments together because high-frequency pronouns calcify before grammar can regularize them: the word you use ten thousand times a day to claim a self has never had a single root.`,
   },
   {
     root: "this / these",

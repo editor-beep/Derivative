@@ -290,6 +290,22 @@ function defaultReveal(insight: LinguisticInsight): Reveal {
   };
 }
 
+function suppletiveReveal(insight: InsightByType<"SUPPLETIVE">): Reveal {
+  const groups = insight.data.groups ?? [];
+  const connections: [string, string][] = groups.map((group) => {
+    const word = group.accepts[0] ?? "";
+    const label = group.solutionLabel ?? group.label ?? "";
+    return [word, label] as [string, string];
+  });
+  const root = insight.root ?? "";
+  const lang = insight.language ?? "";
+  const headline = "revealHeadline" in insight.data && typeof insight.data.revealHeadline === "string"
+    ? insight.data.revealHeadline
+    : `${root.toUpperCase()} — ${lang}`;
+  const body = insight.data.revealBody ? insight.data.revealBody : buildBody(insight);
+  return { headline, body, connections, lensNote: lensNote(insight) };
+}
+
 function buildGroupReveal(insight: LinguisticInsight, label: string, offset: number): Reveal {
   const root = insight.root || "";
   const words = insight.words;
@@ -330,6 +346,9 @@ function borrowedReveal(insight: LinguisticInsight): Reveal { return buildGroupR
 
 export function generateReveal(insight: LinguisticInsight): Reveal {
   switch (insight.type) {
+    case "SUPPLETIVE":
+      return suppletiveReveal(insight);
+
     case "DECEPTION":
       return deceptionReveal(insight);
 
