@@ -1359,7 +1359,21 @@ const MatchPuzzle = ({
   revealed: boolean;
 }) => {
   const pairs = puzzle.pairs || [];
-  const choices = Array.from(new Set(pairs.map((pair) => pair.target)));
+  const { shuffledPairs, shuffledChoices } = useMemo(() => {
+    const shuffle = <T,>(arr: T[]): T[] => {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    };
+    return {
+      shuffledPairs: shuffle(pairs),
+      shuffledChoices: shuffle(Array.from(new Set(pairs.map((p) => p.target)))),
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [puzzle]);
   const selected = state?.assigned || {};
   const correctCount = pairs.filter((pair) => selected[pair.source] === pair.target).length;
 
@@ -1380,7 +1394,7 @@ const MatchPuzzle = ({
         {correctCount}/{pairs.length} matched correctly
       </div>
       <div style={{ display: "grid", gap: "0.6rem" }}>
-        {pairs.map((pair) => {
+        {shuffledPairs.map((pair) => {
           const chosen = selected[pair.source] || "";
           const isCorrect = chosen === pair.target;
           return (
@@ -1406,7 +1420,7 @@ const MatchPuzzle = ({
                 }}
               >
                 <option value="">select gloss…</option>
-                {choices.map((choice) => (
+                {shuffledChoices.map((choice) => (
                   <option key={choice} value={choice}>
                     {choice}
                   </option>
